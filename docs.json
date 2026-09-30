@@ -65,6 +65,7 @@
               "flex-modules/ct-card",
               "flex-modules/solid-core-ct-strips",
               "flex-modules/multi-circuit-card",
+              "flex-modules/busway-card",
               "flex-modules/dimensions"
             ]
           },
