@@ -1,326 +1,397 @@
 ---
 title: "Cortex PQM REST API Reference — CSM Device Endpoints"
 sidebarTitle: "REST API"
-description: "Complete REST API reference for the Cortex PQM CSM device — read power measurements, manage configuration, and update firmware over HTTP."
+description: "REST API reference for the Cortex PQM CSM device — read measurements, voltage, alarms, meters, and AUX data, and write configuration over HTTP."
 ---
 
-The Cortex PQM CSM-1-00 and CSM-2-00 devices expose a JSON REST API on port 80 (HTTP). Use it to read real-time and historical power measurements, push configuration changes, and trigger firmware updates from any HTTP client — no special library required. All requests and responses use `application/json` unless otherwise noted.
+The Cortex PQM CSM-1-00 and CSM-2-00 provide a REST API for reading meter data and writing configuration over HTTP. Responses are JSON.
+
+<Warning>
+  Endpoints, field names, data types, and response formats may be added, changed, or removed in firmware releases. API changes are documented in the release notes accompanying each firmware update. If you maintain an integration (SCADA, BMS, energy platform, dashboard, reporting tool), test it after every firmware update. The installed firmware version is available from `/api/deviceinfo` (`firmwareMajor`, `firmwareMinor`, `firmwareRevision`) and on the **System** page of the web console.
+</Warning>
 
 ## Base URL
 
+All requests are made to the meter's IP address. **No authentication is required.**
+
+```text
+http://<device-ip>/api/<endpoint>
 ```
-http://{device-ip}/api
-```
 
-Replace `{device-ip}` with the device's assigned IP address or hostname. For example, `http://192.168.1.100/api/status`.
+The default IP address is `192.168.7.3`. To test the connection, open `http://192.168.7.3/api/healthcheck`; a response with `"data": 1` confirms the monitor is reachable.
 
-## Authentication
+## Standard Response Envelope
 
-No authentication is required by default. The device assumes it is deployed on a trusted local network or VLAN. Restrict access at the network layer using a firewall or VLAN segmentation — do not expose the device API directly to the public internet.
-
-<Warning>
-  The REST API has no built-in access control. Any client that can reach the device on port 80 can read measurements, change configuration, and initiate firmware updates. Always isolate the device on a dedicated management network or VLAN.
-</Warning>
-
-## Content-Type
-
-All request and response bodies use `Content-Type: application/json`, except for firmware uploads which use `application/octet-stream`. Always include the `Content-Type` header in POST requests.
-
----
-
-## Endpoints
-
-### GET /api/status
-
-Returns the current device status, including model, firmware version, uptime, and network information. Use this endpoint to verify connectivity and confirm the firmware version before issuing other requests.
-
-**Response fields**
-
-| Field | Type | Description |
-|---|---|---|
-| `model` | string | Device model identifier (`CSM-1-00` or `CSM-2-00`) |
-| `firmware_version` | string | Installed firmware version |
-| `uptime_seconds` | integer | Seconds elapsed since last boot |
-| `ip` | string | Current IP address of the device |
-| `hostname` | string | Device hostname |
-
-**Example response**
+All GET responses share this structure:
 
 ```json
 {
-  "model": "CSM-2-00",
-  "firmware_version": "1.3.0",
-  "uptime_seconds": 86400,
-  "ip": "192.168.1.100",
-  "hostname": "cortex-pqm-main"
+  "endpoint": "/api/kw",
+  "url": "http://192.168.7.3/api/kw",
+  "data": { ... }
 }
+```
+
+All readable endpoints use `GET`, need no request body, and return JSON.
+
+## Circuit Range Parameters
+
+Per-circuit endpoints accept `?id=N` (single circuit) or `?start=N&end=M` (range). Default: all 192 circuits.
+
+```bash
+curl "http://192.168.7.3/api/kw?start=1&end=4"
 ```
 
 ---
 
-### GET /api/measurements
+## Quick Reference — All Endpoints
 
-Returns real-time power measurements for all phases and circuits. This is the primary endpoint for live monitoring integrations.
+| Method | Endpoint | Description | Circuit params |
+| --- | --- | --- | --- |
+| **Status & System** |  |  |  |
+| GET | `/api/healthcheck` | Returns 1 if device is alive | – |
+| GET | `/api/version` | Firmware version: major, minor, revision, build number | – |
+| GET | `/api/deviceinfo` | Serial, MAC, model, Flex Port and AUX port topology, RTC time | – |
+| GET | `/api/systemstatus` | CPU % and stack % per thread, storage usage | – |
+| GET | `/api/usbstatus` | USB drive connected flag and detected file names | – |
+| GET | `/api/modbustcpstatus` | Modbus TCP socket states | – |
+| GET | `/api/waveforminfo` | Captured AC waveform CSV files stored on device | – |
+| GET | `/api/waveformstatus` | Whether a waveform capture is in progress | – |
+| GET | `/api/help` | Runtime list of all supported API endpoint paths | – |
+| GET | `/api/csr` | TLS Certificate Signing Request (PEM) | – |
+| **Power & Energy** |  |  |  |
+| GET | `/api/kw` | Real power (kW) per circuit | id, start/end |
+| GET | `/api/kwh` | Cumulative real energy (kWh) per circuit | id, start/end |
+| GET | `/api/kvar` | Reactive power (kVAR) per circuit | id, start/end |
+| GET | `/api/kvarh` | Cumulative reactive energy (kVARh) per circuit | id, start/end |
+| GET | `/api/kva` | Apparent power (kVA) per circuit | id, start/end |
+| GET | `/api/kvah` | Cumulative apparent energy (kVAh) per circuit | id, start/end |
+| GET | `/api/current` | RMS current (A) per circuit | id, start/end |
+| GET | `/api/kwdemand` | Real power demand (kW) over the demand interval | id, start/end |
+| GET | `/api/currentdemand` | Current demand (A) over the demand interval | id, start/end |
+| **Power Quality** |  |  |  |
+| GET | `/api/pf` | Power factor per circuit | id, start/end |
+| GET | `/api/phaseangle` | Phase angle (degrees) per circuit | id, start/end |
+| GET | `/api/thdi` | Current THD (% of fundamental) | id, start/end |
+| GET | `/api/crestfactor` | Crest factor per circuit (peak / RMS) | id, start/end |
+| **Harmonic Analysis** |  |  |  |
+| GET | `/api/harmonicsi` | Current harmonic spectrum (up to 21 values) per circuit | id, start/end |
+| GET | `/api/harmonicsv` | Voltage harmonic spectrum (up to 63 values), V1 and V2 | – |
+| **Voltage & Frequency** |  |  |  |
+| GET | `/api/volts` | Voltage readings and alarm status for V1 and V2 | – |
+| GET | `/api/volts1` | Voltage readings and alarm status for V1 | – |
+| GET | `/api/volts2` | Voltage readings and alarm status for V2 | – |
+| **Safety & Monitoring** |  |  |  |
+| GET | `/api/alarms` | Current alarm bitmask (16-bit) per circuit | id, start/end |
+| GET | `/api/breakerutilization` | Breaker utilization % per circuit | id, start/end |
+| **Circuit Configuration (read + write)** |  |  |  |
+| GET | `/api/circuitname` | Display name per circuit | – |
+| GET | `/api/ctsize` | CT rated size (A) per circuit | – |
+| GET | `/api/breakersize` | Breaker rating (A) per circuit | – |
+| GET | `/api/voltagephase` | Phase assignment per circuit (0 = L1, 1 = L2, 2 = L3) | – |
+| GET | `/api/cttype` | CT type code per circuit | – |
+| GET | `/api/flexmeterassignment` | Flex Meter group ID per circuit (0 = unassigned) | – |
+| GET | `/api/aggregatemeterassignment` | Aggregate Meter group ID per circuit (0 = unassigned) | – |
+| GET | `/api/devicesettings` | Complete device configuration object | – |
+| GET | `/api/downloadsettings` | Same as devicesettings, as a file download | – |
+| **Meter Grouping** |  |  |  |
+| GET | `/api/flexmeter` | Full per-circuit readings for all (or one) Flex Meter | `?id=N` (meter) |
+| GET | `/api/flexmetername` | Display names for all 96 Flex Meters | – |
+| GET | `/api/aggregatemeter` | Readings for all 8 Aggregate Meters | – |
+| GET | `/api/aggregatemetername` | Display names for all 8 Aggregate Meters | – |
+| GET | `/api/aggregatemeterbreakersize` | Main breaker size (A) per Aggregate Meter | – |
+| **Expansion Devices** |  |  |  |
+| GET | `/api/multicarddata` | Multi-Card (MULTI_CARD_12CT) DI/DO/RTD readings per Flex Port | – |
+| GET | `/api/auxport` | AUX port card states — DI, DIO, and Thermal boards | – |
+| **File Downloads (not under /api/)** |  |  |  |
+| GET | `/waveform/<filename>` | Download a captured AC waveform CSV file | – |
+| GET | `/log/<filename>` | Download a log file (for example `itic_log.csv`) | – |
 
-**Query parameters**
+POST-only endpoints: `/configSettings` (write settings), `/fileupload` (upload a certificate or restore a configuration backup), and `/restart`.
 
-| Parameter | Type | Description |
-|---|---|---|
-| `circuit` | integer | Optional. Filter results to a single circuit by its numeric ID. |
+---
 
-**Response fields**
+## Status & System
 
-| Field | Type | Description |
-|---|---|---|
-| `timestamp` | string | ISO 8601 UTC timestamp of the measurement snapshot |
-| `phases` | array | Per-phase voltage, current, power, and power factor readings |
-| `circuits` | array | Per-circuit current, active power, and cumulative energy readings |
+### GET /api/healthcheck
 
-**Example response**
+Returns `1` if the device is alive. Any other response or a connection failure indicates the device is unreachable or rebooting.
 
 ```json
-{
-  "timestamp": "2024-01-15T10:30:00Z",
-  "phases": [
-    { "phase": "A", "voltage": 120.3, "current": 15.2, "power_kw": 1.824, "power_factor": 0.98 },
-    { "phase": "B", "voltage": 119.8, "current": 12.1, "power_kw": 1.451, "power_factor": 0.97 },
-    { "phase": "C", "voltage": 120.5, "current": 18.4, "power_kw": 2.217, "power_factor": 0.99 }
-  ],
-  "circuits": [
-    { "id": 1, "name": "HVAC Unit 1", "current": 15.2, "power_kw": 1.824, "energy_kwh": 1243.5 },
-    { "id": 2, "name": "Lighting Panel L1", "current": 8.4, "power_kw": 0.987, "energy_kwh": 892.1 }
-  ]
-}
+{ "endpoint": "/api/healthcheck", "url": "http://<device-ip>/api/healthcheck", "data": 1 }
 ```
-
-<Tip>
-  Use the `?circuit={id}` query parameter in high-frequency polling scenarios to reduce payload size and parsing overhead when you only need data for a specific circuit.
-</Tip>
-
----
-
-### GET /api/energy
-
-Returns cumulative energy totals (kWh) per circuit since the last energy reset or a specified start time. Use this endpoint for billing, reporting, or sub-metering integrations.
-
-**Query parameters**
-
-| Parameter | Type | Description |
-|---|---|---|
-| `circuit` | integer | Optional. Filter results to a single circuit by its numeric ID. |
-| `since` | string | Optional. ISO 8601 datetime. Return energy accumulated since this point in time. |
-
-**Example response**
-
-```json
-{
-  "circuits": [
-    { "id": 1, "name": "HVAC Unit 1", "energy_kwh": 1243.5, "since": "2024-01-01T00:00:00Z" }
-  ]
-}
-```
-
----
-
-### GET /api/config
-
-Returns the device's current configuration as a JSON object. Use this endpoint to back up configuration before making changes or to inspect the active settings.
-
-**Example response**
-
-```json
-{
-  "device": {
-    "hostname": "cortex-pqm-main",
-    "modbus_slave_address": 1
-  },
-  "circuits": [
-    { "id": 1, "name": "HVAC Unit 1", "ct_ratio": 100 },
-    { "id": 2, "name": "Lighting Panel L1", "ct_ratio": 50 }
-  ]
-}
-```
-
----
-
-### POST /api/config
-
-Uploads a new configuration to the device. The request body must be a complete, valid JSON configuration object. Partial updates are not supported — always upload the full configuration.
-
-**Request body**
-
-A complete JSON configuration object. See [Configuration File Definitions](/configuration/file-definitions) for the full schema and field reference.
-
-**Response**
-
-Returns `{"status": "ok"}` on success, or an error object with details if the configuration is invalid.
-
-<Warning>
-  Uploading an invalid configuration can disrupt measurement collection. Validate your configuration file against the schema before posting, and keep a backup of the last known-good configuration retrieved via `GET /api/config`.
-</Warning>
-
----
 
 ### GET /api/version
 
-Returns the installed firmware version and build date. Equivalent to the `firmware_version` field in `/api/status`, but lighter weight for version-check scripts.
+```json
+{ "data": { "major": 1, "minor": 0, "revision": 1, "buildNumber": 0 } }
+```
 
-**Example response**
+### GET /api/deviceinfo
+
+Hardware identification, connected card topology for all Flex Ports and the AUX (digital) port, per-card firmware versions, and the device RTC time. Field names follow the pattern `flexPortDeviceType_<port>_<card>`.
 
 ```json
-{ "version": "1.3.0", "build_date": "2024-01-10" }
+{
+  "data": {
+    "serialNumber": 54908,
+    "macAddress": "BC:DF:E1:80:27:97",
+    "modelName": "CSM-1-00",
+    "deviceName": "Office Panel A",
+    "firmwareMajor": 1, "firmwareMinor": 0, "firmwareRevision": 1,
+    "uptime": 18426,
+    "flexPortStatus_1": 0, "flexPortDevices_1": 2,
+    "flexPortDeviceStatus_1_1": 0, "flexPortDeviceType_1_1": 3, "flexPortFwVersion_1_1": 262,
+    "digitalPortStatus": 0, "digitalPortDevices": 3,
+    "digitalPortDeviceStatus_1": 0, "digitalPortDeviceType_1": 5, "digitalPortFwVersion_1": 258,
+    "rtctime": "April 20, 2026 04:30:21 PM"
+  }
+}
 ```
+
+- `uptime` is in seconds since last boot.
+- Serial `4294967295` (0xFFFFFFFF) = card reports no serial.
+- Device status codes: 0 = normal.
+
+| Device type code | Device |
+| --- | --- |
+| 3 | CT Strip |
+| 5 | Digital Input Board |
+| 10 | CT Strip type B |
+| 21 | Thermal Input Board |
+| 22 | Digital I/O Board |
+| 23 | MULTI_CARD_12CT |
+| 25 | BUSWAY_6CT |
+
+### GET /api/systemstatus
+
+Per-thread CPU utilization (%), per-thread stack usage (%), filesystem storage statistics, and microcontroller identifiers. Thread 9 is the metering/DSP thread and normally shows the highest CPU usage (~30%).
+
+### GET /api/usbstatus
+
+```json
+{ "data": { "usbConnected": true, "configFile": "Cortexsettings.json", "updateFile": "" } }
+```
+
+### GET /api/modbustcpstatus
+
+Modbus TCP socket states. Socket 0 is always the listener on port 502. Up to 15 concurrent Modbus TCP clients are supported. Socket states: `LISTEN` (waiting), `CLOSED` (idle), `ESTABLISHED` (active session).
+
+### GET /api/waveforminfo and /api/waveformstatus
+
+`/api/waveforminfo` lists captured AC waveform CSV files (up to 5 are stored; the oldest is overwritten). Trigger a capture with `POST /configSettings` and `"startWaveformCapture": true`, then poll `/api/waveformstatus` until `waveformCaptureInProgress` is `false`.
+
+### GET /api/csr
+
+Returns the device's TLS Certificate Signing Request as raw PEM text (`application/x-pem-file`, no JSON wrapper). To enable HTTPS:
+
+1. Obtain the CSR and submit it to your certificate authority.
+2. Upload the signed certificate via `POST /fileupload` (`.pem` or `.crt`, up to 1 MB).
+3. Post `{ "deviceConfig": { "httpsEnable": true } }` to `/configSettings`.
+4. Restart the device.
 
 ---
 
-### POST /api/firmware
+## Power & Energy
 
-Uploads a firmware binary to the device and triggers an update. The device reboots automatically after the update completes.
-
-**Request headers**
-
-| Header | Value |
-|---|---|
-| `Content-Type` | `application/octet-stream` |
-
-**Request body**
-
-The raw firmware binary file provided by Cortex.
-
-**Response**
+All nine Power & Energy endpoints share the same response shape; only `dataType` and the values differ.
 
 ```json
-{ "status": "updating" }
+GET /api/kw?start=1&end=4
+{
+  "data": {
+    "dataType": "kw",
+    "readings": {
+      "circuit_1": 0.0258,
+      "circuit_2": 0.0131,
+      "circuit_3": 0.0259,
+      "circuit_4": 0.0132
+    }
+  }
+}
 ```
 
-The device will be unreachable for approximately 60–90 seconds while it applies the update and reboots. Poll `/api/firmware/status` or `/api/status` to confirm the update completed successfully.
+| Endpoint | Unit | Description |
+| --- | --- | --- |
+| `/api/kw` | kW | Real (active) power |
+| `/api/kwh` | kWh | Cumulative real energy. Not reset on restart |
+| `/api/kvar` | kVAR | Reactive power |
+| `/api/kvarh` | kVARh | Cumulative reactive energy |
+| `/api/kva` | kVA | Apparent power |
+| `/api/kvah` | kVAh | Cumulative apparent energy |
+| `/api/current` | A (RMS) | RMS current |
+| `/api/kwdemand` | kW | Real power demand over the configured demand interval |
+| `/api/currentdemand` | A | Current demand over the configured demand interval |
 
-<Warning>
-  Do not power cycle or disconnect the device during a firmware update. Interrupting the update process may corrupt the firmware and require a factory recovery procedure.
-</Warning>
+## Power Quality
+
+| Endpoint | Unit | Description |
+| --- | --- | --- |
+| `/api/pf` | ratio 0–1 | Power factor (leading/lagging not differentiated) |
+| `/api/phaseangle` | degrees | Phase angle between voltage and current |
+| `/api/thdi` | % | Current THD as % of the fundamental. Values over 100% are normal for SMPS loads. Circuits with no CT return 0 |
+| `/api/crestfactor` | ratio | Peak / RMS current. Pure sine = 1.414 |
+
+## Harmonic Analysis
+
+- **`/api/harmonicsi`** — per circuit: `percentTHD` and a `harmonics` array of up to 21 values (% of fundamental). Index 0 = 3rd harmonic, up to the 23rd.
+- **`/api/harmonicsv`** — for `input_1` and `input_2`, per phase (L1/L2/L3): `percentTHD_LN`, `percentTHD_LL`, and a `harmonics` array of up to 63 values. Index 0 = 2nd harmonic. `percentTHD_LL` is computed only for L1 (the L12 reference phase).
+
+## Voltage & Frequency
+
+`/api/volts` returns both voltage inputs; `/api/volts1` and `/api/volts2` return one. Readings include line-to-neutral and line-to-line voltages, per-phase THD, phase angles, frequency, and a decoded alarm status object.
+
+```json
+GET /api/volts1
+{
+  "data": {
+    "dataType": "volts",
+    "readings": {
+      "voltage_L1": 121.634, "voltage_L2": 61.178, "voltage_L3": 61.271,
+      "voltageLN_Avg": 81.361,
+      "voltage_L12": 60.839, "voltage_L23": 0, "voltage_L31": 60.957,
+      "voltageLL_Avg": 40.599,
+      "thd_L1": 2.652, "thd_L2": 3.308, "thd_L3": 3.305,
+      "phaseAngle_L1": 0, "phaseAngle_L2": 1.215, "phaseAngle_L3": 1.121,
+      "frequency": 60.003
+    },
+    "status": {
+      "voltage_L12": 514,
+      "voltage_L12_Alarms": { "overVoltageLatchingAlarm": false, "underVoltageLatchingAlarm": true, "...": "..." }
+    }
+  }
+}
+```
+
+**Voltage alarm bitmask (16-bit):** bit 0 over voltage latching, bit 1 under voltage latching, bit 2 frequency deviation latching, bits 3–7 reserved, bit 8 over voltage non-latching, bit 9 under voltage non-latching, bit 10 frequency deviation non-latching, bit 11 phase rotation non-latching, bits 12–15 reserved. Example: `514` = bits 1 and 9. Clear latched alarms with `POST /configSettings` and `"clearVoltageAlarmLatches": true`.
+
+## Safety & Monitoring
+
+### GET /api/alarms
+
+Current alarm bitmask per circuit (non-zero = alarm active).
+
+| Bit | Field | Description |
+| --- | --- | --- |
+| 0 | `highLatchingAlarm` | High current latching alarm |
+| 1 | `highLatchingWarning` | High current latching warning |
+| 2 | `lowLatchingAlarm` | Low current latching alarm |
+| 3–5 | – | Reserved |
+| 6 | `currentDropLatchingAlarm` | Current drop latching alarm |
+| 7 | `vpLatchingAlarm` | Voltage presence latching alarm |
+| 8 | `highNonLatchingAlarm` | High current non-latching alarm |
+| 9 | `highNonLatchingWarning` | High current non-latching warning |
+| 10 | `lowNonLatchingAlarm` | Low current non-latching alarm |
+| 11–13 | – | Reserved |
+| 14 | `currentDropNonLatchingAlarm` | Current drop non-latching alarm |
+| 15 | `vpNonLatchingAlarm` | Voltage presence non-latching alarm |
+
+Latching alarms persist until cleared with `POST /configSettings` and `"clearCircuitAlarmLatches": true`. Thresholds are configured in `/api/devicesettings` under `alarm.current`.
+
+### GET /api/breakerutilization
+
+Breaker utilization per circuit, `(current ÷ breakerSize) × 100`, in percent (1.18 = 1.18%).
 
 ---
 
-### GET /api/firmware/status
+## Circuit Configuration (Read + Write)
 
-Returns the current firmware update state. Poll this endpoint after calling `POST /api/firmware` to track update progress.
+These endpoints return per-circuit configuration via GET and accept writes via `POST /configSettings`. Send only the circuits you want to change; omitted circuits are left unchanged.
 
-**Response**
-
-| Status value | Meaning |
-|---|---|
-| `idle` | No update in progress; device is operating normally |
-| `updating` | Firmware update is being applied |
-| `complete` | Update completed successfully; device has rebooted |
-| `error` | Update failed; check device logs or retry the upload |
-
-**Example response**
+| GET endpoint | POST key | Values | Description |
+| --- | --- | --- | --- |
+| `/api/circuitname` | `circuitName` | string | Display name |
+| `/api/ctsize` | `ctSize` | amps | CT rated size |
+| `/api/breakersize` | `breakerSize` | amps | Breaker rating (0 = not configured) |
+| `/api/voltagephase` | `voltagePhase` | 0, 1, 2 | 0 = L1, 1 = L2, 2 = L3 |
+| `/api/cttype` | `ctType` | integer | CT type code |
+| `/api/flexmeterassignment` | `flexMeterAssignment` | 0–96 | Flex Meter group (max 3 circuits per meter) |
+| `/api/aggregatemeterassignment` | `aggregateMeterAssignment` | 0–8 | Aggregate Meter group |
 
 ```json
-{ "status": "idle" }
+POST /configSettings
+Content-Type: application/json
+{
+  "circuitName":         { "circuit_1": "Panel A Breaker 1" },
+  "ctSize":              { "circuit_1": 100 },
+  "breakerSize":         { "circuit_1": 20 },
+  "voltagePhase":        { "circuit_1": 0 },
+  "flexMeterAssignment": { "circuit_1": 3 }
+}
 ```
+
+Success response: `{ "status": "ok" }`
+
+### GET /api/devicesettings
+
+The complete device configuration: `deviceConfig`, `ipv4`, `ipv6`, `modbus`, `alarm`, `voltage`, `demand`, `phaseSettings`, and `panel_1`–`panel_4`. Writable via `POST /configSettings`. See [Configuration File Definitions](/configuration/file-definitions).
+
+- Alarm thresholds in `alarm.current` are in tenths of a percent (800 = 80.0% of breaker rating).
+- IP and Modbus changes, and the security toggles (`httpsEnable`, `modbusTCPEnable`, `modbusTLSEnable`), require a restart. Alarm thresholds and names take effect immediately.
+
+```json
+POST /configSettings
+{ "deviceConfig": { "deviceName": "Panel A - Row 1" }, "modbus": { "slaveId": 5 } }
+```
+
+### GET /api/downloadsettings
+
+Same body as `/api/devicesettings`, served with `Content-Disposition: attachment` for saving a configuration backup. Restore a backup with `POST /fileupload`.
 
 ---
 
-### GET /api/temperature
+## Meter Grouping
 
-Returns temperature readings from all connected probe channels in degrees Celsius. This endpoint is only available when the CS18-01-TMP thermal module is installed.
+- **`/api/flexmeter`** — per-circuit readings (kW, kVA, kVAR, kWh, current, PF, THD, crest factor, utilization, peaks) for up to 3 circuits per Flex Meter, plus a `total` object with voltage and neutral current. Use `?id=N` for one meter.
+- **`/api/flexmetername`** — names for all 96 Flex Meters (default "Flex Meter #N"). Write with key `flexMeterName`.
+- **`/api/aggregatemeter`** — per-line (L1/L2/L3) and total readings for all 8 Aggregate Meters. `percentUtilization` is a fraction; multiply by 100 for display.
+- **`/api/aggregatemetername`** and **`/api/aggregatemeterbreakersize`** — writable with keys `aggregateMeterName` and `aggregateMeterBreakerSize`.
 
 <Note>
-  If the CS18-01-TMP module is not installed, this endpoint returns HTTP 404. See the [Thermal Module register map](/modbus/thermal-register-map) and the [Thermal Module installation guide](/aux-modules/thermal-module) for details.
+  Some firmware field names contain typos that integrations must match exactly, for example `maxInstantanrousCurrent` (Flex Meter `total`) and `numberOfCircuitsAssgined` (Aggregate Meter `line_N`).
 </Note>
 
-**Response fields**
+## Expansion Devices
 
-| Field | Type | Description |
-|---|---|---|
-| `probes` | array | One entry per probe channel |
-| `probes[].channel` | integer | Probe channel number (1–8) |
-| `probes[].temperature_c` | number or null | Temperature in °C, or `null` if the probe is disconnected |
+### GET /api/multicarddata
 
-**Example response**
+Status and readings from Multi-Cards (MULTI_CARD_12CT) on the Flex Ports: `diValue` and `doValue` bitmasks and up to 5 RTD readings per card (`999.99` = not connected or out of range).
 
-```json
-{
-  "probes": [
-    { "channel": 1, "temperature_c": 23.4 },
-    { "channel": 2, "temperature_c": 41.7 },
-    { "channel": 3, "temperature_c": null },
-    { "channel": 4, "temperature_c": null },
-    { "channel": 5, "temperature_c": null },
-    { "channel": 6, "temperature_c": null },
-    { "channel": 7, "temperature_c": null },
-    { "channel": 8, "temperature_c": null }
-  ]
-}
-```
+### GET /api/auxport
+
+All cards on the AUX port in a single `auxCards` array. Replaces the retired `/api/digitalinputs` and `/api/thermalinputs` routes.
+
+| Card type | Description |
+| --- | --- |
+| `di` | Digital Input Board (18 DI channels) |
+| `dio` | Digital I/O Board (18 DI channels + 2 relay outputs) |
+| `thermal` | Thermal Input Board (18 RTD sensor slots + board temperature on channel 19) |
+
+- DI/DO values: 1 = closed / energized, 0 = open.
+- DI channels are numbered sequentially across cards (card 1 = 1–18, card 2 = 19–36, …); DIO DO channels use card-local numbering (1 and 2).
+- Thermal values are in °C; `999.99` = not connected or out of range.
+- Writable via `POST /configSettings`: `diName.channel_N`, `doName.channel_N`, `rtdName.channel_N`, and `doData.output_N` (0 or 1, N = global DO channel number).
 
 ---
 
-### GET /api/digital-inputs
+## File Downloads
 
-Returns the current state and accumulated pulse counts for all digital input channels. This endpoint is only available when the CS18-00-INC digital input module is installed.
+### GET /waveform/\<filename>
 
-**Response fields**
-
-| Field | Type | Description |
-|---|---|---|
-| `inputs` | array | One entry per digital input channel |
-| `inputs[].channel` | integer | Channel number |
-| `inputs[].state` | boolean | Current logic-level state (`true` = high, `false` = low) |
-| `inputs[].pulse_count` | integer | Accumulated pulse count since last reset |
-
-**Example response**
-
-```json
-{
-  "inputs": [
-    { "channel": 1, "state": false, "pulse_count": 1042 },
-    { "channel": 2, "state": true,  "pulse_count": 378 }
-  ]
-}
+```bash
+curl http://<device-ip>/waveform/waveform_20260418_143022.csv -o waveform.csv
 ```
 
----
+Time-series voltage and current samples captured at 2,560 Hz.
 
-## Error Responses
+### GET /log/\<filename>
 
-All error responses use a consistent JSON structure. The HTTP status code indicates the class of error, and the response body provides a machine-readable error code and a human-readable message.
-
-| HTTP Status | Meaning |
-|---|---|
-| `400 Bad Request` | The request body is malformed, contains invalid JSON, or fails schema validation |
-| `404 Not Found` | The requested endpoint does not exist, or an optional module required by the endpoint is not installed |
-| `500 Internal Server Error` | An unexpected error occurred on the device |
-
-**Error response format**
-
-```json
-{ "error": "invalid_config", "message": "ct_ratio must be a positive integer" }
+```bash
+curl http://<device-ip>/log/itic_log.csv -o itic_log.csv
 ```
 
-Use the `error` field for programmatic error handling and the `message` field for logging and diagnostics.
+`itic_log.csv` contains timestamped CBEMA/ITIC power quality events (voltage sags and swells) with duration (ms), voltage magnitude (% of nominal), and classification.
 
----
-
-## Code Example: Polling Measurements
-
-The following Python script polls the `/api/measurements` endpoint every 30 seconds and prints the active power reading for each circuit. Use it as a starting point for SCADA integrations, dashboards, or data loggers.
-
-```python poll_measurements.py
-import requests
-import time
-
-DEVICE_IP = "192.168.1.100"
-
-while True:
-    resp = requests.get(f"http://{DEVICE_IP}/api/measurements")
-    data = resp.json()
-    for circuit in data["circuits"]:
-        print(f"{circuit['name']}: {circuit['power_kw']:.3f} kW")
-    time.sleep(30)
-```
-
-<Tip>
-  Add error handling with `resp.raise_for_status()` and a `try/except` block around the request to gracefully handle network interruptions in production deployments.
-</Tip>
+<Warning>
+  Clearing the ITIC log with `POST /configSettings` and `"clearITICEvents": true` is irreversible.
+</Warning>

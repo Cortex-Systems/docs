@@ -1,97 +1,42 @@
 ---
 title: "AC Voltage Input Wiring for the Cortex PQM CSM Device"
 sidebarTitle: "AC Wiring"
-description: "How to wire AC line voltage inputs to the Cortex PQM for 1P2W, 1P3W, 3P3W delta, and 3P4W wye systems, including fusing requirements."
+description: "How to connect and fuse the AC reference voltage inputs on the Cortex PQM CSM-1-00 and CSM-2-00, and configure the voltage input."
 ---
 
-The CSM device measures line voltage by connecting directly to the panel's voltage buses through fused connections. Because the device taps directly into live panel voltage, correct fusing and wire gauge are mandatory — not optional. Read through this entire page before picking up a wire, and ensure the panel is fully de-energized before you begin.
-
-## Voltage Input Specifications
-
-| Parameter | Specification |
-|---|---|
-| Maximum voltage (L-L) | 600VAC |
-| Maximum voltage (L-N) | 347VAC |
-| Required fusing (per input) | 1A maximum, dedicated fuse or breaker |
-| Minimum wire gauge | 14 AWG |
-
-## Required Fusing
-
-Each voltage input line must be protected by a dedicated 1A (or lower rated) fuse or circuit breaker before it reaches the voltage tap terminals on the CSM. Use an appropriately rated fuse block or a dedicated single-pole breaker for each line. Do not share a fuse between multiple voltage input lines.
+The CSM monitor measures AC reference voltage from the panel through fused connections. The AC reference voltage inputs are for **sensing only and draw no power**; the monitor is powered from its DC connector.
 
 <Warning>
-  Never connect voltage inputs without appropriate fusing. An overvoltage condition or short circuit on the voltage input terminals may permanently damage the device and will void the warranty.
+  AC wiring has lethal voltages. Installation must be completed by a qualified person. De-energize the panel before making connections.
 </Warning>
 
-## Wiring by System Configuration
+## Voltage Inputs
 
-Select the accordion below that matches your electrical system configuration.
+| Model | Voltage inputs |
+| --- | --- |
+| CSM-1-00 | Volt Input 1 (L1, L2, L3) |
+| CSM-2-00 | Volt Input 1 and Volt Input 2 (L1, L2, L3 each) |
 
-<AccordionGroup>
-  <Accordion title="Single-Phase 2-Wire (1P2W)">
-    A single-phase 2-wire system has one hot line and a neutral. This is the most common configuration for small residential or commercial branch circuits.
+On the CSM-2-00, Volt Input 2 lets you monitor circuits referenced to a second voltage source, for example PDU input and PDU output.
 
-    | CSM Terminal | Connect To |
-    |---|---|
-    | Line 1 | L1 (hot) |
-    | Neutral | N (neutral) |
-    | Line 2 | Leave unconnected |
-    | Line 3 | Leave unconnected |
+## Fusing
 
-    1. Run a 14 AWG (minimum) wire from L1 through a dedicated 1A fuse to the **Line 1** terminal.
-    2. Run a 14 AWG (minimum) wire from N to the **Neutral** terminal.
-    3. Leave the Line 2 and Line 3 terminals unconnected.
-  </Accordion>
+Fuse the AC reference voltage according to code: **0.25 A up to the maximum conductor rating**.
 
-  <Accordion title="Split-Phase 3-Wire (1P3W)">
-    A split-phase 3-wire system uses two hot lines 180° apart and a shared neutral. This is standard for North American residential services (120/240V).
+<Warning>
+  Never connect voltage inputs without appropriate fusing.
+</Warning>
 
-    | CSM Terminal | Connect To |
-    |---|---|
-    | Line 1 | L1 (hot leg 1) |
-    | Line 2 | L2 (hot leg 2) |
-    | Neutral | N (neutral) |
-    | Line 3 | Leave unconnected |
+## Wiring Steps
 
-    1. Run a 14 AWG (minimum) wire from L1 through a dedicated 1A fuse to the **Line 1** terminal.
-    2. Run a 14 AWG (minimum) wire from L2 through a dedicated 1A fuse to the **Line 2** terminal.
-    3. Run a 14 AWG (minimum) wire from N to the **Neutral** terminal.
-    4. Leave the Line 3 terminal unconnected.
-  </Accordion>
+1. De-energize the panel and verify it is de-energized.
+2. Connect each phase conductor through its fuse to the corresponding terminal (L1, L2, L3) of Volt Input 1.
+3. Connect the neutral, if the service has one, as shown on the monitor's terminal label.
+4. On the CSM-2-00, wire Volt Input 2 in the same way from the second voltage source.
+5. The ground (earth) connection for both AC and DC is made through the DC connector. See [DC Wiring](/wiring/dc-wiring).
 
-  <Accordion title="Three-Phase 3-Wire Delta (3P3W)">
-    A three-phase 3-wire delta system has three hot lines and no neutral conductor. This is common in industrial motor loads.
+## Configuring the Voltage Input
 
-    | CSM Terminal | Connect To |
-    |---|---|
-    | Line 1 | L1 |
-    | Line 2 | L2 |
-    | Line 3 | L3 |
-    | Neutral | Leave unconnected |
+After wiring, configure each voltage input in the web console (**Configuration > Meter Config**) or in the `voltage` section of the configuration file: system voltage (line-to-line), PT ratio (`100` = 1.00), frequency, and phase rotation (ABC or ACB). Select the service type and voltage reference that match the installation.
 
-    1. Run a 14 AWG (minimum) wire from L1 through a dedicated 1A fuse to the **Line 1** terminal.
-    2. Run a 14 AWG (minimum) wire from L2 through a dedicated 1A fuse to the **Line 2** terminal.
-    3. Run a 14 AWG (minimum) wire from L3 through a dedicated 1A fuse to the **Line 3** terminal.
-    4. Leave the Neutral terminal unconnected.
-  </Accordion>
-
-  <Accordion title="Three-Phase 4-Wire Wye (3P4W)">
-    A three-phase 4-wire wye system has three hot lines and a neutral. This is the most common configuration for commercial and industrial three-phase services (e.g., 208Y/120V or 480Y/277V).
-
-    | CSM Terminal | Connect To |
-    |---|---|
-    | Line 1 | L1 |
-    | Line 2 | L2 |
-    | Line 3 | L3 |
-    | Neutral | N (neutral) |
-
-    1. Run a 14 AWG (minimum) wire from L1 through a dedicated 1A fuse to the **Line 1** terminal.
-    2. Run a 14 AWG (minimum) wire from L2 through a dedicated 1A fuse to the **Line 2** terminal.
-    3. Run a 14 AWG (minimum) wire from L3 through a dedicated 1A fuse to the **Line 3** terminal.
-    4. Run a 14 AWG (minimum) wire from N to the **Neutral** terminal.
-  </Accordion>
-</AccordionGroup>
-
-## Next Steps
-
-For details on how each configuration affects measurement calculations and which configuration identifier to use in the device settings, see the [wiring configurations reference](/csm/wiring-configurations).
+For details on phases, measured voltages, and circuit phase assignment, see [Wiring Configurations](/csm/wiring-configurations).

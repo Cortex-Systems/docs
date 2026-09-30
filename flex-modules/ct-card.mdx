@@ -1,108 +1,105 @@
 ---
 title: "CT Card Module (FLEX) Installation, Wiring, and Setup"
 sidebarTitle: "CT Card Module"
-description: "How to install and wire the Cortex PQM FLEX CT Card Module: supported CT types, K/L terminal polarity, installation steps, and configuration."
+description: "CS24-33-CTC 24 CT interface module for the Cortex PQM: features, Flex Port connection, auto CT correction, dual voltage assignment, and specifications."
 ---
 
-The CT Card Module is a FLEX port expansion card that adds a bank of CT (current transformer) input channels to your CSM device. Each card provides either 6 or 12 numbered input channels — you wire individual CT clamps directly to the terminal blocks on the card face, and the CSM exposes those channels through its REST API the moment you power back on. Because CT clamps install around a live conductor without breaking the circuit, you can commission most installations without shutting down the load.
+**CS24-33-CTC — 24 Circuit Current Sensor, High Resolution Data**
 
-## Supported CT Types
+The Cortex CS24-33-CTC supports 24 x 0.33 V current transformers per module, with a total of eight modules or 192 circuits per monitor. The CS24-33-CTC can support dual voltage references when used with the dual input Cortex CSM-2-00, allowing a single module to support primary and secondary measurements on PDUs or other dual voltage equipment.
 
-The CT Card Module accepts the following CT output signals:
+Configuration uses a graphical layout tool. Circuit information is displayed according to the PDU or gear layout, using customizable screens with friendly name assignments per circuit.
 
-| Output Type | Signal Range | Typical CT Form Factor |
-|---|---|---|
-| 333 mV | 0–333 mV AC | Split-core, solid-core |
-| 0–5 V | 0–5 V AC | Split-core, solid-core |
+## Features
 
-Always verify that the CT output type matches the CT Card variant you have ordered. Mixing signal levels between card and CT will produce inaccurate readings and may damage the input circuit.
+- 0.2% native accuracy
+- High-resolution current sampling per channel
+- Graphical configuration and display
+- Universal 0.33 V current transformer input
+- 24 circuits per CT module, with up to eight modules per monitor
+- Individual voltage assignment per channel (when using the dual input CSM-2-00)
+- Daisy chain to a second CT module to avoid excess wiring
+- Circuit aggregation to report breaker or panel level data
+- Compact size with plug-in headers
+- Mix any variety of CT types
 
-## Installing the CT Card Module
+## Connectivity
 
-Before you begin, confirm that the card and the FLEX slot key notches are oriented the same way — the connector is polarised and inserts in one direction only.
-
-<Steps>
-  <Step title="Power off the CSM device">
-    Remove power from the CSM device at the source. Wait for the status LED to go dark before handling any modules.
-  </Step>
-  <Step title="Align the CT Card with the FLEX port slot">
-    Hold the CT Card Module with the terminal blocks facing outward and align the card-edge connector with the FLEX slot on the CSM. The key notch on the card must line up with the guide rib inside the slot.
-  </Step>
-  <Step title="Seat the card">
-    Press the card firmly and evenly into the slot until you feel and hear a definitive click. The card face should sit flush with the adjacent CSM panel surface. If the card resists, do not force it — re-check the alignment.
-  </Step>
-  <Step title="Power on the device">
-    Restore power to the CSM. The new CT Card channels appear automatically in the REST API response and in the device configuration interface within a few seconds of boot.
-  </Step>
-</Steps>
+- Connects to the Cortex CSM-1-00 or CSM-2-00 using standard Ethernet cables up to 100 ft (33 m).
+- Up to two modules may be daisy-chained to each of the four Flex Ports: 24 CTs per card, 48 CTs per Flex Port, 192 circuits per monitor.
+- Connect the Flex Port to the module's **IN** port; connect **OUT** to the **IN** port of the second module.
+- Each CT connects to a 2-pin 3.5 mm screw terminal header (16–24 AWG wire).
 
 <Warning>
-Do not short-circuit an open CT secondary terminal. If you remove a CT clamp from a live circuit conductor without first shorting or connecting its output leads, the transformer can produce a dangerously high voltage. Always connect the CT leads to the terminal block — or short them together — before clamping around a live conductor.
+  Connect CT modules to a Flex Port only. Do not connect them to the AUX port.
 </Warning>
 
-## Wiring CT Clamps to the CT Card
+## Auto CT Correction
 
-Each channel on the CT Card has a two-position terminal block marked **K** and **L**. Wire the CT output leads as follows:
+- **Polarity correction** — reversed CT wiring polarity is corrected automatically.
+- **Orientation correction** — CTs installed facing the wrong direction are corrected automatically.
 
-- **K terminal** — connect the white (K/P1) lead from the CT clamp
-- **L terminal** — connect the black (L/P2) lead from the CT clamp
+## Setting CT Size
 
-Reversing polarity inverts the phase angle reported for that channel but does not damage the card. You can correct polarity in software if physical re-wiring is inconvenient.
-
-### Terminal Block Pinout
-
-| Channel | Terminal | Signal |
-|---|---|---|
-| 1 | K | CT positive (white) |
-| 1 | L | CT negative (black) |
-| 2 | K | CT positive (white) |
-| 2 | L | CT negative (black) |
-| 3 | K | CT positive (white) |
-| 3 | L | CT negative (black) |
-| 4 | K | CT positive (white) |
-| 4 | L | CT negative (black) |
-| 5 | K | CT positive (white) |
-| 5 | L | CT negative (black) |
-| 6 | K | CT positive (white) |
-| 6 | L | CT negative (black) |
-
-12-channel cards continue the same pattern through Channel 12.
-
-### CT Ratio Configuration
-
-After wiring, update your device configuration file to set the correct CT ratio for each channel. The ratio must match the ampere rating printed on the CT clamp body (for example, `100:0.333` for a 100 A / 333 mV CT).
-
-```yaml
-flex:
-  slot_1:
-    type: ct_card
-    channels:
-      - id: 1
-        label: "Panel A — Circuit 1"
-        ct_ratio: "100:0.333"
-      - id: 2
-        label: "Panel A — Circuit 2"
-        ct_ratio: "100:0.333"
-```
-
-## REST API Representation
-
-Each CT Card appears as a group of additional circuit channels in the REST API. A card in FLEX slot 1 exposes its channels under the `flex.slot_1` key:
+CT size must be set for each channel, either in the web console or by configuration file upload. Over the REST API, CT size is written per circuit with the `ctSize` key:
 
 ```json
-{
-  "flex": {
-    "slot_1": {
-      "type": "ct_card",
-      "channels": [
-        { "id": 1, "label": "Panel A — Circuit 1", "current_a": 12.4 },
-        { "id": 2, "label": "Panel A — Circuit 2", "current_a": 8.7 }
-      ]
-    }
-  }
-}
+POST /configSettings
+{ "ctSize": { "circuit_1": 200, "circuit_7": 400 } }
 ```
 
-<Note>
-Channel numbering in the API corresponds directly to the physical terminal block numbers printed on the CT Card face. Channel 1 in the API is always terminal block 1 on the card.
-</Note>
+## Dual Voltage Assignment per Circuit
+
+When used with the CSM-2-00 dual input monitor, each circuit can be assigned to either the primary or secondary voltage input (Voltage Input 1 or Voltage Input 2), allowing a single monitor and CT module to be used for both PDU input and output. Dual input RPPs can also use this feature with CT strips.
+
+## Grouping Channels
+
+- **Flex Meter** — circuits can be assigned to a Flex Meter (up to 3 circuits, one per phase) and present data as a breaker.
+- **Aggregate Meter** — sum large groups of circuits to create an Aggregate Meter.
+
+## Technical Specifications
+
+### Regulatory
+
+| Item | Specification |
+| --- | --- |
+| Agency approvals | cUL 61010 Listed / IEC/EN 61010-1, CE |
+| Installation category | CAT III, pollution degree 2 |
+| Conducted and radiated emissions | FCC Part 15 Class A, EN 55011 / EN 61000-6-4 Class A |
+| Conducted and radiated immunity | EN 61000-6-2 and EN 61326-1 |
+| RoHS | Compliant |
+| UKCA | Compliant |
+
+### Environmental
+
+| Item | Specification |
+| --- | --- |
+| Temperature | Operating: −10 °C (14 °F) to +60 °C (140 °F)<br />Non-operating: −25 °C (−13 °F) to +60 °C (140 °F) |
+| Relative humidity | 5 to 95% at 25 °C (77 °F), non-condensing |
+| Operating elevation | 2000 m with no thermal derating |
+| Pollution degree | 2 |
+
+### Measurement
+
+| Item | Specification |
+| --- | --- |
+| Current channels supported | 24 per CT card (eight CT cards per monitor) |
+| Current transformer type | 0.333 V output |
+| Minimum measured current | 0.05% full scale |
+| Accuracy | 0.2 class native |
+
+### Installation
+
+| Item | Specification |
+| --- | --- |
+| Interface ports | RJ45 x 2 (CAT 6A recommended) |
+| Mounting | 35 mm DIN rail |
+| Supply power | Integrated into communication cable |
+| Voltage inputs | No line voltage input required to CT card |
+| Current transformer connection | 3.5 mm screw terminal header (16–24 AWG wire) |
+
+### Mechanical
+
+| Item | Specification |
+| --- | --- |
+| External dimensions | 3.42 in D x 1.84 in H x 2.82 in W |

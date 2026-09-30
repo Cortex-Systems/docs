@@ -1,36 +1,65 @@
 ---
 title: "AUX Port Expansion Modules for the Cortex PQM Monitor"
 sidebarTitle: "Overview"
-description: "Overview of all three AUX port modules for the Cortex PQM: digital input CS18-00-INC, digital I/O with serial CS18-02-SR1, and thermal CS18-01-TMP."
+description: "Overview of Cortex PQM AUX modules — CS18-00-INC digital input, CS18-02-SR1 digital I/O + serial, and CS18-01-TMP thermal — with daisy-chain limits and power budget."
 ---
 
-The AUX port on the CSM device accepts plug-in expansion modules that extend its capabilities with digital I/O and temperature sensing. Each module connects directly to the AUX port header and is recognized automatically by the device firmware, making it straightforward to tailor your Cortex PQM installation to the specific monitoring and control requirements of your site.
+AUX modules extend the monitoring capabilities of your Cortex monitor with up to eight daisy-chained cards, providing digital input, digital output, RS-485, and temperature monitoring.
 
 ## Available AUX Modules
 
-| Module | Part Number | Primary Function |
-|---|---|---|
-| Digital Input Module | CS18-00-INC | Dry contact status inputs |
-| Digital I/O + Serial Module | CS18-02-SR1 | RS-485 serial communication combined with digital input and output channels |
-| Thermal Module | CS18-01-TMP | Multi-channel temperature monitoring via RTD probe |
+| Module | Part Number | Function | Current draw |
+| --- | --- | --- | --- |
+| [Digital Input Module](/aux-modules/digital-input) | CS18-00-INC | 18 dry contact inputs | 125 mA |
+| [Digital I/O Module + Serial](/aux-modules/digital-io-serial) | CS18-02-SR1 | 18 dry contact inputs, 2 digital outputs, RS-485 Modbus RTU | 82 mA |
+| [Thermal Module](/aux-modules/thermal-module) | CS18-01-TMP | RTD temperature sensors | 50 mA |
 
-<Note>
-  Only one AUX module can be installed at a time. If you need to swap modules, power off the CSM device before disconnecting or connecting any AUX module to ensure safe handling.
-</Note>
+## Connection Guide
+
+AUX modules connect to the monitor's **AUX port** using a standard Ethernet cable. Do **not** connect them to the Flex Ports.
+
+1. Always connect the **IN** port of the first module to the monitor's AUX port.
+2. Connect the module's **OUT** port to the **IN** port of the next AUX port device.
+3. When a module is connected to the monitor, the green LED on the card blinks to show that it is communicating.
+
+All field wiring terminates on removable 3.5 mm terminal blocks. The sequence of the modules in the chain determines their register assignments.
+
+## Daisy Chaining
+
+AUX modules connect to the CSM-1-00 or CSM-2-00 using standard Ethernet cables up to 100 ft (33 m). Up to 8 AUX modules may be daisy-chained from the AUX port, provided the combined current draw of all connected modules does not exceed **500 mA**.
+
+### Maximum Quantity by Module Type
+
+When a chain consists of a single module type, the 500 mA budget limits the number of modules as follows:
+
+| Module | Maximum in a single-type chain |
+| --- | --- |
+| Digital Input Module (CS18-00-INC) | 4 |
+| Digital I/O Module + Serial (CS18-02-SR1) | 6 |
+| Thermal Module (CS18-01-TMP) | 8 |
+
+For chains that combine module types, total the current draw of each module and confirm the sum remains at or below 500 mA.
+
+## Firmware Requirements
+
+- The CSM-1 or CSM-2 must have firmware version 1.9 / 2.9 or higher to communicate with the CS18-02-SR1.
+- The maximum number of daisy-chained modules also depends on firmware:
+  - Firmware earlier than 2.9.1: 4 modules maximum
+  - Firmware 2.9.1 or later: 8 modules maximum
 
 ## Module Pages
 
 <CardGroup cols={2}>
   <Card title="Digital Input Module" icon="toggle-on" href="/aux-modules/digital-input">
-    **CS18-00-INC** — Add 8 digital input channels for pulse counting and dry contact status monitoring.
+    **CS18-00-INC** — 18 dry contact inputs.
   </Card>
   <Card title="Digital I/O + Serial Module" icon="arrow-right-arrow-left" href="/aux-modules/digital-io-serial">
-    **CS18-02-SR1** — Combine RS-485 serial communication with 4-channel digital inputs and outputs.
+    **CS18-02-SR1** — 18 dry contact inputs, 2 digital outputs, and RS-485 Modbus RTU.
   </Card>
   <Card title="Thermal Module" icon="temperature-half" href="/aux-modules/thermal-module">
-    **CS18-01-TMP** — Monitor up to 8 temperature points using compatible TPS probe accessories.
+    **CS18-01-TMP** — RTD temperature monitoring.
   </Card>
   <Card title="Physical Dimensions" icon="ruler" href="/aux-modules/dimensions">
-    Reference dimensions and weight specifications for all AUX port expansion modules.
+    Mounting and cabling information for AUX modules.
   </Card>
 </CardGroup>

@@ -1,47 +1,85 @@
 ---
 title: "FLEX Port Expansion Modules for Cortex PQM CSM Devices"
 sidebarTitle: "Overview"
-description: "Overview of available FLEX port expansion modules for the Cortex PQM: CT Card Module, Solid Core CT Strips, and the CS12-42-5-SA1 Multi-Circuit Card."
+description: "Overview of Cortex PQM Flex Port modules: the CS24-33-CTC 24 CT module, 21 CT strips, and the Multi-Card, and how they connect and daisy-chain."
 ---
 
-The FLEX port system lets you expand the current measurement capacity of your Cortex PQM CSM device by snapping in dedicated CT (current transformer) modules. Each module plugs directly into a FLEX port slot on the front of the CSM-1-00 or CSM-2-00, and the device recognises the new channels automatically — no firmware update or manual channel mapping is required at the hardware level.
+Flex Port modules connect current transformers (CTs) to your Cortex monitor. The CSM-1-00 and CSM-2-00 have **four Flex Ports**, and each port supports a daisy chain of CT strips or CT modules for up to **48 current channels**, giving up to **192 monitored circuits** per monitor.
 
-## Available FLEX Modules
+## Available Flex Port Modules
 
-Three FLEX module types are available, each suited to a different installation scenario:
+| Module | Current channels | Aux inputs |
+| --- | --- | --- |
+| **24 CT Module (CS24-33-CTC)** | 24 | – |
+| **21 CT Strip, 3 Aux** — 0.75 in, 1.0 in, and 18 mm spacing | 21 | 3 |
+| **21 CT Strip, 3 Aux, With Voltage Presence** — 0.75 in, 1.0 in, and 18 mm spacing | 21 | 3 |
+| **Multi-Card (CS12-42-5-SA1)** | See [Multi-Circuit Card](/flex-modules/multi-circuit-card) | Digital inputs, digital outputs, RTD inputs |
+|  |  |  |
 
-- **CT Card Module (FLEX)** — A general-purpose expansion card that adds 6 or 12 individual CT input channels. Use this card when you need to monitor a small to medium number of discrete circuits using split-core or solid-core clamp-on CTs.
-- **Solid Core CT Strips** — Pre-wired arrays of solid-core current transformers sized to fit inside 42–48 or 72–84 pole electrical panels. Pair these strips with a CT Card Module or the Multi-Circuit Card.
-- **Multi-Circuit Card (CS12-42-5-SA1)** — A single FLEX module that accepts a CT strip ribbon cable and monitors up to 42 circuits simultaneously. Designed for large panels where installing individual clamp-on CTs is impractical.
+## Connection Guide
 
-## How the FLEX Port Works
+Flex Port modules connect to the monitor's **Flex Ports (1–4)** using a standard Ethernet cable. Do **not** connect them to the AUX port.
 
-FLEX modules connect directly to the keyed edge-connector slots on the CSM device. When you insert a module and power on the device, the CSM enumerates the attached cards and exposes their channels through the REST API and configuration interface without additional setup.
+1. Connect the monitor's Flex Port to the **IN** port of the first module.
+2. Connect the module's **OUT** port to the **IN** port of the next module on the same port.
+3. When a module is connected correctly, the green LED on the module blinks to show that it is communicating.
 
-The number of FLEX slots available depends on your device model:
+The Flex Port a module is connected to determines its register assignment. Best practice is to start with Flex Port 1 and proceed through Flex Ports 2, 3, and 4.
 
-| Device Model | FLEX Slots |
-|---|---|
-| CSM-1-00 | 1 |
-| CSM-2-00 | 2 |
+## Daisy Chaining
 
-<Warning>
-Only use Cortex Systems approved FLEX modules. Third-party modules are not electrically or mechanically compatible and may damage the device or produce inaccurate measurements. Using unapproved modules voids the product warranty.
-</Warning>
+Multiple modules can be daisy-chained from a single Flex Port, provided the total number of current channels on the port does not exceed 48. Examples of valid chains on one Flex Port:
+
+- Two 24 CT Modules = 48 channels
+- Two 21 CT Strips = 42 channels
+
+## Connecting Current Transformers
+
+- Use 0.333 V output CTs, connected via removable 3.5 mm terminal blocks.
+- CT orientation and wiring polarity are corrected automatically.
+- CT size must be set for each channel, either by configuration file upload or in the web console.
+- Each terminal corresponds to a specific register, depending on the Flex Port used.
+- The monitor calculates neutral current, so no neutral CT is required.
+
+## Configuring a Flex Port
+
+Each Flex Port is configured separately in the web console under **Configuration > Meter Config**, or in the configuration file (`panel_1` to `panel_4`). Follow the orientation and wiring diagram shown in the web console that matches your panelboard type.
+
+| Setting | Options |
+| --- | --- |
+| Port Name | Up to 40 characters |
+| Panel Device Type | CT Modules, CT Strips |
+| Panel Type | Odd/Even, Sequential, Inline, Consecutive |
+| Number of Circuits | 1–192 |
+| Strip Orientation | Up, Down |
+| Strip Connection to Meter | Left strip, Right strip |
+| Main Connection | Mains connected to left strip, Mains connected to right strip |
+
+## Port Status
+
+| Value | Status |
+| --- | --- |
+| 0 | OK |
+| 1 | Discovery |
+| 2 | Invalid Config |
+| 3 | Disabled |
+| 4 | Unsupported Device |
+
+The monitor also reports the number of devices connected, the total number of channels, and the type, firmware version, and serial number of each device on the port. See the [Modbus Register Map](/modbus/register-map) for register addresses.
 
 ## Module Pages
 
 <CardGroup cols={2}>
   <Card title="CT Card Module" icon="bolt" href="/flex-modules/ct-card">
-    Add individual CT clamp input channels to your CSM device. Supports split-core and solid-core CTs with 333 mV or 0–5 V output.
+    CS24-33-CTC: 24 x 0.333 V CT inputs per module.
   </Card>
   <Card title="Solid Core CT Strips" icon="table-rows" href="/flex-modules/solid-core-ct-strips">
-    Pre-wired CT arrays for 42–48 and 72–84 pole panels. One installation step covers all branch circuits.
+    21 CT strips with 3 aux inputs, in 0.75 in, 1.0 in, and 18 mm spacing.
   </Card>
   <Card title="Multi-Circuit Card" icon="server" href="/flex-modules/multi-circuit-card">
-    Monitor up to 42 circuits from a single FLEX slot using the CS12-42-5-SA1 and a solid core CT strip.
+    Multi-Card with CT inputs, digital inputs and outputs, and RTD inputs.
   </Card>
   <Card title="Dimensions" icon="ruler" href="/flex-modules/dimensions">
-    Physical dimensions and clearance requirements for all FLEX port modules to support enclosure and panel space planning.
+    Physical dimensions of Flex Port modules.
   </Card>
 </CardGroup>

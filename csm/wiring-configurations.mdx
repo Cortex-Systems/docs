@@ -1,82 +1,64 @@
 ---
 title: "Acceptable Wiring Configurations for the Cortex PQM"
 sidebarTitle: "Wiring Configurations"
-description: "Supported AC wiring configurations for the CSM-1-00 and CSM-2-00: single-phase, split-phase, three-phase delta, and three-phase wye."
+description: "How the CSM-1-00 and CSM-2-00 voltage inputs are configured: phases, system voltage, PT ratio, frequency, phase rotation, and circuit phase assignment."
 ---
 
-The Cortex PQM supports several standard AC wiring configurations used in residential, commercial, and industrial electrical systems. The configuration you select must match the actual wiring of the circuit or panel you are monitoring. Selecting the correct configuration ensures that the device measures voltage, current, and power accurately and that calculated values such as power factor and energy are meaningful.
+Each voltage input on the Cortex PQM measures three phases (L1, L2, L3), reporting line-to-neutral and line-to-line voltages. The CSM-1-00 has one voltage input (Volt Input 1); the CSM-2-00 has two (Volt Input 1 and Volt Input 2). The voltage input configuration must match the service being monitored.
 
 <Warning>
-  **Only use the configurations listed on this page.** Wiring the device for a configuration not listed here, or selecting a configuration that does not match the actual circuit wiring, may damage the device or produce inaccurate measurements. If you are unsure of the wiring configuration in your panel, consult a qualified electrician before proceeding.
+  AC wiring has lethal voltages. Installation must be completed by a qualified person. If you are unsure of the wiring configuration of your panel, consult a qualified electrician before proceeding.
 </Warning>
 
-## Supported Configurations
+## Voltage Input Settings
 
-### Single-Phase 2-Wire (1P2W)
+Configure each voltage input in the web console (**Configuration > Meter Config**) or in the `voltage` section of the configuration file:
 
-| Parameter | Value |
-|---|---|
-| Common name | Single-phase 2-wire |
-| Conductors | 2 (1 line, 1 neutral) |
-| Nominal voltage | 120V line-to-neutral |
-| Compatible model | CSM-1-00, CSM-2-00 |
-| Voltage inputs used | L1, N |
-| CT inputs required | 1 (on L1) |
+| Setting | Description |
+| --- | --- |
+| System voltage | Line-to-line system voltage, for example `208` |
+| PT ratio | Potential transformer ratio, where `100` = 1.00 |
+| Frequency | System frequency, 40–70 Hz (for example `60`) |
+| Phase rotation | `ABC` or `ACB` |
 
-This is the simplest configuration, used for standard single-phase 120V circuits. One CT is required on the line conductor. The neutral conductor connects to the N terminal for voltage reference.
+Select the service type and voltage reference that match the installation in the web console.
 
----
+## Measured Voltages
 
-### Single-Phase 3-Wire / Split-Phase
+| Measurement | Phases |
+| --- | --- |
+| Line-to-neutral voltage | L1, L2, L3, and average |
+| Line-to-line voltage | L12, L23, L31, and average |
+| Voltage THD (line-to-neutral) | L1, L2, L3 |
+| Voltage THD (line-to-line) | Computed for L1 (the L12 reference phase) |
+| Phase angle | L1, L2, L3, referenced to L1 |
+| Frequency | Derived from Line 1 |
+| Voltage unbalance | NEMA line voltage unbalance rate (LVUR) |
 
-| Parameter | Value |
-|---|---|
-| Conductors | 4 (3 lines, 1 neutral) |
-| Nominal voltage | 208-480V |
-| Voltage inputs used | L1, L2, L3, N |
-| CT inputs required | 3 (one per line) |
+## Circuit Phase Assignment
 
-Split-phase service is common in North American residential panels. Two line conductors are 180° out of phase with each other, sharing a common neutral. Both line conductors must be terminated at L1 and L2 respectively. Two CTs are required — one on each line conductor. **The CSM-1-00 does not support this configuration.**
+Each circuit is assigned to a voltage phase so that power, energy, and power factor are calculated against the correct voltage:
 
----
+| Value | CSM-1-00 | CSM-2-00 |
+| --- | --- | --- |
+| 0 | Input 1 L1 | Input 1 L1 |
+| 1 | Input 1 L2 | Input 1 L2 |
+| 2 | Input 1 L3 | Input 1 L3 |
+| 3 | – | Input 2 L1 |
+| 4 | – | Input 2 L2 |
+| 5 | – | Input 2 L3 |
 
-### Three-Phase 3-Wire Delta (3P3W)
+The CSM-2-00 lets you assign each circuit to either voltage input, so a single monitor can measure, for example, both PDU input and PDU output.
 
-| Parameter | Value |
-|---|---|
-| Common name | Three-phase delta, 3-wire delta |
-| Conductors | 3 (3 lines, no neutral) |
-| Nominal voltage | 208V or 480V line-to-line |
-| Compatible model | CSM-2-00 only |
-| Voltage inputs used | L1, L2, L3 |
-| CT inputs required | 3 (one per line) |
+## Neutral Current
 
-Three-phase delta configurations are used in industrial and commercial systems where no neutral conductor is present. All three line conductors terminate at L1, L2, and L3. Three CTs are required. Voltage measurements are line-to-line only; no line-to-neutral voltage is available. **The CSM-1-00 does not support this configuration.**
+The monitor calculates neutral current when the voltage inputs are connected, so a neutral CT is not required.
 
----
+## Phase Settings
 
-### Three-Phase 4-Wire Wye (3P4W)
+| Setting | Options |
+| --- | --- |
+| Phase mode | Relative: phase angles are relative to the assigned voltage phase. Absolute: all phase angles are referenced to VA = 0° |
+| Angle range | Signed: −180° to +180°. Unsigned: 0° to 360° |
 
-| Parameter | Value |
-|---|---|
-| Common name | Three-phase wye, 4-wire wye |
-| Conductors | 4 (3 lines, 1 neutral) |
-| Nominal voltage | 120/208V or 277/480V |
-| Compatible model | CSM-2-00 only |
-| Voltage inputs used | L1, L2, L3, N |
-| CT inputs required | 3 (one per line) |
-
-Three-phase 4-wire wye is the most common configuration for commercial and industrial distribution panels. All three line conductors and the neutral terminate at their respective terminals. Three CTs are required, one on each line conductor. Both line-to-neutral and line-to-line voltages are measured. **The CSM-1-00 does not support this configuration.**
-
----
-
-## Configuration Selection Summary
-
-| Configuration | Model | Lines | Neutral | CTs Required |
-|---|---|---|---|---|
-| 1P2W — Single-phase 2-wire | CSM-1-00 or CSM-2-00 | 1 | Yes | 1 |
-| 1P3W — Split-phase | CSM-2-00 only | 2 | Yes | 2 |
-| 3P3W — Three-phase delta | CSM-2-00 only | 3 | No | 3 |
-| 3P4W — Three-phase wye | CSM-2-00 only | 3 | Yes | 3 |
-
-For detailed wiring diagrams showing terminal assignments and CT placement for each configuration, see the [AC Wiring Guide](/wiring/ac-wiring).
+For AC wiring and fusing, see the [AC Wiring Guide](/wiring/ac-wiring).

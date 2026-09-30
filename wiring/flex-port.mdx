@@ -1,73 +1,57 @@
 ---
 title: "FLEX Port Wiring: CT Modules and Clamps for the CSM"
 sidebarTitle: "FLEX Port Wiring"
-description: "How to wire FLEX port CT card modules and CT clamp cables to the Cortex PQM CSM device, including K/L polarity, routing, and CT ratio configuration."
+description: "How to connect CT modules and CT strips to the Cortex PQM Flex Ports, daisy-chain them, wire 0.333 V CTs, and set CT size."
 ---
 
-FLEX port wiring connects current transformer (CT) clamps to the FLEX CT Card module installed in the CSM device. CT clamps are the primary means of measuring current on the Cortex PQM — without correctly wired and configured CTs, the device cannot calculate power, energy, or power factor. Take care with polarity and with CT selection before you begin terminating wires.
+Flex Port wiring connects CT modules, CT strips, and Multi-Cards to the monitor, and connects current transformers to those modules. Without correctly connected and configured CTs, the monitor cannot calculate current, power, or energy.
 
-## Supported CT Output Types
+## Connecting Modules to the Flex Ports
 
-The FLEX CT Card module accepts two CT output signal types. Verify which output type your CT clamps use before connecting them.
+- Connect CT interface devices to **Flex Ports 1–4** using standard Ethernet cables (up to 100 ft / 33 m; CAT 6A recommended). Do not connect them to the AUX port or the Ethernet ports.
+- Connect the Flex Port to the **IN** port of the first device, then connect the **OUT** port of that device to the **IN** port of the next device.
+- Up to 48 current channels are supported per Flex Port (for example, two 24 CT modules or two 21 CT strips).
+- A blinking green light on each device indicates a correct connection.
+- The Flex Port used determines register assignment. Start with Flex Port 1 and proceed through 2, 3, and 4.
 
-| Output Type | Voltage Range | Common Use Case |
-|---|---|---|
-| 333mV output | 0–333mV AC | Most panel monitoring CTs; most common type |
-| 0–5V output | 0–5V AC | Less common; typically higher-current industrial CTs |
+## Supported CTs
 
-<Note>
-  Do not mix 333mV and 0–5V CT types on the same FLEX CT Card without confirming that the card supports per-channel output type selection. Refer to the CT Card datasheet for your specific module version.
-</Note>
+| CT output type | Connection |
+| --- | --- |
+| 0.333 V output | Removable 3.5 mm headers (2-pin screw terminal per CT, 16–24 AWG) |
 
-## CT Clamp Wiring to the CT Card Module
+Any variety of 0.333 V CT types can be mixed on a module.
 
-Each CT clamp produces a low-voltage signal that you wire directly to the CT Card module's terminal block. Most CT clamps ship with two wires: one labeled **K** (or **+**, or white) and one labeled **L** (or **−**, or black). Polarity determines the measured direction of current flow — getting it wrong does not damage the device, but it will cause the CSM to report negative power values.
+## Wiring CTs to a CT Module
 
 <Steps>
-  <Step title="Identify the CT wire labels">
-    Locate the **K** (positive) and **L** (negative) leads on your CT clamp. If your CT uses color coding instead of labels, white is typically K (+) and black is typically L (−). Check your CT clamp's datasheet to confirm.
+  <Step title="Install the CT">
+    Install the CT around the conductor to be measured.
   </Step>
-  <Step title="Open the CT clamp around the conductor">
-    Clamp the CT around the conductor you want to measure. The arrow or label on the CT housing typically indicates the direction of positive current flow — orient the CT so that current flows in the direction the device expects (usually toward the load).
-  </Step>
-  <Step title="Connect the K (+) wire">
-    Insert the **K** (white/+) wire into the **K** terminal for the appropriate channel on the CT Card module terminal block. Tighten the captive screw until firm.
-  </Step>
-  <Step title="Connect the L (−) wire">
-    Insert the **L** (black/−) wire into the **L** terminal for the same channel. Tighten the captive screw until firm.
+  <Step title="Connect the CT leads">
+    Connect the two CT leads to the 2-pin 3.5 mm header for the channel. CT orientation and wiring polarity are corrected automatically, so reversed leads or a CT facing the wrong direction do not affect readings.
   </Step>
   <Step title="Repeat for each channel">
-    Repeat steps 1–4 for each additional CT clamp and channel. Label each wire pair before moving on.
+    Repeat for each CT. Label each CT lead pair with its channel or circuit.
   </Step>
 </Steps>
 
 <Tip>
-  Label each CT wire pair with the circuit name or channel number before you finish the installation. Once the panel cover is replaced, it is extremely difficult to trace individual CT wires.
+  Each terminal corresponds to a specific register, depending on the Flex Port used. Record the channel-to-circuit mapping as you wire.
 </Tip>
 
-## Wire Routing Best Practices
+## Wire Routing
 
-Following these routing guidelines improves measurement accuracy and reduces noise pickup:
+- Route CT leads away from high-voltage conductors where possible.
+- Place CT modules close to the circuits being monitored and use the Ethernet cable for the longer run to the monitor.
 
-- **Route CT wires away from high-voltage conductors** where possible. Parallel runs next to AC line voltage wires can induce noise into the low-level CT signal.
-- **Keep CT wire runs short.** For 333mV output CTs, keep runs under 3 meters. Longer runs increase the risk of voltage drop and noise pickup that degrades accuracy.
-- **Use shielded cable for longer runs.** If your installation requires CT wire runs longer than 3 meters, use shielded twisted-pair cable.
-- **Ground the shield at the CSM end only.** Connect the cable shield drain wire to ground at the CT Card module and leave it unconnected at the CT clamp. Grounding both ends creates a ground loop.
+## Setting CT Size
 
-## CT Ratio Configuration
+CT size must be set for each channel, either in the web console or by configuration file upload. With the REST API, use the `ctSize` key with the CT rated size in amps:
 
-After completing physical wiring, you must configure the CT ratio for each channel in the CSM configuration file. The `ct_ratio` setting tells the device how to scale the measured voltage signal back to a current value in amperes.
-
-```yaml
-channels:
-  - id: 1
-    ct_ratio: 100        # Example: 100A CT with 333mV output
-  - id: 2
-    ct_ratio: 200        # Example: 200A CT with 333mV output
+```json
+POST /configSettings
+{ "ctSize": { "circuit_1": 100, "circuit_2": 200 } }
 ```
 
-Set `ct_ratio` to the rated primary current of your CT clamp (in amperes). For example, a CT rated "100A / 333mV" uses a `ct_ratio` of `100`.
-
-<Warning>
-  Do not open-circuit a CT secondary while the primary conductor is energized. An open-circuited CT secondary can develop dangerously high voltages. Always ensure the CT wires are connected to the CT Card module terminal block — or the CT leads are shorted together — before energizing the primary conductor.
-</Warning>
+The monitor calculates neutral current, so a neutral CT is not required. Follow the orientation and wiring diagrams in the web console (**Configuration > Meter Config**) that match your panelboard type.
