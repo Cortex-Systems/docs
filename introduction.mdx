@@ -1,99 +1,96 @@
 ---
 title: "Cortex PQM: Power Quality Monitor for Electrical Panels"
 sidebarTitle: "Introduction"
-description: "The Cortex PQM CSM-1-00 and CSM-2-00 continuously measure voltage, current, and power quality across your facility's electrical circuits in real time."
+description: "The Cortex PQM CSM-1-00 and CSM-2-00 measure voltage, current, power, energy, and power quality on up to 192 circuits."
 ---
 
-The Cortex PQM is a DIN-rail mounted power quality monitor designed for installation inside electrical panels and distribution boards. It continuously measures voltage, current, power factor, energy consumption, and harmonic distortion up to the 63rd, giving engineers and facility managers the real-time and historical data they need to understand energy use, diagnose power quality issues, and meet reporting requirements. The device streams measurement data over a standard ethernet connection, making it straightforward to integrate into existing building management systems, data historians, or custom applications.
+The Cortex PQM is a DIN-rail mounted power quality monitor designed for installation inside electrical panels, PDUs, and distribution equipment. It measures voltage, current, power, energy, power factor, and harmonic distortion (up to the 63rd voltage harmonic) on up to 192 circuits, and makes the data available over Ethernet through a web console, a REST API, and Modbus TCP.
 
 ## Device Models
-
-The Cortex PQM is available in two models to suit single-phase and three-phase electrical installations:
 
 <table>
   <colgroup>
     <col width="158" />
-    <col width="126" />
-    <col width="430" />
+    <col width="180" />
+    <col width="380" />
   </colgroup>
   <thead>
     <tr>
       <th>Model</th>
-      <th>Configuration</th>
+      <th>Voltage Inputs</th>
       <th>Typical Application</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>**CSM-1-00**</td>
-      <td>Three-phase</td>
-      <td>Three-phase distribution boards, branch circuit monitoring, PDUs, commercial and industrial facilities</td>
+      <td>One (Volt Input 1)</td>
+      <td>Panelboards, RPPs, and branch circuit monitoring with a single voltage source</td>
     </tr>
     <tr>
       <td>**CSM-2-00**</td>
-      <td>Three-phase</td>
-      <td>Three-phase distribution boards, PDUs, commercial and industrial facilities</td>
+      <td>Two (Volt Input 1 and Volt Input 2)</td>
+      <td>PDUs and dual-input equipment where circuits are referenced to two different voltage sources (for example, PDU input and PDU output)</td>
     </tr>
   </tbody>
 </table>
 
-Both models share a similar physical form factor, DIN-rail mounting system, port layout, and software interfaces. The CSM-2-00 adds and additional voltage input.
+Both models share the same form factor, port layout, and software interfaces. The CSM-2-00 adds a second voltage input; each circuit can be assigned to a phase of either Volt Input 1 or Volt Input 2.
 
 ## What the Cortex PQM Measures
 
-The Cortex PQM captures a comprehensive set of electrical measurements on every connected channel:
-
-- **Voltage (V)** — RMS line voltage per phase, updated in real time
-- **Current (A)** — RMS current per channel via CT clamp inputs
-- **Active power (W) and reactive power (VAR)** — real and reactive load components
-- **Apparent power (VA)** — total volt-ampere demand per channel
-- **Power factor (PF)** — displacement and true power factor
-- **Energy (kWh / kVARh)** — accumulated energy totals for billing and reporting
-- **Harmonics (THD%)** — total harmonic distortion for voltage and current, with per-order harmonic magnitude up to the supported harmonic count
-- **Frequency (Hz)** — mains frequency tracking
+- **Voltage** — line-to-neutral and line-to-line voltage, voltage THD, phase angle, frequency, and voltage unbalance for each voltage input
+- **Current** — RMS current per circuit from 0.333 V output current transformers
+- **Power** — real (kW), reactive (kVAR), and apparent (kVA) power per circuit
+- **Energy** — cumulative kWh, kVARh, and kVAh per circuit, plus a resettable kWh accumulator
+- **Power quality** — power factor, phase angle, crest factor, and current THD per circuit
+- **Harmonics** — up to 63 voltage harmonics per phase and 21 current harmonic values per circuit
+- **Demand** — kW demand and current demand over a configurable demand interval
+- **Events** — CBEMA/ITIC voltage sag, swell, and dropout events, and AC waveform capture
 
 ## Key Capabilities
 
-**FLEX Port Expansion** The FLEX port slots on the device accept expansion CT modules, allowing you to increase the number of monitored current channels.
+**Flex Ports** — Four Flex Ports connect CT modules and CT strips using standard Ethernet cables. Each Flex Port supports up to 48 current channels, for up to 192 circuits per monitor.
 
-**AUX Port Modules** The AUX port supports accessory modules including digital I/O modules for pulse counting and relay outputs, and thermal probe modules for temperature monitoring.
+**AUX Port** — The AUX port connects daisy-chained digital input, digital I/O + serial, and thermal modules.
 
-**Modbus TCP Interface** For integration with PLCs, building management systems, and energy management systems that use Modbus.
+**Circuit grouping** — Circuits can be grouped into up to 96 Flex Meters (up to 3 circuits each, one per phase) and 8 Aggregate Meters.
 
-**REST API** The Cortex PQM provides a documented REST API. You can query live measurements and manage configuration. The API is suitable for direct integration with custom dashboards, SCADA systems, cloud platforms, and more.
+**Modbus TCP** — For integration with PLCs, SCADA, BMS, and energy management systems. See the [Modbus Register Map](/modbus/register-map).
+
+**REST API** — JSON over HTTP for dashboards, SCADA, BMS, and custom applications. See the [REST API Reference](/api/overview).
 
 ## How It Connects
 
-The Cortex PQM mounts on a standard 35 mm DIN rail inside your electrical panel. Voltage inputs connect directly to the circuit conductors or bus bars via screw terminals on the device. Current is measured non-invasively using CT (current transformer) clamps that clip around the conductors  no circuit interruption is required to install them. A 12–24 VDC supply powers the device independently of the monitored circuits, ensuring continued monitoring and accurate phase reference even under variable load conditions. An RJ45 Ethernet port provides the network connection for data access and configuration.
+The Cortex PQM mounts on a standard 35 mm DIN rail. A DC power source energizes the monitor, and the ground (earth) connection for both AC and DC is made through the DC connector. The AC reference voltage inputs are for sensing only and draw no power. Current is measured with 0.333 V output CTs connected to CT modules or CT strips on the Flex Ports. Two Ethernet ports, which share a common IP address, provide access to the web console, REST API, and Modbus TCP. The default IP address is `192.168.7.3`.
 
 ## Typical Use Cases
 
-- **Facility energy monitoring** — establish a baseline and track energy consumption across floors, departments, or cost centers
-- **Sub-metering** — allocate energy costs to individual tenants, process lines, or equipment groups
-- **BMS and SCADA integration** — feed real-time power data into building management or supervisory control systems via Modbus TCP or the REST API
-- **Power quality analysis** — identify harmonic pollution, power factor problems, voltage sags, or phase imbalance that affect equipment performance and energy costs
-- **Demand management** — monitor peak demand and trigger load-shedding signals via AUX port digital outputs
+- **Branch circuit and PDU monitoring** — per-circuit current, power, energy, and breaker utilization
+- **Sub-metering** — allocate energy to tenants, loads, or equipment groups using Flex Meters and Aggregate Meters
+- **BMS and SCADA integration** — real-time data via Modbus TCP or the REST API
+- **Power quality analysis** — harmonics, power factor, voltage sags and swells, and phase imbalance
 
 ## Where to Go Next
 
 <CardGroup cols={2}>
   <Card title="Device Overview" icon="microchip" href="/csm/overview">
-    Detailed hardware description, port layout, wiring diagrams, and LED indicator reference for the CSM-1-00 and CSM-2-00.
+    Hardware description, ports, and status indicators for the CSM-1-00 and CSM-2-00.
   </Card>
 
   <Card title="Configuration Guide" icon="sliders" href="/configuration/overview">
-    Step-by-step instructions for network setup, channel configuration, CT ratio entry, and alarm thresholds.
+    Configure the monitor using the web console or JSON configuration files.
   </Card>
 
   <Card title="REST API Reference" icon="code" href="/api/overview">
-    Full API endpoint documentation with request and response examples for integrating the Cortex PQM into your applications.
+    Endpoint reference with request and response examples.
   </Card>
 
   <Card title="Modbus Register Map" icon="table" href="/modbus/register-map">
-    Complete Modbus TCP register map with addresses, data types, scaling factors, and units for all measurement and configuration registers.
+    Modbus register addresses, data types, and descriptions.
   </Card>
 </CardGroup>
 
 <Warning>
-  The Cortex PQM must be installed by a **qualified electrician** familiar with the local electrical code. Working inside energized electrical panels exposes you to potentially fatal voltages. Never connect or disconnect wiring while circuits are live unless you are following an approved energized electrical work procedure.
+  AC wiring has lethal voltages. The Cortex PQM must be installed by a **qualified person** in accordance with local electrical code.
 </Warning>

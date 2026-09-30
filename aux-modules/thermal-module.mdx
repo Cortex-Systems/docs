@@ -1,82 +1,69 @@
 ---
 title: "Thermal Module CS18-01-TMP Installation and Probe Guide"
 sidebarTitle: "Thermal Module"
-description: "How to install the CS18-01-TMP thermal module and connect TPS temperature probes for monitoring busbar, cable, and ambient temperatures."
+description: "How to connect the CS18-01-TMP thermal module to the Cortex PQM AUX port, connect RTD temperature probes, and read temperatures via REST or Modbus."
 ---
 
-The CS18-01-TMP Thermal Module brings multi-point temperature monitoring to the Cortex PQM, supporting up to eight simultaneous measurement channels via the TPS family of probe accessories. Typical applications include busbar temperature monitoring for thermal overload detection, cable hot-spot identification at connection points, and ambient air temperature tracking inside switchgear enclosures. All temperature data is available through the REST API and Modbus registers in real time.
+The CS18-01-TMP Thermal Module adds RTD temperature monitoring to the Cortex monitor. Each Thermal module provides **18 RTD sensor channels** plus an on-board board temperature reading. Typical applications include busbar, connection-point, and enclosure ambient temperature monitoring.
 
 <Warning>
-  Probes installed on or near live conductors must be rated for the voltage level present. Only use Cortex-approved TPS probes with the CS18-01-TMP module. Using unapproved probes may result in inaccurate readings, equipment damage, or a safety hazard.
+  Probes installed on or near live conductors must be rated for the voltage present. AC wiring has lethal voltages; installation must be completed by a qualified person.
 </Warning>
 
 ## Specifications
 
 | Parameter | Value |
 |---|---|
-| Part Number | CS18-01-TMP |
-| Number of Probe Channels | 8 |
-| Compatible Probes | TPS-TB-010, TPS-RL-010, TPS-CM-010 |
-| Data Interface | REST API and Modbus registers |
+| Part number | CS18-01-TMP |
+| RTD sensor channels | 18, plus board temperature (channel 19) |
+| Temperature unit | °C |
+| Connection | AUX port, standard Ethernet cable up to 100 ft (33 m) |
+| Current draw | 50 mA (from the AUX port 500 mA budget) |
+| Maximum modules | 8 in a single-type chain |
 
-## Compatible Probes
+## Probes
 
-| Probe | Part Number | Best Used For |
-|---|---|---|
-| Tape Mount Probe | TPS-TB-010 | Flat surfaces — busbars, flat conductors, cable jackets |
-| Ring Lug Probe | TPS-RL-010 | Bolted connections — terminal lugs, bus bars with bolt patterns |
-| Ambient Temperature Probe | TPS-CM-010 | Open-air enclosure temperature |
+| Probe | Part Number | Best used for |
+| --- | --- | --- |
+| Tape mount probe | TPS-TB-010 | Flat surfaces such as busbars and cable jackets |
+| Ring lug probe | TPS-RL-010 | Bolted connections and terminal lugs |
+| Ambient temperature probe | TPS-CM-010 | Enclosure air temperature |
 
-## Module Installation
+## Connecting the Module
 
 <Steps>
-  <Step title="Power off the CSM device">
-    Remove power from the CSM device and confirm all indicator LEDs are off before handling any module or probes.
+  <Step title="Connect to the AUX port">
+    Connect the **IN** port of the module to the monitor's **AUX port** (or to the **OUT** port of the previous AUX module) using a standard Ethernet cable. Do not connect it to a Flex Port.
   </Step>
-  <Step title="Connect the CS18-01-TMP to the AUX port">
-    Align the module connector with the AUX port header on the CSM device and press firmly until fully seated. Engage the retention clip if supplied.
+  <Step title="Connect the probes">
+    Connect each RTD probe to a channel on the module's removable 3.5 mm terminal blocks. Note the channel number for each probe.
   </Step>
-  <Step title="Power on the device">
-    Restore power to the CSM device. The thermal module is detected automatically and all eight probe channels appear in the REST API response.
-  </Step>
-  <Step title="Connect probe cables">
-    Plug each TPS probe cable into one of the eight numbered probe terminals on the CS18-01-TMP module. Note the channel number for each probe so you can label them correctly in your configuration.
+  <Step title="Verify communication">
+    Once the monitor is energized, the green LED on the module blinks to show that it is communicating.
   </Step>
 </Steps>
 
 ## Probe Installation
 
-### TPS-TB-010 Tape Mount Probe
+- **Tape mount (TPS-TB-010):** clean the surface, press the probe firmly onto it, and route the cable away from high-voltage conductors.
+- **Ring lug (TPS-RL-010):** place the ring lug over the bolt at the connection point and reinstall the fastener to the manufacturer's torque.
+- **Ambient (TPS-CM-010):** mount in a location representative of the enclosure air temperature, away from heat sources.
 
-The TPS-TB-010 uses an adhesive backing to mount directly onto flat surfaces such as busbar faces and cable jackets.
+## Data Access
 
-1. Clean the mounting surface thoroughly with isopropyl alcohol and allow it to dry completely. Residue or moisture will reduce adhesion.
-2. Peel the protective backing from the probe and press it firmly onto the surface, applying even pressure across the full probe area.
-3. Route the probe cable away from high-voltage conductors. Use cable ties or adhesive clips to keep the cable tidy and clear of moving parts.
+### REST API
 
-<Note>
-  For best accuracy, ensure the probe is in full contact with the surface. Air gaps between the probe and the conductor will cause the reading to lag behind the true conductor temperature.
-</Note>
+`GET /api/auxport` returns Thermal boards with `"deviceType": "thermal"`. Channels 1–18 are RTD sensors and channel 19 is the board temperature. Values are in °C; `999.99` means the sensor is not connected or is out of range. Channel names are writable via `POST /configSettings` (`rtdName.channel_N`).
 
-### TPS-RL-010 Ring Lug Probe
+```json
+{ "device": 3, "deviceType": "thermal", "deviceSerial": 4294967295,
+  "channels": [
+    { "channel": 1, "name": "RTD Sensor 1", "value": 999.99 },
+    { "channel": 3, "name": "RTD Sensor 3", "value": 47.79 },
+    { "channel": 19, "name": "Board Temp", "value": 24.58 }
+  ] }
+```
 
-The TPS-RL-010 is designed to be captured under a bolt or terminal screw, placing the sensing element in direct contact with the connection point.
+### Modbus
 
-1. Identify the bolt or terminal screw at the connection point you want to monitor.
-2. Place the ring lug of the probe over the bolt shaft before reinstalling the fastener.
-3. Torque the bolt to the fastener manufacturer's specification. Do not over-torque — excessive force may damage the probe's sensing element.
-4. Route the probe cable away from live conductors and secure with cable ties.
-
-### TPS-CM-010 Ambient Temperature Probe
-
-The TPS-CM-010 measures the air temperature inside an enclosure and clips onto DIN rail or a panel wall — no adhesive is required.
-
-1. Choose a mounting location that represents the general air temperature inside the enclosure: away from heat sources such as transformers, power supplies, and the CSM device itself.
-2. Clip the probe onto the DIN rail or attach it to the panel wall using the built-in clip.
-3. Route the cable to the CS18-01-TMP module and connect it to the desired probe terminal.
-
-## Data Access and Modbus Register Map
-
-Temperature readings from all connected probes are available through the Cortex PQM REST API. The thermal module also exposes its data through a dedicated Modbus register map.
-
-For the full register map, see the [Thermal Module Modbus Register Map](/modbus/thermal-register-map).
+RTD temperatures are available as FLOAT32 values (2 registers each) in the AUX port RTD Temperature block, registers 2884–3267 (RTD Temperature #1 at 2884–2885 through #192 at 3266–3267). See the [Thermal Module Modbus Register Map](/modbus/thermal-register-map).

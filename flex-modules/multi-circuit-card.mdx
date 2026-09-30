@@ -1,95 +1,57 @@
 ---
 title: "Multi-Circuit Card CS12-42-5-SA1 Installation Guide"
 sidebarTitle: "Multi-Circuit Card"
-description: "Install and configure the Cortex PQM CS12-42-5-SA1 Multi-Circuit Card to monitor up to 42 circuits from a single FLEX slot on the CSM device."
+description: "The Cortex Multi-Card (MULTI_CARD_12CT): Flex Port connection, digital input, digital output, and RTD readings, and how to read its data."
 ---
 
-The CS12-42-5-SA1 Multi-Circuit Card is a FLEX port module that lets you monitor up to 42 current measurement channels from a single FLEX slot on the CSM device. Rather than wiring individual CT clamps to terminal blocks, you connect a Cortex solid core CT strip ribbon cable directly to the card's on-board ribbon connector — making it the most efficient option for large electrical panels where speed and density of installation matter most.
+The Multi-Card is an expansion card that combines current transformer inputs with digital inputs, digital outputs, and RTD temperature inputs. The monitor identifies it as device type **23 (`MULTI_CARD_12CT`)**.
 
-## Specifications
+## Connecting the Multi-Card
 
-| Parameter | Value |
-|---|---|
-| Part number | CS12-42-5-SA1 |
-| Current measurement channels | Up to 42 |
-| CT input signal type | 333 mV output CTs |
-| Compatible CT strips | Cortex solid core CT strips (42–48 and 72–84 pole) |
-| FLEX port slots occupied | 1 |
-| Connector type | Ribbon cable (ZIF, latching) |
+- Connect the Multi-Card to a **Flex Port (1–4)** using a standard Ethernet cable. Connect the Flex Port to the card's **IN** port; additional devices can be daisy-chained from **OUT** to **IN**.
+- A blinking green light on the card indicates a correct connection.
+- The Flex Port used determines register assignment.
+- Current transformers must be 0.333 V output CTs. CT orientation and wiring polarity are corrected automatically, and CT size must be set in the web console or configuration file.
 
-<Note>
-The CS12-42-5-SA1 occupies a single FLEX slot but provides the equivalent current monitoring capacity of up to seven standard 6-channel CT cards. On the CSM-2-00, you can install a second Multi-Circuit Card in the remaining FLEX slot to reach up to 84 monitored circuits.
-</Note>
+## Readings
 
-## Installation
+Each Multi-Card reports:
 
-Before you begin, confirm that you have already installed the solid core CT strip inside the electrical panel and routed the ribbon cable to the CSM device location. See [Solid Core CT Strip Installation](/flex-modules/solid-core-ct-strips) for panel preparation steps.
+- A digital input bitmask (`diValue`)
+- A digital output bitmask (`doValue`)
+- Up to 5 RTD temperature readings (°C). A value of `999.99` means the RTD sensor is not connected or is out of range.
 
-<Steps>
-  <Step title="Power off the CSM device">
-    Remove power from the CSM device at the source. Wait for the status LED to go dark before handling any FLEX modules.
-  </Step>
-  <Step title="Insert the Multi-Circuit Card into a FLEX port slot">
-    Orient the CS12-42-5-SA1 so that the ribbon connector faces outward (away from the CSM chassis). Align the card-edge connector with an available FLEX slot, then press the card firmly and evenly until it clicks fully into place. The card face should be flush with the surrounding CSM panel surface.
-  </Step>
-  <Step title="Connect the CT strip ribbon cable">
-    Open the ZIF latch on the card's ribbon connector by flipping the latch lever upward. Insert the ribbon cable from the CT strip with the contact side facing down (toward the PCB). Close the latch lever firmly to lock the cable in place.
-  </Step>
-  <Step title="Verify the ribbon connector is fully seated and latched">
-    Tug the ribbon cable gently — it should not pull free. Inspect the cable edge to confirm it is inserted to the alignment mark printed on the cable. A partially seated ribbon cable is the most common cause of missing or erratic channel readings.
-  </Step>
-  <Step title="Power on the CSM device">
-    Restore power to the CSM. The device will enumerate the Multi-Circuit Card during boot and expose all 42 channels in the REST API response automatically.
-  </Step>
-  <Step title="Verify all channels appear in the REST API">
-    Query the device's channel endpoint and confirm that 42 channels are listed under the FLEX slot where you installed the card. Channels with no CT connected will report a near-zero current reading, which is normal.
-  </Step>
-</Steps>
+### REST API
 
-## Configuration
-
-After installation, update the device configuration file to assign a human-readable label and the correct CT ratio to each of the 42 channels. The CT ratio must match the ampere rating of the CT strip installed in the panel.
-
-```yaml
-flex:
-  slot_1:
-    type: cs12_42_5_sa1
-    channels:
-      - id: 1
-        label: "Main Panel — Circuit 1"
-        ct_ratio: "100:0.333"
-      - id: 2
-        label: "Main Panel — Circuit 2"
-        ct_ratio: "100:0.333"
-      # ... continue for all 42 channels
-      - id: 42
-        label: "Main Panel — Circuit 42"
-        ct_ratio: "100:0.333"
-```
-
-<Tip>
-If all circuits in the panel use the same CT type, you can use a bulk configuration template to apply the same `ct_ratio` value to all 42 channels at once, then rename individual channels as needed.
-</Tip>
-
-## REST API Representation
-
-Once the device has booted with the CS12-42-5-SA1 installed, all 42 channels appear under the FLEX slot key in the API response:
+`GET /api/multicarddata` returns the readings for each Flex Port:
 
 ```json
 {
-  "flex": {
-    "slot_1": {
-      "type": "cs12_42_5_sa1",
-      "channels": [
-        { "id": 1,  "label": "Main Panel — Circuit 1",  "current_a": 14.2 },
-        { "id": 2,  "label": "Main Panel — Circuit 2",  "current_a": 9.8  },
-        { "id": 3,  "label": "Main Panel — Circuit 3",  "current_a": 0.0  },
-        "...",
-        { "id": 42, "label": "Main Panel — Circuit 42", "current_a": 5.1  }
-      ]
-    }
+  "data": {
+    "ports": [
+      { "port": 1, "status": 0, "connected": false, "cards": [] },
+      { "port": 3, "status": 0, "connected": true, "cards": [
+        { "device": 0, "diValue": 2, "doValue": 0,
+          "rtdValues": [999.99, 999.99, 206.63, 999.99, 999.99] }
+      ]},
+      { "port": 4, "status": 0, "connected": false, "cards": [] }
+    ],
+    "multiCard12CTConnected": true
   }
 }
 ```
 
-Channels reporting `0.0 A` indicate either an unloaded circuit or a ribbon cable seating issue. If you expect a non-zero reading on a channel, re-check the ribbon cable latch and verify the corresponding CT window has a conductor threaded through it.
+`status` is a per-port status code (0 = normal). This endpoint covers only Multi-Card devices; AUX port cards are covered by `/api/auxport`.
+
+### Modbus
+
+Flex Port digital input, digital output, and RTD registers:
+
+| Flex Port | Digital inputs (1–48) | Digital outputs (1–48, writable) | RTD temperature (FLOAT32) |
+| --- | --- | --- | --- |
+| 1 | 34000–34047 | 34048–34095 | 34096–34191 |
+| 2 | 35000–35047 | 35048–35095 | 35096–35191 |
+| 3 | 36000–36047 | 36048–36095 | 36096–36191 |
+| 4 | 37000–37047 | 37048–37095 | 37096–37191 |
+
+Digital input and output values: 0 = open, 1 = closed. See the [Modbus Register Map](/modbus/register-map).

@@ -1,106 +1,89 @@
 ---
 title: "Cortex PQM Quick Reference: Specs, LEDs, and Interfaces"
 sidebarTitle: "Quick Reference"
-description: "At-a-glance specifications, LED status indicators, port descriptions, and interface summary for the CSM-1-00 and CSM-2-00 devices."
+description: "At-a-glance capabilities, status LED indications, port descriptions, and default settings for the CSM-1-00 and CSM-2-00."
 ---
 
-This page provides a condensed reference for the Cortex PQM CSM-1-00 and CSM-2-00 — covering hardware specifications, LED indicator meanings, port descriptions, and supported wiring configurations. Keep this page handy during installation and commissioning. For full wiring diagrams and detailed configuration procedures, refer to the Device Overview and Configuration Guide sections.
+This page provides a condensed reference for the Cortex PQM CSM-1-00 and CSM-2-00: capabilities, status LED indications, ports, and default settings. For full procedures, see the [Quick Start Guide](/quick-start-guide) and the [Configuration Guide](/configuration/overview).
 
 <Warning>
-  Before working inside an energized panel, **de-energize all circuits** or follow an approved energized electrical work procedure in accordance with NFPA 70E or your applicable local safe work standard. Failure to do so exposes you to arc flash and electric shock hazards that can cause serious injury or death.
+  AC wiring has lethal voltages. Installation must be completed by a qualified person.
 </Warning>
 
-## Device Specifications
+## Device Capabilities
 
 | Parameter | CSM-1-00 | CSM-2-00 |
 | --- | --- | --- |
-| **Voltage input channels** | 3 phases + neutral | 3 phases + neutral |
-| **Voltage input range** | 208/240/480 VAC (nominal) | 208/240/480 VAC (nominal) |
-| **Current inputs** | Via CT clamp (external) | Via CT clamp (external), 1 per phase |
-| **CT input signal** | 0.333 mV (industry standard) | 0.333 mV (industry standard) |
-| **Supported CT ratios** | Software configurable | Software configurable |
-| **Auxiliary power supply** | 12–24 VDC, ±10% | 12–24 VDC, ±10% |
-| **Power consumption** | ≤ 5 W (device only) | ≤ 6 W (device only) |
-| **Communication** | Ethernet 10/100BASE-T, RJ45 | Ethernet 10/100BASE-T, RJ45 |
-| **Protocols** | REST (HTTP/HTTPS), Modbus TCP | REST (HTTP/HTTPS), Modbus TCP |
-| **Mounting** | 35 mm DIN rail (EN 60715) | 35 mm DIN rail (EN 60715) |
-| **Operating temperature** | −10 °C to +60 °C | −10 °C to +60 °C |
-| **Storage temperature** | −20 °C to +70 °C | −20 °C to +70 °C |
-| **Relative humidity** | 5–95% RH, non-condensing | 5–95% RH, non-condensing |
-| **Pollution degree** | Pollution Degree 2 | Pollution Degree 2 |
-| **Enclosure** | IP20 (panel-mount) | IP20 (panel-mount) |
+| **Voltage inputs** | 1 (Volt Input 1) | 2 (Volt Input 1 and Volt Input 2) |
+| **AC reference voltage** | Sensing only, no power draw | Sensing only, no power draw |
+| **Current channels** | Up to 192 (4 Flex Ports × 48 channels) | Up to 192 (4 Flex Ports × 48 channels) |
+| **CT type** | 0.333 V output CTs, connected to CT modules or CT strips | 0.333 V output CTs, connected to CT modules or CT strips |
+| **Neutral current** | Calculated; no neutral CT required | Calculated; no neutral CT required |
+| **AUX port** | Up to 8 daisy-chained modules (500 mA total budget) | Up to 8 daisy-chained modules (500 mA total budget) |
+| **Ethernet** | 2 ports, common IP address | 2 ports, common IP address |
+| **Protocols** | Web console, REST API (HTTP/HTTPS), Modbus TCP (port 502) | Web console, REST API (HTTP/HTTPS), Modbus TCP (port 502) |
+| **USB port** | Configuration, firmware updates, IP settings readout | Configuration, firmware updates, IP settings readout |
+| **Power** | DC power source; ground (earth) for AC and DC via the DC connector | DC power source; ground (earth) for AC and DC via the DC connector |
 
-<Note>
-  Voltage input ranges reflect nominal system voltages. Always verify that the device's rated input range matches your local supply voltage before connecting. Both models support wye (star) and delta wiring configurations. Select the correct configuration in the device settings.
-</Note>
+## Default Network Settings
 
-## LED Indicators
-
-### Status LED
-
-| Color / State | Meaning |
+| Setting | Default |
 | --- | --- |
-| **Slow blink green** (1 Hz) | Normal operation |
-| **Fast blink blue** (4 Hz) | Firmware update in progress. Do not remove power |
-| **Solid green\*** | Press and hold the reset button. After 6 seconds, the LED turns solid green. Release the button then. |
+| IP address | 192.168.7.3 |
+| Subnet mask | 255.255.255.0 |
+| Gateway | 192.168.7.1 |
+| DHCP | Disabled |
+| Modbus TCP port | 502 (up to 15 concurrent clients) |
 
-### Ethernet Link / Activity LED
+The PC or polling device must be on the same subnet as the monitor (for example, 192.168.7.xxx).
 
-<table>
-  <colgroup>
-    <col width="140" />
-    <col width="325" />
-  </colgroup>
-  <thead>
-    <tr>
-      <th>Color / State</th>
-      <th>Meaning</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>**Solid green**</td>
-      <td>Ethernet link is established (no current activity).</td>
-    </tr>
-    <tr>
-      <td>**Blinking green**</td>
-      <td>Ethernet link is active; data is being transmitted or received.</td>
-    </tr>
-    <tr>
-      <td>**Off**</td>
-      <td>No Ethernet link. Check the cable, switch port, and network configuration.</td>
-    </tr>
-  </tbody>
-</table>
+## Status LED
 
-## Port Descriptions
+| Indication | Meaning |
+| --- | --- |
+| **Green blink (1 Hz)** | Normal operation / update complete |
+| **Solid green** | Reset button held 5–10 seconds; reset sequence accepted, release the button |
+| **Rapid orange and red blink** | Configuration file detected on USB drive; press reset to apply |
+| **Green and blue blink** | Firmware file detected on USB drive; press reset to program |
+| **Blue blink** | Firmware programming in progress (about 3 minutes). Do not remove power or the USB drive |
+| **Solid orange** | Factory defaults restored (reset button held longer than 10 seconds) |
 
-### DC Power Input
+<Warning>
+  Holding the reset button for more than 10 seconds restores **all** settings, including the IP address, to factory default.
+</Warning>
 
-A 2-position screw terminal block accepts the 12–24 VDC auxiliary supply. The positive (+) terminal is marked on the device housing. Polarity protection is provided, but verify polarity before applying power.
+## Ports
 
-### Voltage Input Terminals
+### DC Power
 
-Screw terminal connections for line voltage sensing. Both models provide terminals for all three phases and neutral. The CSM-2-00 provides an additional voltage input.
+The DC connector energizes the monitor. The ground (earth) connection for both AC and DC is made through the DC connector.
 
-### CT Clamp Inputs
+### AC Reference Voltage
 
-Each base channel has a corresponding CT input terminal pair (signal + and −). Connect the CT clamp's output leads to these terminals.
+Voltage sensing inputs (sensing only, no power draw). Fuse according to code, 0.25 A up to the maximum conductor rating. Volt Input 2 is available on the CSM-2-00 only.
 
-### FLEX Port Slots
+### Flex Ports (1–4)
 
-The four Flex ports accept modules with current monitoring capabilities.
+Four RJ45 Flex Ports connect CT modules, CT strips, and Multi-Cards using standard Ethernet cables. Modules can be daisy-chained (IN/OUT) for up to 48 current channels per port. The Flex Port used determines register assignment; start with Flex Port 1 and proceed through 2, 3, and 4.
 
 ### AUX Port
 
-The AUX port accepts plug-in accessory modules:
+The AUX port connects daisy-chained interface modules using standard Ethernet cables:
 
 | Module | Model | Function |
 | --- | --- | --- |
-| **Digital input module** | CS18-00-INC | Digital inputs |
-| **Digital I/O + serial module** | CS18-02-SR1 | Digital inputs, digital outputs, and RS-485 serial interface |
-| **Thermal module** | CS18-01-TMP | RTD Temperature Probe |
+| **Digital input module** | CS18-00-INC | 18 dry contact inputs |
+| **Digital I/O + serial module** | CS18-02-SR1 | 18 dry contact inputs, 2 digital outputs, RS-485 Modbus RTU |
+| **Thermal module** | CS18-01-TMP | RTD temperature sensors |
 
-### Ethernet (RJ45)
+<Warning>
+  Do not connect Flex Port modules to the AUX port, or AUX modules to a Flex Port.
+</Warning>
 
-Standard RJ45 jack for 10/100BASE-T Ethernet. Connects to your local network switch or router. Supports auto-negotiation and auto-MDI/MDIX (crossover cables are not required).
+### Ethernet Ports 1 and 2
+
+Two RJ45 Ethernet ports share a common IP address. Connect either port to a PC or network. Do not confuse the Ethernet ports with the four similar-looking Flex Port RJ45 jacks.
+
+### USB Port
+
+Accepts a USB drive of 32 GB or less, formatted FAT32. Used to load configuration files and firmware, and to read the monitor's IP settings (insert a drive while powered and wait about 5 seconds).

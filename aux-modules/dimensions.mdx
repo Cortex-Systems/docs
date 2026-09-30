@@ -1,31 +1,26 @@
 ---
 title: "Cortex PQM AUX Module Physical Dimensions and Specifications"
 sidebarTitle: "Dimensions"
-description: "Physical dimensions and weight for Cortex PQM AUX port expansion modules CS18-00-INC, CS18-02-SR1, and CS18-01-TMP for enclosure planning."
+description: "Mounting, cabling, and power information for Cortex PQM AUX modules CS18-00-INC, CS18-02-SR1, and CS18-01-TMP for enclosure planning."
 ---
 
-Use the reference dimensions on this page when planning enclosure layouts and cable clearances for Cortex PQM AUX port expansion modules. Because all three modules attach to the AUX port header on the right side of the CSM device and extend laterally, you need to ensure the adjacent horizontal space inside the enclosure is clear before installation.
+AUX modules are separate devices that connect to the monitor's AUX port with standard Ethernet cables. Because they do not plug directly into the monitor, they can be placed close to the contacts or sensors they monitor.
 
 <Note>
-  The dimensions listed here are approximate reference values intended for preliminary enclosure planning. Refer to the individual product datasheets for precise mechanical drawings and tolerances. Contact Cortex Systems if you require CAD files for detailed enclosure design work.
+  Refer to the individual product datasheets for mechanical drawings and dimensions. Contact Cortex Systems if you require CAD files for enclosure design.
 </Note>
 
-## Module Dimensions
+## Module Summary
 
-| Module | Part Number | Width | Height | Depth | Weight |
-|---|---|---|---|---|---|
-| Digital Input Module | CS18-00-INC | ~55 mm | ~75 mm | ~20 mm | ~60 g |
-| Digital I/O + Serial Module | CS18-02-SR1 | ~55 mm | ~75 mm | ~22 mm | ~65 g |
-| Thermal Module | CS18-01-TMP | ~55 mm | ~90 mm | ~22 mm | ~70 g |
+| Module | Part Number | Current draw | Field wiring |
+| --- | --- | --- | --- |
+| Digital Input Module | CS18-00-INC | 125 mA | Removable 3.5 mm terminal blocks |
+| Digital I/O + Serial Module | CS18-02-SR1 | 82 mA | Removable 3.5 mm terminal blocks |
+| Thermal Module | CS18-01-TMP | 50 mA | Removable 3.5 mm terminal blocks |
 
-## Mounting Considerations
+## Mounting and Cabling Considerations
 
-- **AUX port location** — The AUX port connector is located on the right side of the CSM device. All modules attach directly to this header and project outward to the right.
-- **Lateral clearance** — Modules extend laterally from the CSM device. Ensure there is sufficient clear space to the right of the CSM to accommodate the full module width plus any terminal wiring.
-- **Vertical clearance** — The CS18-01-TMP Thermal Module is taller than the other two modules (~90 mm vs ~75 mm). Verify vertical clearance in your enclosure if you are planning to use this module.
-- **Depth** — All modules add up to ~22 mm of depth beyond the AUX port connector face. Account for this when checking door clearance on enclosed panels.
-- **Wiring space** — Allow additional clearance beyond the module body for terminal block wiring, cable ties, and probe cables. A minimum of 50 mm of free space beyond the module is recommended.
-
-<Note>
-  Contact Cortex Systems to request CAD drawings (STEP or DXF format) for enclosure design purposes.
-</Note>
+- **Mounting** — AUX modules mount on standard 35 mm DIN rail.
+- **Cable length** — Modules connect using standard Ethernet cables up to 100 ft (33 m).
+- **Daisy chaining** — Up to 8 modules may be chained (firmware 2.9.1 or later), within a 500 mA combined current budget.
+- **Wiring space** — Allow clearance for terminal block wiring and probe cables.

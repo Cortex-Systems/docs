@@ -1,46 +1,46 @@
 ---
 title: "Cortex PQM Wiring Guide: All Connection Types Overview"
 sidebarTitle: "Overview"
-description: "Complete wiring guide for the Cortex PQM CSM device — AC voltage inputs, DC power supply, FLEX port CT modules, and Ethernet network connections."
+description: "Wiring guide for the Cortex PQM CSM device — AC reference voltage, DC power, Flex Port CT devices, AUX modules, and Ethernet connections."
 ---
 
-The Cortex PQM CSM device requires four categories of wiring connections to operate correctly. Before you begin, read through this overview to understand what each connection type does and which pages cover the detailed instructions. Completing all four connection types in the correct order — starting with DC power last — reduces the risk of accidental energization during installation.
+The Cortex PQM CSM-1-00 and CSM-2-00 use the following connections. Read this overview to understand what each connection does and which page covers it.
 
 ## Connection Summary
 
 | Connection | Type | Purpose |
 |---|---|---|
-| AC Voltage Inputs | Terminal block | Line voltage measurement |
-| DC Power Supply | Terminal block | Device power (12–24VDC) |
-| FLEX Port | Ribbon/direct | CT clamp inputs for current measurement |
-| Ethernet | RJ45 | Network, REST API, configuration |
+| AC reference voltage | Terminal connector | Voltage sensing (no power draw). Volt Input 2 on CSM-2-00 only |
+| DC power | DC connector | Energizes the monitor; ground (earth) for AC and DC |
+| Flex Ports 1–4 | RJ45, standard Ethernet cable | CT modules, CT strips, and Multi-Cards (up to 48 current channels per port) |
+| AUX port | RJ45, standard Ethernet cable | Digital input, digital I/O + serial, and thermal modules |
+| Ethernet Ports 1 and 2 | RJ45 | Network: web console, REST API, Modbus TCP |
 
 ## General Wiring Safety Rules
 
-Follow these rules for every connection type throughout the installation:
-
-- **De-energize circuits** before making any connections to live conductors. Verify with a meter that the circuit is de-energized before touching terminals.
-- **Use appropriate wire gauge** for each connection type. The minimum and maximum wire gauges for each terminal block are specified on the relevant sub-page.
-- **Comply with local electrical codes.** All wiring must meet the requirements of your local jurisdiction, including conduit, labeling, and breaker sizing rules.
-- **Use ferruled or tinned wire ends** on all terminal block connections to prevent stray strands from causing short circuits or intermittent contact.
+- **AC wiring has lethal voltages.** Installation must be completed by a qualified person.
+- **De-energize circuits** before making connections, and verify they are de-energized.
+- **Fuse the AC reference voltage** according to code: 0.25 A up to the maximum conductor rating.
+- **Comply with local electrical codes** for conductors, labeling, and overcurrent protection.
+- **Use the correct RJ45 port.** Flex Ports, the AUX port, and the Ethernet ports use similar jacks. Connect Flex Port modules only to Flex Ports, AUX modules only to the AUX port, and the network only to Ethernet Port 1 or 2.
 
 <Warning>
-  AC voltage wiring must be performed by a licensed electrician. Incorrect AC wiring can result in electric shock, equipment damage, or fire.
+  AC wiring has lethal voltages. Incorrect AC wiring can result in electric shock, equipment damage, or fire.
 </Warning>
 
 ## Wiring Sub-Pages
 
 <CardGroup cols={2}>
   <Card title="AC Wiring" icon="bolt" href="/wiring/ac-wiring">
-    Wire AC line voltage inputs for single-phase, split-phase, and three-phase systems.
+    Connect and fuse the AC reference voltage inputs.
   </Card>
   <Card title="DC Wiring" icon="battery-half" href="/wiring/dc-wiring">
-    Wire the DC power supply input and digital pulse/status inputs.
+    Connect DC power and ground, and wire digital inputs on AUX modules.
   </Card>
   <Card title="FLEX Port Wiring" icon="plug" href="/wiring/flex-port">
-    Connect CT clamp modules to the FLEX port for current measurement.
+    Connect CT modules and strips to the Flex Ports and wire 0.333 V CTs.
   </Card>
   <Card title="Ethernet Wiring" icon="network-wired" href="/wiring/ethernet">
-    Connect to your local network and configure IP addressing.
+    Connect to your network and set up IP addressing.
   </Card>
 </CardGroup>

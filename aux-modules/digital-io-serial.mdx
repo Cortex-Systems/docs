@@ -1,149 +1,66 @@
 ---
 title: "Digital I/O + Serial Module CS18-02-SR1 Setup Guide"
 sidebarTitle: "Digital I/O + Serial"
-description: "How to install and configure the CS18-02-SR1 module for RS-485 serial communication, Modbus RTU, and digital I/O channels on the Cortex PQM."
+description: "How to connect the CS18-02-SR1 module to the Cortex PQM AUX port: 18 dry contact inputs, 2 digital outputs, and RS-485 Modbus RTU."
 ---
 
-The CS18-02-SR1 Digital I/O + Serial Module combines four digital input channels, four digital output channels, and an RS-485 serial port in a single AUX plug-in unit. This makes it well suited for installations where the Cortex PQM needs to participate in a Modbus RTU network, control external equipment such as relays or indicators, or monitor dry contact signals — all through the same expansion slot.
+The CS18-02-SR1 Digital I/O + Serial Module expands a single or dual input monitor with **18 dry contact inputs, 2 digital outputs, and RS-485 Modbus RTU** communications. The module auto-connects to the host monitor with no configuration required.
 
-<Tip>
-  The RS-485 serial interface can also be used to read third-party Modbus sensors and meters, aggregating their data through the Cortex PQM REST API. This lets you consolidate multiple device readings into a single interface without a separate gateway.
-</Tip>
+<Note>
+  The CSM-1 or CSM-2 must have firmware version 1.9 / 2.9 or higher to communicate with this card.
+</Note>
 
 ## Specifications
 
 | Parameter | Value |
-|---|---|
-| Part Number | CS18-02-SR1 |
-| Digital Inputs | 4 channels (dry contact) |
-| Digital Outputs | 4 channels (open collector) |
-| Serial Port | RS-485 half-duplex |
-| Maximum Baud Rate | 115200 baud |
-| Modbus RTU | Supported — slave mode, configurable address |
+| --- | --- |
+| Part number | CS18-02-SR1 |
+| Digital inputs | 18 (dry contact; closed when resistance is below 1 kΩ) |
+| Digital outputs | 2, rated 100 mA @ 30 VDC max. |
+| Serial port | 1 x RS-485, 2-wire Modbus RTU |
+| Field wiring | Removable 3.5 mm terminal blocks |
+| Connection | AUX port, standard Ethernet cable up to 100 ft (33 m) |
+| Current draw | 82 mA (from the AUX port 500 mA budget) |
+| Maximum modules | 6 in a single-type chain (500 mA budget) |
 
-## Installation
-
-<Warning>
-  Power off the CSM device before connecting or disconnecting any AUX module. Inserting or removing a module with power applied may damage the device or the module.
-</Warning>
+## Connecting the Module
 
 <Steps>
-  <Step title="Power off the CSM device">
-    Remove power from the CSM device and confirm all indicator LEDs are off before handling the module.
+  <Step title="Connect to the AUX port">
+    Connect the **IN** port of the first module to the monitor's **AUX port** using a standard Ethernet cable. Do **not** connect it to the Flex Ports.
   </Step>
-  <Step title="Connect the module to the AUX port">
-    Align the CS18-02-SR1 connector with the AUX port header and press firmly until fully seated.
+  <Step title="Daisy-chain additional devices">
+    Connect the module's **OUT** port to the **IN** port of the next AUX port device.
   </Step>
-  <Step title="Secure the retention clip">
-    Engage the retention clip if supplied to keep the module seated under vibration.
-  </Step>
-  <Step title="Power on the device">
-    Restore power. The module is detected automatically and its channels become available in the REST API.
+  <Step title="Verify communication">
+    When the module is connected to the monitor, the green LED on the card blinks to show that it is communicating.
   </Step>
 </Steps>
 
-## RS-485 Wiring
+## Digital Inputs
 
-The RS-485 port on the CS18-02-SR1 is a half-duplex two-wire interface. Follow these guidelines to ensure reliable communication:
+The digital inputs are designed for voltage-free (dry) contacts. An input reads as closed when the resistance across its contacts drops below 1 kΩ. Input status can also be checked in the web console under **Data > Contacts**; closed contacts are highlighted in green.
 
-- Connect the **A+** and **B−** terminals of your RS-485 bus to the corresponding **A+** and **B−** terminals on the module.
-- Install a **120 Ω termination resistor** across the A+ and B− terminals at each physical end of the RS-485 bus. Failure to terminate the bus correctly causes signal reflections that degrade communication at higher baud rates.
-- Use shielded twisted-pair cable for the RS-485 bus. Connect the cable shield to earth ground at one end only to avoid ground loops.
-- The maximum bus length is **1200 m at 9600 baud**. At higher baud rates, reduce the maximum cable length accordingly.
+## Digital Outputs
 
-## Digital Output Wiring
+The digital outputs are rated for 100 mA @ 30 VDC. They can be switched by Modbus command, by `POST /configSettings` (`doData.output_N`, value 0 or 1), or manually from the web console.
 
-Each digital output channel is an open-collector transistor. To use an output:
+## RS-485 Modbus RTU
 
-1. Connect the **output terminal** to one side of your load (relay coil, LED, indicator lamp, etc.).
-2. Connect the other side of the load to a **positive supply voltage** appropriate for the load.
-3. When the output is activated by the firmware, the transistor pulls the output terminal to ground, completing the circuit and energizing the load.
-
-<Note>
-  Verify that the supply voltage and load current are within the output transistor's rated limits. Refer to the CS18-02-SR1 datasheet for maximum voltage and current ratings.
-</Note>
-
-## Configuration
-
-Set the serial port parameters in the device configuration file under the `serial` key. Choose a Modbus address that is unique on your RS-485 bus.
-
-```json
-"serial": {
-  "baud_rate": 9600,
-  "parity": "none",
-  "stop_bits": 1,
-  "modbus_address": 1
-}
-```
-
-- `baud_rate` — must match the baud rate of all other devices on the RS-485 bus.
-- `parity` — accepted values are `"none"`, `"even"`, and `"odd"`.
-- `stop_bits` — typically `1`; set to `2` if required by your Modbus master.
-- `modbus_address` — valid range is 1–247; each device on the bus must have a unique address.
-
-Configure digital input and output channels in the same configuration file under the `digital_inputs` and `digital_outputs` arrays:
-
-```json
-"digital_inputs": [
-  { "id": 1, "name": "Door Interlock", "mode": "status" },
-  { "id": 2, "name": "Run Feedback", "mode": "status" }
-],
-"digital_outputs": [
-  { "id": 1, "name": "Alarm Relay", "active_high": true },
-  { "id": 2, "name": "Indicator Light", "active_high": true }
-]
-```
-
-- `mode` — for inputs, `"status"` reports the current open/closed state; `"pulse_count"` accumulates a rising-edge counter.
-- `active_high` — when `true`, setting the output to `on` pulls the open-collector output high (via external load); when `false`, the logic is inverted.
+The RS-485 port provides 2-wire Modbus RTU communications. Serial settings (slave ID, baud rate, parity, stop bits) are in the `modbus` section of the configuration file. See [Configuration File Definitions](/configuration/file-definitions).
 
 ## Data Access
 
-Once the CS18-02-SR1 is installed and configured, you can read digital input states and control digital outputs through the Cortex PQM REST API.
+### REST API
 
-**Read digital input states:**
+`GET /api/auxport` returns Digital I/O boards with `"deviceType": "dio"`: 18 DI channels (`"type": "di"`) and 2 relay outputs (`"type": "do"`). Values: 1 = contact closed / relay energized, 0 = open. DI channels are numbered sequentially across cards; DO channels use card-local numbering (1 and 2). A `deviceSerial` of `0` means the serial number is not programmed (common on DIO boards).
 
-```http
-GET http://{device-ip}/api/digital_inputs
-```
+### Modbus
 
-Example response:
+Cards are numbered by their position in the AUX chain, starting with the card plugged directly into the AUX port (Card 1). Every device on the AUX port counts as a card, including Thermal modules.
 
-```json
-{
-  "digital_inputs": [
-    { "id": 1, "name": "Door Interlock", "state": "closed", "mode": "status" },
-    { "id": 2, "name": "Run Feedback", "state": "open", "mode": "status" }
-  ]
-}
-```
+- **Individual inputs:** Card 1 inputs 1–18 are registers 2046–2063 (0 = open, 1 = closed).
+- **Block read:** Card 1 uses registers 2001–2002 (register 2001 bits 0–15 = inputs 1–16; register 2002 bits 0–1 = inputs 17–18). Each following card uses the next two registers, through Card 8 at 2015–2016.
+- **Digital outputs:** registers 2692–2883 (writable, 0 = open, 1 = closed).
 
-**Set a digital output state:**
-
-```http
-POST http://{device-ip}/api/digital_outputs/1
-Content-Type: application/json
-
-{ "state": "on" }
-```
-
-**Read current output states:**
-
-```http
-GET http://{device-ip}/api/digital_outputs
-```
-
-Example response:
-
-```json
-{
-  "digital_outputs": [
-    { "id": 1, "name": "Alarm Relay", "state": "on" },
-    { "id": 2, "name": "Indicator Light", "state": "off" }
-  ]
-}
-```
-
-<Note>
-  Output states are not retained across a power cycle by default. If you need outputs to return to a known state on startup, set the `default_state` field for each output channel in the configuration file.
-</Note>
+See the [Modbus Register Map](/modbus/register-map).

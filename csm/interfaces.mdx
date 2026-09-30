@@ -1,90 +1,71 @@
 ---
 title: "Physical Interface Reference for the CSM-1-00 and CSM-2-00"
 sidebarTitle: "Interfaces"
-description: "Complete description of all physical interfaces on the CSM-1-00 and CSM-2-00: terminal blocks, FLEX ports, AUX port, and Ethernet connector."
+description: "Description of the physical interfaces on the CSM-1-00 and CSM-2-00: DC connector, voltage inputs, Flex Ports, AUX port, Ethernet ports, USB port, reset button, and status LED."
 ---
 
-The CSM-1-00 and CSM-2-00 expose all electrical, expansion, and network interfaces on the device body. Understanding the location and function of each interface is essential before wiring the device. This page describes every interface by name, physical type, function, and relevant notes for each model.
+This page describes each physical interface on the CSM-1-00 and CSM-2-00.
 
 ## Interface Summary
 
 | Interface | Type | Function | Notes |
-|---|---|---|---|
-| DC Power Input | 2-pin screw terminal block | Accepts 12–24VDC regulated supply | Polarity marked + and −; reverse polarity may damage the device |
-| Line Voltage Input — L1 | Screw terminal | AC voltage measurement, phase 1 | Present on both models |
-| Line Voltage Input — L2 | Screw terminal | AC voltage measurement, phase 2 | Present on both models |
-| Line Voltage Input — L3 | Screw terminal | AC voltage measurement, phase 3 | CSM-2-00 only |
-| Neutral (N) | Screw terminal | Neutral reference for voltage measurement | Required for wye and split-phase configurations |
-| FLEX Port Slot 1 | Proprietary 40-pin connector | Attach CT card or other FLEX modules | Right side of device; accepts one FLEX module |
-| FLEX Port Slot 2 | Proprietary 40-pin connector | Attach CT card or other FLEX modules | Right side of device; second slot below Slot 1 |
-| AUX Port | 26-pin 2.54mm pitch header | Digital I/O and thermal expansion | Left side of device; accepts one AUX module |
-| Ethernet | RJ45 (10/100Base-T) | Network connectivity, REST API access | Front face; supports DHCP and static IP |
-| Power LED | LED indicator (green) | DC power present and within range | Solid green = normal; off = no power |
-| Status LED | LED indicator (green/amber/red) | Device operating state | Green = normal; amber = warning; red = fault |
-| Network Link LED | LED indicator (green/amber) | Ethernet link and activity | Green = link established; blinking = traffic |
+| --- | --- | --- | --- |
+| DC connector | Terminal connector | Energizes the monitor | Ground (earth) for both AC and DC is connected through the DC connector |
+| Volt Input 1 | Terminal connector | AC reference voltage sensing, L1/L2/L3 | Sensing only, no power draw |
+| Volt Input 2 | Terminal connector | Second AC reference voltage input | CSM-2-00 only |
+| Flex Ports 1–4 | RJ45 | CT modules, CT strips, Multi-Cards | Up to 48 current channels per port |
+| AUX port | RJ45 | Digital Input, Digital I/O + Serial, and Thermal modules | Up to 8 modules, 500 mA total |
+| Ethernet Ports 1 and 2 | RJ45 | Network: web console, REST API, Modbus TCP | Common IP address; default 192.168.7.3 |
+| USB port | USB | Configuration files, firmware, IP settings readout | 32 GB or less, FAT32 |
+| Reset button | Push button | Apply USB updates; restore factory defaults | Hold >10 s = factory reset |
+| Status LED | Multi-color LED | Operating and update status | See below |
 
-## Line Voltage Input Schematic
+## AC Reference Voltage Inputs
 
-The line voltage inputs on the CSM device are designed to measure AC line voltage directly from the monitored circuit. Each line input is wired through a customer-supplied fused disconnect, with the conductor terminating at the corresponding screw terminal on the top terminal block. The neutral terminal provides the reference point for voltage measurements in single-phase and wye-connected three-phase circuits.
+The AC reference voltage inputs are for sensing only and draw no power. Fuse according to code, 0.25 A up to the maximum conductor rating. Each input measures L1, L2, and L3, providing line-to-neutral and line-to-line voltage, THD, phase angle, and frequency. Volt Input 2 is available on the CSM-2-00 only; on the CSM-2-00, each circuit can be assigned to a phase of either input.
 
-**Maximum rated voltage:** 600V line-to-line (CAT III)
+<Warning>
+  AC wiring has lethal voltages. Installation must be completed by a qualified person.
+</Warning>
 
-**Fusing requirement:** Each line voltage input must be protected by a fuse or circuit breaker rated for the circuit, with a maximum of 20A. Use fast-blow fuses where required by local code.
-
-**Wiring path summary:**
-
-```
-Monitored Circuit → Fused Disconnect → CSM Line Input Terminal (L1 / L2 / L3)
-Monitored Circuit Neutral → CSM Neutral Terminal (N)
-```
-
-For the CSM-1-00, the L3 terminal is not present. For single-phase 2-wire configurations, the Neutral terminal serves as the low-side voltage reference.
-
-## FLEX and AUX Port Expansion
+## Flex Ports and AUX Port
 
 <Info>
-  The FLEX and AUX ports are the primary expansion mechanism for the Cortex PQM system. FLEX port CT cards are required to measure current and calculate power — without at least one CT card installed, the CSM measures voltage only. The AUX port adds non-measurement I/O such as dry-contact inputs, relay outputs, and ambient temperature sensing. All modules are powered through the CSM; no additional supply is needed for the modules themselves.
+  Flex Ports and the AUX port use RJ45 jacks similar to the Ethernet ports. Connect Flex Port modules (CT modules, CT strips, Multi-Cards) only to Flex Ports, AUX modules only to the AUX port, and the network only to Ethernet Port 1 or 2.
 </Info>
 
-### FLEX Ports
+### Flex Ports
 
-Each FLEX port slot accepts one FLEX-format module. The most common FLEX module is the CT card, which provides terminal blocks for wiring current transformer secondary leads. The FLEX port connector is keyed — modules can only be inserted in the correct orientation. Press the module firmly into the slot until the retention latch engages. Do not force or twist the module during insertion.
+Each Flex Port supports a daisy chain of CT modules or CT strips for up to 48 current channels. Connect the Flex Port to the **IN** port of the first device and **OUT** to **IN** for each following device. The Flex Port used determines register assignment; start with Flex Port 1.
 
 ### AUX Port
 
-The AUX port is a 26-pin 2.54mm pitch header on the left side of the device. It accepts a single AUX module using a mating ribbon or direct-plug connector, depending on the module type. The AUX port carries both power and signal lines. Do not connect non-AUX peripherals to this header.
+The AUX port supports up to 8 daisy-chained modules (firmware 2.9.1 or later; 4 on earlier firmware), with a combined current draw of no more than 500 mA. The order of modules in the chain determines their register assignments.
 
-## Ethernet Interface
+## Ethernet Ports
 
-The RJ45 jack on the front face of the CSM device provides 10/100Base-T Ethernet connectivity. The device supports both DHCP-assigned and static IP addressing. All REST API communication and network-based firmware updates use this interface. A Cat5e or Cat6 patch cable is recommended. The Ethernet interface does not require any driver installation — it is accessible as a standard HTTP endpoint on your local network at `http://{device-ip}/api` once the device has obtained an IP address.
+Two RJ45 Ethernet ports share a common IP address. Connect either port to a PC or network switch. The default IP address is `192.168.7.3` (subnet mask 255.255.255.0, gateway 192.168.7.1, DHCP disabled). The polling device must be on the same subnet.
 
-## LED Indicators
+## USB Port
 
-The front panel of the CSM device includes three LED indicators that provide at-a-glance status information without requiring network access or software.
+- Insert a USB drive (32 GB or less, FAT32) while the monitor is powered and wait about 5 seconds: the monitor writes its IP settings file to the drive.
+- Configuration files and firmware files are loaded from the root directory of the drive using the reset button sequence. See [Uploading Configuration Files](/configuration/uploading-files) and [Update via USB](/firmware/update-via-usb).
 
-### Power LED
+## Reset Button
 
-The Power LED illuminates solid green when the DC supply voltage is present and within the acceptable 12–24VDC range. If this LED is off, the device is not receiving power. Check the DC supply output voltage and verify the terminal connections before proceeding.
+| Action | Result |
+| --- | --- |
+| Hold 5–10 seconds until the status LED is solid green, then release | Reboots the monitor and checks the USB drive for configuration or firmware files |
+| Press once while a USB file is detected | Applies the configuration or starts firmware programming |
+| Hold more than 10 seconds | Restores **all** settings, including the IP address, to factory default (solid orange) |
 
-### Status LED
+## Status LED
 
-The Status LED reflects the overall operating state of the device after startup.
-
-| Status LED State | Meaning |
-|---|---|
-| Solid green | Device operating normally |
-| Solid amber | Warning condition — device is functional but requires attention |
-| Solid red | Fault condition — device has detected an error and may not be measuring correctly |
-| Off | Device not powered or in early boot |
-
-After applying power, the Status LED will cycle through colors briefly during initialization before settling on solid green under normal conditions. If the LED remains amber or red after 30 seconds, refer to the LED Indicator Reference for fault descriptions and remediation steps.
-
-### Network Link LED
-
-The Network Link LED indicates the state of the Ethernet connection.
-
-| Network Link LED State | Meaning |
-|---|---|
-| Solid green | Ethernet link established at 10 or 100 Mbps |
-| Blinking green | Link established; network traffic active |
-| Off | No Ethernet link; check cable and switch port |
+| Indication | Meaning |
+| --- | --- |
+| Green blink (1 Hz) | Status good / update complete |
+| Solid green | Reset sequence accepted; release the button |
+| Rapid orange and red blink | Configuration file detected |
+| Green and blue blink | Firmware file detected |
+| Blue blink | Firmware programming in progress |
+| Solid orange | Factory default restored |
