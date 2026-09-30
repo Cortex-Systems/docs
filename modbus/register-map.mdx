@@ -1,150 +1,282 @@
 ---
 title: "Cortex PQM CSM Modbus Register Map: All Holding Registers"
 sidebarTitle: "Register Map"
-description: "Complete Modbus TCP and RTU register map for the Cortex PQM CSM device — voltage, current, power, energy, and device status registers."
+description: "Modbus register map (Rev G) for the Cortex PQM CSM-1-00 and CSM-2-00 — device info, configuration, AUX and Flex Ports, voltage, circuit, and meter registers."
 ---
 
-The Cortex PQM CSM-1-00 and CSM-2-00 devices support Modbus TCP over Ethernet and Modbus RTU over RS-485, making them compatible with SCADA systems, building management systems (BMS), and any Modbus-capable data acquisition platform. This page documents all standard holding registers for device status, voltage, current, power, and energy measurements.
+The Cortex PQM CSM-1-00 and CSM-2-00 support Modbus TCP over Ethernet. This page summarizes the Cortex Register Map, **Rev G** (firmware 2.11.6).
 
 ## Connection Details
 
-| Setting | Value |
-|---|---|
-| **Modbus TCP port** | 502 |
-| **Modbus RTU interface** | RS-485 via CS18-02-SR1 module |
-| **Default RTU slave address** | 1 (configurable) |
-| **Function code** | 03 — Read Holding Registers |
+<table>
+  <colgroup>
+    <col width="285" />
+    <col width="325" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Setting</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Modbus TCP port</td>
+      <td>502</td>
+    </tr>
+    <tr>
+      <td>Concurrent Modbus TCP clients</td>
+      <td>Up to 15</td>
+    </tr>
+    <tr>
+      <td>Modbus slave address</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Enable / Disable</td>
+      <td>`modbusTCPEnable` and `modbusTLSEnable` in `deviceConfig` (restart required)</td>
+    </tr>
+  </tbody>
+</table>
 
-Modbus RTU requires the optional CS18-02-SR1 serial interface module. Configure the slave address in the device configuration file if you have multiple devices on the same RS-485 bus.
+Register numbers below are as listed in the Cortex register map.
 
-## Data Types and Conventions
-
-All registers are Holding Registers, read with function code 03. The two data types used throughout this map are:
+## Data Types
 
 | Type | Size | Description |
-|---|---|---|
-| `UINT16` | 1 register (16-bit) | Unsigned integer |
-| `UINT32` | 2 registers (32-bit) | Unsigned 32-bit integer, high word first |
-| `FLOAT32` | 2 registers (32-bit) | IEEE 754 single-precision float, high word first |
+| --- | --- | --- |
+| `UINT16` | 1 register | Unsigned 16-bit integer |
+| `UINT32` | 2 registers | Unsigned 32-bit integer |
+| `FLOAT32` | 2 registers | 32-bit floating point |
+| `CHAR` | 2 characters per register | Text (for example, 40 characters = 20 registers) |
+| `BITS` | 1 register | Bit field or 0/1 value |
+
+**R/W:** `W` = writable, `NV` = non-volatile.
 
 <Note>
-  All FLOAT32 values occupy two consecutive 16-bit holding registers. When reading a FLOAT32, issue a function code 03 request with a quantity of 2 registers. The high word (most significant 16 bits) is at the lower address.
-</Note>
-
-Register addresses in this document follow the standard **40001-offset convention** used by most SCADA tools. When constructing a raw Modbus request, subtract 40001 to get the zero-based address. For example, register 40017 uses starting address `0x0010` (16 decimal) in the PDU.
-
-<Note>
-  This register map reflects firmware v1.x. Refer to the firmware changelog for any register additions or changes introduced in newer versions.
-</Note>
-
----
-
-## Device Status Registers
-
-These registers report device identification and health information. They begin at address `0x0000` (register 40001).
-
-| Register Name | Register | Address | Data Type | Description |
-|---|---|---|---|---|
-| Firmware Version Major | 40001 | 0x0000 | UINT16 | Major component of the firmware version number |
-| Firmware Version Minor | 40002 | 0x0001 | UINT16 | Minor component of the firmware version number |
-| Device Model | 40003 | 0x0002 | UINT16 | `1` = CSM-1-00, `2` = CSM-2-00 |
-| Uptime (seconds) | 40004–40005 | 0x0003 | UINT32 | Elapsed seconds since last device boot |
-
-**Device Model values**
-
-| Value | Model |
-|---|---|
-| `1` | CSM-1-00 |
-| `2` | CSM-2-00 |
-
----
-
-## Voltage Registers
-
-Phase voltage registers begin at address `0x0010` (register 40017). Both line-to-neutral and line-to-line voltages are available.
-
-| Register Name | Register | Address | Data Type | Unit | Description |
-|---|---|---|---|---|---|
-| Voltage L1-N | 40017–40018 | 0x0010 | FLOAT32 | V | Phase A line-to-neutral voltage |
-| Voltage L2-N | 40019–40020 | 0x0012 | FLOAT32 | V | Phase B line-to-neutral voltage |
-| Voltage L3-N | 40021–40022 | 0x0014 | FLOAT32 | V | Phase C line-to-neutral voltage |
-| Voltage L1-L2 | 40023–40024 | 0x0016 | FLOAT32 | V | Line-to-line voltage, phases A–B |
-| Voltage L2-L3 | 40025–40026 | 0x0018 | FLOAT32 | V | Line-to-line voltage, phases B–C |
-| Voltage L1-L3 | 40027–40028 | 0x001A | FLOAT32 | V | Line-to-line voltage, phases C–A |
-
-<Tip>
-  For single-phase or split-phase installations, only the applicable line-to-neutral registers will return valid readings. Unused phase registers return `0.0`.
-</Tip>
-
----
-
-## Current Registers
-
-Per-circuit RMS current registers begin at address `0x0030` (register 40049). Registers repeat in pairs for each circuit in sequence.
-
-| Register Name | Register | Address | Data Type | Unit | Description |
-|---|---|---|---|---|---|
-| Current Circuit 1 | 40049–40050 | 0x0030 | FLOAT32 | A | Circuit 1 RMS current |
-| Current Circuit 2 | 40051–40052 | 0x0032 | FLOAT32 | A | Circuit 2 RMS current |
-| Current Circuit N | … | … | FLOAT32 | A | Repeating pattern — 2 registers per circuit |
-
-Each additional circuit follows the same two-register FLOAT32 pattern. The number of valid circuit registers depends on the number of CT inputs configured on your device. Registers for unconfigured circuits return `0.0`.
-
----
-
-## Power Registers
-
-Active power and power factor registers begin at address `0x0060` (register 40097). Per-phase active power and total system power are available.
-
-| Register Name | Register | Address | Data Type | Unit | Description |
-|---|---|---|---|---|---|
-| Active Power L1 | 40097–40098 | 0x0060 | FLOAT32 | kW | Phase A active power |
-| Active Power L2 | 40099–40100 | 0x0062 | FLOAT32 | kW | Phase B active power |
-| Active Power L3 | 40101–40102 | 0x0064 | FLOAT32 | kW | Phase C active power |
-| Total Active Power | 40103–40104 | 0x0066 | FLOAT32 | kW | Sum of active power across all phases |
-| Power Factor L1 | 40105–40106 | 0x0068 | FLOAT32 | — | Phase A power factor (range: 0.00–1.00) |
-
-<Note>
-  Power factor values are dimensionless and range from `0.00` to `1.00`. A value of `1.00` indicates unity power factor (purely resistive load).
+  Register map revision history: A/B (firmware 1.3.8), C (1.4.0, line-to-line THD), D (1.5.0, Aggregate Meter and voltage unbalance), E (1.6.0, VP bit, resettable kWh), F (2.11, HTTPS/Modbus TCP/Modbus TLS enable, phase mode, angle range, AUX and Flex Port DI/DO/RTD), G (2.11.6, CBEMA/ITIC event counters).
 </Note>
 
 ---
 
-## Energy Registers
+## Device Info (1–55)
 
-Cumulative energy registers begin at address `0x0080` (register 40129). Energy values accumulate from the last reset and are stored in kWh as FLOAT32 pairs per circuit.
+| Register | Type | R/W | Description | Notes |
+| --- | --- | --- | --- | --- |
+| 1–2 | UINT32 | NV | Serial number |  |
+| 3–4 | UINT32 |  | Uptime | Seconds |
+| 5 | UINT16 | NV | Device ID | 0 = Cortex System point map |
+| 6 | UINT16 |  | Power up counter | Increments every reboot or power cycle |
+| 7–8 | FLOAT32 |  | Pi float | Always reads 3.141592 (word order check) |
+| 9 | UINT16 |  | Pi integer | Always reads 31415 |
+| 10 | UINT16 |  | Firmware major version | Major.Minor.Revision |
+| 11 | UINT16 |  | Firmware minor version |  |
+| 12 | UINT16 |  | Firmware revision |  |
+| 13–15 |  | NV | MAC address | BC:DF:E1:8x:xx:xx |
+| 16–35 | CHAR | NV | Brand name | 40 characters |
+| 36–55 | CHAR | NV | Model name | 40 characters |
 
-| Register Name | Register | Address | Data Type | Unit | Description |
-|---|---|---|---|---|---|
-| Energy Circuit 1 | 40129–40130 | 0x0080 | FLOAT32 | kWh | Cumulative energy, circuit 1 |
-| Energy Circuit 2 | 40131–40132 | 0x0082 | FLOAT32 | kWh | Cumulative energy, circuit 2 |
+## Device Config (56–132)
 
-Additional circuits follow the same two-register FLOAT32 pattern beyond register 40132. Energy registers are non-volatile and retain their values across power cycles.
-
-<Warning>
-  Energy registers can be reset via the device configuration interface. Resetting energy registers is irreversible. Ensure you record or export energy totals before performing a reset.
-</Warning>
+| Register | Type | R/W | Range | Description |
+| --- | --- | --- | --- | --- |
+| 56–75 | CHAR | W-NV |  | Device name (40 characters) |
+| 76–82 | UINT16 | W-NV |  | Real-time clock: year (since 1900), month (0–11), day (1–31), weekday (0–6, 0 = Sunday), hour, minute, second |
+| 83 | UINT16 | W-NV | 0–6 | Demand number of sub-intervals |
+| 84 | UINT16 | W-NV | 0, 10–32768 | Demand sub-interval length (seconds) |
+| 85–91 | UINT16 |  |  | Demand time stamp (year … second) |
+| 92 | UINT16 | W-NV |  | Modbus slave address (always 1) |
+| 93 | UINT16 | W-NV |  | Modbus TCP port (always 502) |
+| 94 / 95 | BITS | W-NV | 0, 1 | IPv4 enabled / IPv4 DHCP enabled |
+| 96–107 |  | W-NV |  | IPv4 address, gateway, subnet mask, SNTP server, DNS #1, DNS #2 (2 registers each) |
+| 108 / 109 | BITS | W-NV | 0, 1 | IPv6 enabled / IPv6 DHCP enabled |
+| 110–127 |  | W-NV |  | IPv6 link-local prefix/address, global prefix/address |
+| 128 |  | W-NV | 0, 1 | HTTPS enable (0 = HTTP, 1 = HTTPS) |
+| 129 |  | W-NV | 0, 1 | Modbus TCP enable |
+| 130 |  | W-NV | 0, 1 | Modbus TLS enable |
+| 131 |  | W-NV | 0, 1 | Phase mode (0 = relative, 1 = absolute, VA = 0°) |
+| 132 |  | W-NV | 0, 1 | Angle range (0 = signed ±180°, 1 = unsigned 0–360°) |
 
 ---
 
-## Reading FLOAT32 Values
+## AUX Port (1000–4234)
 
-Because each FLOAT32 measurement spans two consecutive 16-bit registers, you must read both registers together and reassemble them into a 32-bit float. The following Python example reads Phase A voltage using pymodbus:
+| Register | Type | R/W | Description |
+| --- | --- | --- | --- |
+| 1000 | UINT16 |  | Port status (0 = OK, 1 = Discovery) |
+| 1001 | UINT16 |  | Number of devices connected |
+| 1002–1009 | UINT16 |  | Device status, cards 1–8 |
+| 1018–1025 | UINT16 |  | Device type, cards 1–8 |
+| 1034–1041 | UINT16 |  | Device firmware version, cards 1–8 |
+| 1050–1065 | UINT32 |  | Device serial number, cards 1–8 |
+| 2000 | UINT16 |  | Number of digital input cards connected |
+| 2001–2016 | BITS |  | Digital input card summary (2 registers per card: inputs 1–16, inputs 17–18) |
+| 2033–2424 |  |  | Per-card blocks (49 registers per card): serial number, name page, name, input values (card 1 inputs at 2046–2063), and input meter assignment |
+| 2500–2691 | BITS |  | Digital input value #1–#192 (0 = open, 1 = closed) |
+| 2692–2883 | BITS | W | Digital output value #1–#192 |
+| 2884–3267 | FLOAT32 |  | RTD temperature #1–#192 |
+| 3268–3459 | UINT16 | W-NV | Digital input meter assignment (0–96 Flex Meter, 101–108 Aggregate Meter) |
+| 3460 |  |  | Digital input latching time delay |
+| 3461–3652 | BITS |  | Digital input normal state |
+| 3653–3844 | BITS |  | Digital input alarm enable |
+| 3845–3850 | BITS |  | Digital input global latching/non-latching status |
+| 3851–4042 | BITS |  | Digital input alarm status |
+| 4043–4234 | BITS | W | Digital output bind |
 
-```python read_voltage.py
-import struct
-from pymodbus.client import ModbusTcpClient
+See [Digital Input Module: CS18-00-INC](/digital-input-module-cs-18-00-inc) for per-card register offsets.
 
-client = ModbusTcpClient("192.168.1.100", port=502)
-client.connect()
+---
 
-# Voltage L1-N starts at address 0x0010 (register 40017)
-result = client.read_holding_registers(address=0x0010, count=2, slave=1)
-raw = struct.pack('>HH', result.registers[0], result.registers[1])
-voltage = struct.unpack('>f', raw)[0]
+## Meter / Circuit Config (5000–6281)
 
-print(f"Phase A Voltage: {voltage:.1f} V")
-client.close()
-```
+| Register | Type | R/W | Range | Description |
+| --- | --- | --- | --- | --- |
+| 5000 | UINT16 | W |  | Command: Reboot = 21058, Reset Max Values = 19800, Clear Resettable kWh = 17221 |
+| 5001 | BITS | W-NV | 0, 1 | Setup lock (0 = not locked) |
+| 5002–5027 |  | W-NV |  | Flex Port 1: name (40 char), panel type, number of circuits, strip orientation, strip connection, main connection, panel device type |
+| 5028–5053 |  | W-NV |  | Flex Port 2 (same layout) |
+| 5054–5079 |  | W-NV |  | Flex Port 3 (same layout) |
+| 5080–5105 |  | W-NV |  | Flex Port 4 (same layout) |
+| 5106 | UINT16 | W-NV | 0–32000 | System voltage, Volt Input 1 (line-to-line) |
+| 5107 | UINT16 | W-NV | 0–32000 | PT ratio, Volt Input 1 (100 = 1.00) |
+| 5108 | UINT16 | W-NV | 0–32000 | System voltage, Volt Input 2 (CSM-2-00 only) |
+| 5109 | UINT16 | W-NV | 0–32000 | PT ratio, Volt Input 2 |
+| 5110–5301 | UINT16 | W-NV | 0–32000 | CT size (A), circuits 1–192 |
+| 5302–5493 | UINT16 | W-NV | 0–32000 | Breaker size (A), circuits 1–192 |
+| 5494–5685 | UINT16 | W-NV | 0–5 | Voltage phase: 0–2 = Input 1 L1–L3, 3–5 = Input 2 L1–L3 (CSM-2-00) |
+| 5686–5877 | UINT16 | W-NV | 0 | CT type |
+| 5878–6069 | UINT16 | W-NV | 0–96 | Flex Meter assignment (0 = not assigned) |
+| 6070–6261 | UINT16 | W-NV | 0–8 | Aggregate Meter assignment |
+| 6262–6281 | UINT16 | W-NV | 0–96 | PDU Meter assignment |
 
-Apply the same pattern to any FLOAT32 register pair — substitute the starting address and adjust the label accordingly.
+Flex Port config values: panel type 0 = Odd/Even, 1 = Sequential, 2 = Inline, 3 = Consecutive; orientation 0 = Up, 1 = Down; strip connection 0 = Left, 1 = Right; main connection 0 = left strip, 1 = right strip; device type 0 = CT Modules, 1 = CT Strips.
+
+## Flex Port Status (7000–7880)
+
+| Flex Port 1 | Flex Port 2 | Flex Port 3 | Flex Port 4 | Description |
+| --- | --- | --- | --- | --- |
+| 7000 | 7250 | 7500 | 7750 | Port status: 0 = OK, 1 = Discovery, 2 = Invalid Config, 3 = Disabled, 4 = Unsupported Device |
+| 7001 | 7251 | 7501 | 7751 | Number of devices connected |
+| 7002 | 7252 | 7502 | 7752 | Total number of channels |
+| 7003–7050 | 7253–7300 | 7503–7550 | 7753–7800 | Channel circuit assignment |
+| 7051–7066 | 7301–7316 | 7551–7566 | 7801–7816 | Device type |
+| 7067–7082 | 7317–7332 | 7567–7582 | 7817–7832 | Device current channels |
+| 7083–7098 | 7333–7348 | 7583–7598 | 7833–7848 | Device firmware version |
+| 7099–7130 | 7349–7380 | 7599–7630 | 7849–7880 | Device serial number (UINT32) |
+
+Flex Port device type: 0 = nothing connected, 1 = 24 CT Module, 2/3/4 = 21 CT Strip, 3 Aux (0.75 in / 1.0 in / 18 mm), 5 = Digital Input, 6/7/8 = 21 CT Strip, 3 Aux, with Voltage Presence (0.75 in / 1.0 in / 18 mm).
+
+## Alarm Configuration and Status (8000–8495)
+
+| Register | Description |
+| --- | --- |
+| 8000–8006 | Volt Input 1: over/under voltage latching time delays (s), latching and non-latching thresholds (1000 = 100.0%), hysteresis |
+| 8007–8013 | Volt Input 2: same layout |
+| 8014–8023 | Circuit: high current alarm/warning and low current alarm time delays and thresholds (1000 = 100.0%), hysteresis |
+| 8024–8027 | Bit masks: global latching, global non-latching, voltage status, circuit status |
+| 8028–8033 | Volt Input 1: phase rotation (0 = ABC, 1 = ACB), system frequency (40–70 Hz), frequency alarm delay and thresholds (mHz), hysteresis |
+| 8034–8039 | Volt Input 2: same layout |
+| 8040–8041 | Current drop and presence of voltage latching time delays (s) |
+| 8100–8105 | Global latching/non-latching alarm status, most recent alarm circuit, number of circuits in alarm |
+| 8304–8495 | Presence of voltage per circuit (bit set = voltage detected) |
+
+## CBEMA/ITIC Events (8496–8597)
+
+| Register | Description |
+| --- | --- |
+| 8496–8528 | Volt Input 1 last events: time stamp, event type (0 = None, 1 = Dropout, 2 = Sag, 3 = Swell, 4 = Low Frequency Decaying Ringwave, 5 = High-Frequency Impulse and Ringwave), duration (ms), voltage (FLOAT32) |
+| 8529–8561 | Volt Input 2 last events (CSM-2-00) |
+| 8562–8567 | Volt Input 1 total event counters (UINT32, per phase). Writing 0 resets the sag/dropout and swell/ringwave counters for that phase |
+| 8568–8579 | Volt Input 1 sag/dropout and swell/ringwave counters |
+| 8580–8597 | Volt Input 2 total, sag/dropout, and swell/ringwave counters |
+
+---
+
+## Voltage Readings (9000–9933)
+
+| Volt Input 1 | Volt Input 2 | Type | Description |
+| --- | --- | --- | --- |
+| 9000–9001 | 9500–9501 | FLOAT32 | Frequency (derived from Line 1, 40–70 Hz) |
+| 9002–9009 | 9502–9509 | FLOAT32 | Voltage line-to-neutral |
+| 9010–9017 | 9510–9517 | FLOAT32 | Voltage line-to-line |
+| 9018–9023 | 9518–9523 | FLOAT32 | Percent THD line-to-neutral |
+| 9024–9029 | 9524–9529 | FLOAT32 | Crest factor |
+| 9030–9035 | 9530–9535 | FLOAT32 | Voltage angle (referenced to L1, −180 to 180) |
+| 9036–9413 | 9536–9913 | FLOAT32 | Percent harmonic content, 63 harmonics per line (L1, L2, L3) |
+| 9414–9419 | 9914–9919 | FLOAT32 | Percent THD line-to-line |
+| 9420–9425 | 9920–9925 | FLOAT32 | LN percent voltage deviation |
+| 9426–9431 | 9926–9931 | FLOAT32 | LL percent voltage deviation |
+| 9432–9433 | 9932–9933 | FLOAT32 | Percent voltage unbalance (NEMA LVUR) |
+
+Volt Input 2 is supported on the CSM-2-00 only.
+
+## Circuit Readings (10000–27663)
+
+Each block holds one value per circuit for circuits 1–192 (FLOAT32 = 2 registers per circuit).
+
+| Register | Type | R/W | Description |
+| --- | --- | --- | --- |
+| 10000–11919 | CHAR | W-NV | Circuit name (20 characters, 10 registers per circuit) |
+| 11920–12303 | FLOAT32 | NV | Total kWh (not resettable) |
+| 12304–12687 | FLOAT32 | W-NV | Resettable kWh (write 0 to reset one circuit; see register 5000 to reset all) |
+| 12688–13071 | FLOAT32 |  | kVARh |
+| 13072–13455 | FLOAT32 |  | kVAh |
+| 13456–13839 | FLOAT32 |  | kW |
+| 13840–14223 | FLOAT32 |  | kVAR |
+| 14224–14607 | FLOAT32 |  | kVA |
+| 14608–14991 | FLOAT32 |  | Current |
+| 14992–15375 | FLOAT32 |  | Breaker utilization |
+| 15376–15759 | FLOAT32 |  | Power factor (−1.0 to 1.0, IEEE convention: inductive negative, capacitive positive) |
+| 15760–16143 | FLOAT32 |  | Phase angle (−90.0 to 90.0°) |
+| 16144–16527 | FLOAT32 |  | Crest factor |
+| 16528–16911 | FLOAT32 |  | Percent THD |
+| 16912–17295 | FLOAT32 |  | Max kW |
+| 17296–17679 | FLOAT32 |  | Max current |
+| 17680–18063 | FLOAT32 |  | Max utilization |
+| 18064–18447 | FLOAT32 |  | kW demand |
+| 18448–18831 | FLOAT32 |  | Current demand |
+| 18832–19215 | FLOAT32 |  | Max kW demand |
+| 19216–19599 | FLOAT32 |  | Max current demand |
+| 19600–27663 | FLOAT32 |  | Percent harmonic content, 21 harmonics per circuit (42 registers per circuit) |
+
+Example: current for circuit N is at register 14608 + 2 × (N − 1).
+
+---
+
+## Flex Port DI / DO / RTD (34000–37191)
+
+| Flex Port | Digital inputs 1–48 | Digital outputs 1–48 (W) | RTD temperature (FLOAT32) |
+| --- | --- | --- | --- |
+| 1 | 34000–34047 | 34048–34095 | 34096–34191 |
+| 2 | 35000–35047 | 35048–35095 | 35096–35191 |
+| 3 | 36000–36047 | 36048–36095 | 36096–36191 |
+| 4 | 37000–37047 | 37048–37095 | 37096–37191 |
+
+## Aggregate Meters and Flex Meters (38000–63999)
+
+Each meter occupies a 250-register block:
+
+| Registers | Meter |
+| --- | --- |
+| 38000–39999 | Aggregate Meters #1–#8 (38000 + 250 × (n − 1)) |
+| 40000–63999 | Flex Meters #1–#96 (40000 + 250 × (n − 1)) |
+
+Layout within a meter block (offsets shown for the block starting at 40000):
+
+| Offset | Description |
+| --- | --- |
+| +0 to +9 | Meter name (20 characters) |
+| +10 | Meter mode: 0 = unused, 1 = Flex Meter, 2 = PDU Meter, 3 = Aggregate Meter |
+| +11 to +14 | Number of circuits assigned; assigned circuits (Aggregate Meter: circuits per L1/L2/L3) |
+| +15 to +23 | CT size, breaker size, and voltage phase for circuits 1–3 |
+| +24 to +27 | Alarm status: summary and circuits 1–3 |
+| +50 to +81 | Summary: total kWh, resettable kWh, kVARh, VAh, kW, kVAR, kVA, instantaneous max current, neutral current, power factor, max utilization, max total kW, max total current, max circuit utilization, max neutral current |
+| +100 to +131 | Circuit #1 (Aggregate Meter: L1): kWh, resettable kWh, kVARh, kVAh, kW, kVAR, kVA, current, PF, phase angle, THD, crest factor, breaker utilization, max kW, max current, max utilization |
+| +150 to +181 | Circuit #2 (Aggregate Meter: L2) |
+| +200 to +231 | Circuit #3 (Aggregate Meter: L3) |
+
+---
+
+## Thermal Module Registers
+
+For CS18-01-TMP RTD temperatures, see the [Thermal Module Register Map](/modbus/thermal-register-map).

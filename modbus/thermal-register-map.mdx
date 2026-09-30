@@ -1,116 +1,52 @@
 ---
 title: "CS18-01-TMP Thermal Module: Cortex PQM Modbus Registers"
 sidebarTitle: "Thermal Registers"
-description: "Modbus holding register reference for the CS18-01-TMP thermal module — 8-channel probe temperatures, status bitmask, and invalid-value handling."
+description: "Modbus register reference for CS18-01-TMP thermal module RTD temperatures on the Cortex PQM AUX port, plus AUX port status registers."
 ---
 
-When the CS18-01-TMP thermal module is installed, the CSM device exposes an additional block of Modbus holding registers for reading probe temperatures. These registers are mapped to a dedicated address space and can be read alongside the standard power measurement registers using any Modbus TCP or RTU client.
+When CS18-01-TMP Thermal modules are connected to the AUX port, their RTD temperatures are available in the AUX port **RTD Temperature** register block. The same block is shared by all AUX port RTD channels.
 
-The CS18-01-TMP module supports 8 independent probe channels. Each channel reports its temperature as a 32-bit IEEE 754 float in degrees Celsius. A status bitmask register lets you determine which probes are physically connected and returning valid data before reading their values.
-
-<Note>
-  The thermal probe registers are only present when the CS18-01-TMP module is installed and detected by the device. If you attempt to read these registers without the module installed, the device returns a Modbus exception response. See [Thermal Module Installation](/aux-modules/thermal-module) for hardware setup instructions.
-</Note>
+See [Thermal Module Installation](/aux-modules/thermal-module) for hardware setup.
 
 ## Data Format
 
 | Setting | Value |
 |---|---|
-| **Function code** | 03 — Read Holding Registers |
-| **Data type** | FLOAT32 (IEEE 754, big-endian, 2 registers per value) |
-| **Temperature unit** | Degrees Celsius (°C) |
-| **Probe channels** | 8 |
-| **Starting register** | 40257 (address `0x0100`) |
+| Data type | FLOAT32 (2 registers per value) |
+| Temperature unit | °C |
+| Register block | 2884–3267 (RTD Temperature #1–#192) |
+| Invalid reading | `999.99` = sensor not connected or out of range (as reported by the REST API) |
 
----
+## RTD Temperature Registers
 
-## Thermal Probe Registers
+| Register | Description |
+| --- | --- |
+| 2884–2885 | RTD Temperature #1 |
+| 2886–2887 | RTD Temperature #2 |
+| 2888–2889 | RTD Temperature #3 |
+| … | Each following RTD uses the next 2 registers |
+| 3266–3267 | RTD Temperature #192 |
 
-All thermal probe registers begin at address `0x0100` (register 40257). Each temperature value occupies two consecutive holding registers as a FLOAT32. The probe status bitmask follows immediately after the last temperature register.
+To locate RTD temperature _n_, read 2 registers starting at `2884 + 2 × (n − 1)`.
 
-| Register Name | Register | Address | Data Type | Unit | Description |
-|---|---|---|---|---|---|
-| Probe 1 Temperature | 40257–40258 | 0x0100 | FLOAT32 | °C | Probe channel 1 temperature |
-| Probe 2 Temperature | 40259–40260 | 0x0102 | FLOAT32 | °C | Probe channel 2 temperature |
-| Probe 3 Temperature | 40261–40262 | 0x0104 | FLOAT32 | °C | Probe channel 3 temperature |
-| Probe 4 Temperature | 40263–40264 | 0x0106 | FLOAT32 | °C | Probe channel 4 temperature |
-| Probe 5 Temperature | 40265–40266 | 0x0108 | FLOAT32 | °C | Probe channel 5 temperature |
-| Probe 6 Temperature | 40267–40268 | 0x010A | FLOAT32 | °C | Probe channel 6 temperature |
-| Probe 7 Temperature | 40269–40270 | 0x010C | FLOAT32 | °C | Probe channel 7 temperature |
-| Probe 8 Temperature | 40271–40272 | 0x010E | FLOAT32 | °C | Probe channel 8 temperature |
-| Probe Status Bitmask | 40273 | 0x0110 | UINT16 | — | Bit N = 1 if probe N is connected and returning valid data |
+## AUX Port Status Registers
 
----
+Use these registers to confirm which cards are connected and in what order. Card 1 is the card plugged directly into the AUX port; every device on the AUX port counts as a card.
 
-## Probe Status Bitmask
+| Register | Type | Description |
+| --- | --- | --- |
+| 1000 | UINT16 | Port status (0 = OK, 1 = Discovery) |
+| 1001 | UINT16 | Number of devices connected |
+| 1002–1009 | UINT16 | Device status, cards 1–8 |
+| 1018–1025 | UINT16 | Device type, cards 1–8 |
+| 1034–1041 | UINT16 | Device firmware version, cards 1–8 |
+| 1050–1065 | UINT32 | Device serial number, cards 1–8 |
 
-Register 40273 (address `0x0110`) is a 16-bit status word where each bit corresponds to one probe channel. Read this register before reading temperature values to verify that a probe is connected and its data is valid.
+## REST Alternative
 
-| Bit | Probe | Meaning when set (`1`) |
-|---|---|---|
-| Bit 0 | Probe 1 | Connected and returning valid temperature data |
-| Bit 1 | Probe 2 | Connected and returning valid temperature data |
-| Bit 2 | Probe 3 | Connected and returning valid temperature data |
-| Bit 3 | Probe 4 | Connected and returning valid temperature data |
-| Bit 4 | Probe 5 | Connected and returning valid temperature data |
-| Bit 5 | Probe 6 | Connected and returning valid temperature data |
-| Bit 6 | Probe 7 | Connected and returning valid temperature data |
-| Bit 7 | Probe 8 | Connected and returning valid temperature data |
-| Bits 8–15 | — | Reserved, always 0 |
-
-<Warning>
-  If a probe's bit in the status bitmask is `0` (disconnected or fault), the corresponding temperature register returns `0xFFFF` (interpreted as NaN or an invalid float). Always check the bitmask before using a temperature value in control logic or data logging.
-</Warning>
-
----
-
-## Reading All Probe Temperatures
-
-You can read all 8 temperature channels and the status bitmask in a single Modbus request by reading 17 registers starting at address `0x0100` (16 registers for 8 FLOAT32 values, plus 1 register for the bitmask).
-
-The following Python example reads all probes, checks the status bitmask, and prints only the valid readings:
-
-```python read_thermal.py
-from pymodbus.client import ModbusTcpClient
-import struct
-
-client = ModbusTcpClient("192.168.1.100", port=502)
-client.connect()
-
-# Read 17 registers starting at 0x0100:
-# - Registers 0–15: 8x FLOAT32 temperature values (2 registers each)
-# - Register 16: UINT16 probe status bitmask
-result = client.read_holding_registers(address=0x0100, count=17, slave=1)
-registers = result.registers
-
-status_bitmask = registers[16]
-
-for i in range(8):
-    probe_number = i + 1
-    is_valid = bool(status_bitmask & (1 << i))
-
-    if is_valid:
-        raw = struct.pack('>HH', registers[i * 2], registers[i * 2 + 1])
-        temp = struct.unpack('>f', raw)[0]
-        print(f"Probe {probe_number}: {temp:.1f} °C")
-    else:
-        print(f"Probe {probe_number}: not connected or invalid")
-
-client.close()
-```
-
-<Note>
-  This example requires the `pymodbus` library. Install it with `pip install pymodbus`.
-</Note>
-
-<Tip>
-  If you only need a subset of probes, you can read a smaller range of registers instead of all 17. For example, to read only probes 1 and 2, request 4 registers starting at `0x0100` — then read the bitmask separately at `0x0110` to validate those two probes.
-</Tip>
-
----
+`GET /api/auxport` returns each Thermal board with `"deviceType": "thermal"`, RTD sensor channels 1–18, and the board temperature on channel 19. See the [REST API Reference](/api/overview).
 
 ## Related Resources
 
-- [Thermal Module Installation Guide](/aux-modules/thermal-module) — hardware installation, probe wiring, and connector pinout for the CS18-01-TMP module
-- [REST API: GET /api/temperature](/api/overview#get-apitemperature) — read probe temperatures over HTTP without a Modbus client
-- [Cortex PQM Modbus Register Map](/modbus/register-map) — standard power measurement registers for voltage, current, power, and energy
+- [Thermal Module Installation Guide](/aux-modules/thermal-module)
+- [Cortex PQM Modbus Register Map](/modbus/register-map)
