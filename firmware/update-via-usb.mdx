@@ -1,0 +1,66 @@
+---
+title: "Update Cortex PQM Firmware via USB Flash Drive Guide"
+sidebarTitle: "Update via USB"
+description: "Step-by-step instructions for updating Cortex PQM (CSM-1-00 / CSM-2-00) firmware using a FAT32 USB flash drive when network access is unavailable."
+---
+
+The USB update method is the simplest way to update your Cortex PQM (CSM-1-00 / CSM-2-00) and requires no network connection. You prepare a USB flash drive with the firmware file, insert it into the device, and the device handles the rest automatically on next power-on. This method is ideal for field installations or any site where the device is not yet connected to a network.
+
+## What You Need
+
+- A USB flash drive formatted as **FAT32** with a minimum of **64 MB** of free space
+- The firmware `.bin` file obtained from the Cortex Systems support portal
+
+## Steps
+
+<Steps>
+  <Step title="Download the firmware file">
+    Download the latest firmware `.bin` file from the [Cortex Systems support portal](https://support.cortexsystems.com). Confirm the file is intended for your device model (CSM-1-00 or CSM-2-00).
+  </Step>
+
+  <Step title="Prepare the USB drive">
+    Copy the firmware file to the **root directory** of your FAT32-formatted USB flash drive. Rename the file to exactly:
+
+    ```
+    cortex_firmware.bin
+    ```
+
+    The device looks for this exact filename at the root of the drive. Subdirectories are not searched.
+  </Step>
+
+  <Step title="Power off the device">
+    Shut down the CSM device cleanly before inserting the USB drive.
+  </Step>
+
+  <Step title="Insert the USB drive">
+    Insert the prepared USB flash drive into the USB port on the CSM device.
+  </Step>
+
+  <Step title="Power on the device">
+    Apply power to the device. The firmware update starts automatically — no additional interaction is required.
+  </Step>
+
+  <Step title="Wait for the update to complete">
+    The **Status LED** will blink rapidly during the update process. This typically takes approximately **2 minutes**. Do not interfere with the device while the LED is blinking.
+  </Step>
+
+  <Step title="Confirm successful completion">
+    When the update is complete, the device reboots automatically. The Status LED returns to a **steady green**, indicating normal operation.
+  </Step>
+
+  <Step title="Remove the USB drive">
+    Once the Status LED is steady green, safely remove the USB flash drive from the device.
+  </Step>
+
+  <Step title="Verify the new firmware version">
+    Navigate to **Settings → About** in the device web interface, or call `GET /api/version`, to confirm the firmware version now reflects the update you applied.
+  </Step>
+</Steps>
+
+<Warning>
+  Do not remove the USB drive or cut power while the Status LED is blinking. Interrupting the update process may corrupt the firmware. If corruption occurs, contact Cortex Systems support for recovery instructions.
+</Warning>
+
+<Tip>
+  After copying the firmware file, verify the filename is exactly `cortex_firmware.bin` with no additional extensions. Some operating systems append a `.txt` extension when saving downloaded files (e.g., `cortex_firmware.bin.txt`). Enable file extension visibility in your OS settings to confirm the filename before proceeding.
+</Tip>

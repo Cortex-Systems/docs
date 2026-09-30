@@ -1,0 +1,99 @@
+---
+title: "Ethernet Wiring and Network Setup for the Cortex PQM"
+sidebarTitle: "Ethernet Wiring"
+description: "How to connect the Cortex PQM CSM to your Ethernet network, configure DHCP or static IP, and access the web interface and REST API."
+---
+
+The CSM device connects to your local network through a standard RJ45 Ethernet port, giving you access to the web interface, the REST API, and remote configuration. Ethernet is the only communication interface on the CSM, so a working network connection is required before you can complete setup or retrieve any data. This page walks you through the physical connection and initial IP address configuration.
+
+## Network Interface Specifications
+
+| Parameter | Specification |
+|---|---|
+| Interface type | 10/100Base-T Ethernet |
+| Connector | RJ45 |
+| Cable type | Cat5e or better (straight-through patch cable) |
+| IP addressing | DHCP (default) or static |
+
+No special network hardware is required. The CSM connects directly to any standard network switch or router port.
+
+## Physical Connection Steps
+
+<Steps>
+  <Step title="Select an Ethernet patch cable">
+    Use a standard straight-through Cat5e or Cat6 Ethernet patch cable. The CSM does not require a crossover cable — use a regular patch cable whether connecting to a switch, router, or PoE injector.
+  </Step>
+  <Step title="Connect to the CSM device">
+    Plug one end of the Ethernet patch cable into the **RJ45 port** on the CSM device. You will feel a click when the latch engages.
+  </Step>
+  <Step title="Connect to your switch or router">
+    Plug the other end of the cable into an available port on your network switch or router.
+  </Step>
+  <Step title="Power on the CSM device">
+    Apply DC power to the CSM (see [DC Wiring](/wiring/dc-wiring) if you have not done this yet). The device will begin its boot sequence.
+  </Step>
+  <Step title="Verify link establishment">
+    Watch the **Network LED** on the CSM device. It will illuminate solid once a physical link is established with the switch or router. If the LED does not illuminate, check the cable connection at both ends and verify the switch port is active.
+  </Step>
+</Steps>
+
+## IP Address Configuration
+
+### DHCP Mode (Default)
+
+By default, the CSM device requests an IP address automatically from a DHCP server on your network. No configuration is needed for initial setup.
+
+To find the IP address the device was assigned, use one of these methods:
+
+- **Router DHCP client list:** Log in to your router's administration interface and look for the CSM device in the list of connected DHCP clients. The device hostname is typically `cortex-csm` or similar.
+- **Network scanner:** Use a network scanning tool (such as `nmap` or your router's built-in scanner) to discover devices on your subnet.
+
+```bash
+# Example: scan your local subnet for the CSM device
+nmap -sn 192.168.1.0/24
+```
+
+### Static IP Configuration
+
+To assign a fixed IP address, edit the device configuration file on the CSM. See [Configuration File Definitions](/configuration/file-definitions) for the full file reference.
+
+```yaml
+network:
+  mode: static
+  ip_address: 192.168.1.50
+  subnet_mask: 255.255.255.0
+  gateway: 192.168.1.1
+  dns: 8.8.8.8
+```
+
+<Tip>
+  Even if you use DHCP, configure a **DHCP reservation** in your router so the CSM always receives the same IP address. This prevents the address from changing after a router reboot and keeps your API integrations and browser bookmarks working without interruption.
+</Tip>
+
+## Accessing the Device
+
+Once you have the device IP address, you can access it through a web browser or directly via the REST API.
+
+| Interface | URL |
+|---|---|
+| Web interface | `http://{device-ip}/` |
+| REST API | `http://{device-ip}/api/` |
+
+Replace `{device-ip}` with the actual IP address of your CSM device. For example:
+
+```text
+http://192.168.1.50/
+http://192.168.1.50/api/
+```
+
+## Network Security
+
+The CSM device uses HTTP by default, which means traffic between your browser or API client and the device is unencrypted. For deployments where network security is a concern:
+
+- Place the CSM device behind a firewall and restrict access to authorized IP addresses or subnets only.
+- Use a VPN to access the device remotely rather than exposing it directly to the internet.
+- Limit access to the device's IP and port to specific trusted hosts using firewall rules on your network router or switch.
+
+<Note>
+  The CSM device is designed for use on private, trusted internal networks. Do not expose the device's HTTP interface directly to the public internet without additional security controls in place.
+</Note>

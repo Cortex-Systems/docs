@@ -1,0 +1,73 @@
+---
+title: "Digital Input Module CS18-00-INC Installation and Use"
+sidebarTitle: "Digital Input"
+description: "How to install and configure the Cortex PQM CS18-00-INC digital input module for pulse counting from utility meters and dry contact status monitoring."
+---
+
+The CS18-00-INC Digital Input Module expands your Cortex PQM with eight independent digital input channels, enabling pulse counting from utility and sub-meters as well as dry contact status monitoring for switches, breakers, and other on/off signals. Once installed, all input data is accessible through the REST API and Modbus registers without requiring additional software configuration beyond defining each channel's role.
+
+## Specifications
+
+| Parameter | Value |
+|---|---|
+| Part Number | CS18-00-INC |
+| Number of Inputs | 8 digital inputs |
+| Input Type | Dry contact or open collector |
+| Max Pulse Frequency | 25 Hz (typical for meter pulses) |
+| Input Voltage | 3.3 V logic (internal pull-up) |
+
+## Installation
+
+<Warning>
+  Power off the CSM device before connecting or disconnecting any AUX module. Inserting or removing a module with power applied may damage the device or the module.
+</Warning>
+
+<Steps>
+  <Step title="Power off the CSM device">
+    Remove power from the CSM device before proceeding. Confirm that all indicator LEDs are off.
+  </Step>
+  <Step title="Connect the module to the AUX port">
+    Align the CS18-00-INC connector with the AUX port header on the CSM device and press firmly until fully seated.
+  </Step>
+  <Step title="Secure the retention clip">
+    If a retention clip was supplied with your unit, engage it now to prevent the module from loosening under vibration.
+  </Step>
+  <Step title="Power on the device">
+    Restore power to the CSM device. The module is detected automatically during startup.
+  </Step>
+  <Step title="Verify detection">
+    Confirm the module is active by querying the REST API — the `digital_inputs` field will be present in the device status response.
+  </Step>
+</Steps>
+
+## Wiring
+
+Connect your dry contacts or open-collector outputs to the terminal block on the CS18-00-INC. Each input channel uses one pair of terminals. No external voltage source is required — the module supplies a 3.3 V internal pull-up on each input line.
+
+- **Dry contacts** (door switches, breaker auxiliary contacts): connect the two contact terminals across the input pair.
+- **Open-collector outputs** (meter pulse outputs): connect the collector terminal to the input terminal and the emitter (ground) to the common ground terminal.
+
+Keep field wiring away from high-voltage conductors and route in a separate cable duct where possible.
+
+## Configuration
+
+Define each input channel's behavior in the device configuration file using the `digital_inputs` array. Set the `mode` field to `pulse_count` for meter inputs or `status` for on/off state monitoring.
+
+```json
+"digital_inputs": [
+  { "id": 1, "name": "Gas Meter Pulse", "mode": "pulse_count", "pulse_value": 1.0, "unit": "cubic_feet" },
+  { "id": 2, "name": "Main Breaker Status", "mode": "status" }
+]
+```
+
+- `pulse_value` — the quantity represented by each pulse (e.g., `1.0 cubic_feet` per pulse from a gas meter).
+- `unit` — the engineering unit string displayed in the API response and dashboard.
+- Channels not explicitly configured default to `status` mode.
+
+## Data Access
+
+Pulse counts and input states are available through both the REST API and Modbus registers.
+
+<Note>
+  Pulse count values accumulate continuously and do not reset on power cycle. Use the REST API to read the current count and, if required, to reset individual counters to zero. Refer to the REST API reference for the reset endpoint details.
+</Note>

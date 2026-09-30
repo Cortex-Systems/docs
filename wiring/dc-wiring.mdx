@@ -1,0 +1,102 @@
+---
+title: "DC Power and Digital Input Wiring for the Cortex PQM"
+sidebarTitle: "DC Wiring"
+description: "How to wire the Cortex PQM CSM DC power supply input and digital pulse or dry-contact inputs using the CS18-00-INC expansion module."
+---
+
+The CSM device uses two types of DC wiring: a DC power supply that powers the device itself, and digital input wiring for the optional CS18-00-INC module, which accepts pulse or dry-contact signals from external meters and sensors. Complete the DC power supply wiring first, but do not energize the supply until all other wiring — AC voltage inputs, CT clamps, and Ethernet — is also complete.
+
+---
+
+## DC Power Supply Wiring
+
+The CSM device requires a regulated DC supply to operate. Use a dedicated, regulated power supply rated for the CSM's current draw plus any installed expansion modules.
+
+### Specifications
+
+| Parameter | Specification |
+|---|---|
+| Supply voltage | 12–24VDC regulated |
+| Typical current draw (no modules) | 500mA |
+| Maximum current draw (all modules) | 1A |
+| Terminal block wire range | 12–24 AWG |
+| Recommended supply fusing | 2A |
+
+### Wiring Steps
+
+<Steps>
+  <Step title="Size your power supply">
+    Select a regulated 12–24VDC power supply rated for at least 1A output to accommodate the CSM and any installed modules.
+  </Step>
+  <Step title="Prepare the wires">
+    Strip each wire to 7mm of bare conductor. If using stranded wire, terminate the end with a ferrule or tin it to prevent stray strands.
+  </Step>
+  <Step title="Fuse the positive supply line">
+    Insert a 2A fuse or circuit breaker in series with the positive DC supply line before it reaches the CSM terminal block.
+  </Step>
+  <Step title="Connect the positive terminal">
+    Insert the positive supply wire (through the fuse) into the **[+]** terminal on the CSM and tighten the captive screw until firm.
+  </Step>
+  <Step title="Connect the negative terminal">
+    Insert the negative (return) supply wire into the **[−]** terminal on the CSM and tighten the captive screw until firm.
+  </Step>
+  <Step title="Verify connections">
+    Double-check polarity before applying power. With a multimeter, confirm the voltage at the terminals is within the 12–24VDC range.
+  </Step>
+</Steps>
+
+### Wiring Diagram
+
+```text
+DC Supply (+) ──┤2A fuse├── CSM [+] terminal
+DC Supply (−) ─────────── CSM [−] terminal
+```
+
+<Warning>
+  Reverse polarity on the DC power input may permanently damage the device and voids the warranty. Always verify polarity with a multimeter before applying power.
+</Warning>
+
+---
+
+## Digital Input Wiring (CS18-00-INC Module)
+
+The CS18-00-INC module adds digital input channels to the CSM, accepting dry contact closures or open-collector pulse signals from utility sub-meters, flow meters, gas meters, or any device with a pulse output.
+
+### Specifications
+
+| Parameter | Specification |
+|---|---|
+| Input type | Dry contact or open-collector |
+| Recommended wire gauge | 22–26 AWG shielded |
+| Maximum wire run | Refer to signal source spec; use shielded cable for runs over 10m |
+
+### Wiring Steps
+
+<Steps>
+  <Step title="Identify the signal type">
+    Determine whether your external device provides a dry contact (switch closure) or an open-collector pulse output. Both types wire the same way, but open-collector devices require the GND reference connection described below.
+  </Step>
+  <Step title="Run shielded cable">
+    For long cable runs or installations near high-voltage conductors, use 22–26 AWG shielded twisted-pair cable. Route the cable away from AC power wiring where possible.
+  </Step>
+  <Step title="Connect the input wire">
+    Connect one wire from the contact pair (or the pulse output **+** wire) to the desired **DI** input terminal on the CS18-00-INC module.
+  </Step>
+  <Step title="Connect the return/GND wire">
+    Connect the other contact wire (or the pulse output **−** wire) to the **GND** terminal on the CS18-00-INC module.
+  </Step>
+  <Step title="Ground the shield (if applicable)">
+    If using shielded cable, connect the shield drain wire to the **GND** terminal at the CSM end only. Leave the shield unconnected at the sensor end to avoid ground loops.
+  </Step>
+</Steps>
+
+### Wiring Diagram
+
+```text
+Meter Pulse (+) ─────────── DI1 terminal (CS18-00-INC)
+Meter Pulse (−) ─────────── GND terminal (CS18-00-INC)
+```
+
+<Note>
+  For dry contact inputs, either wire of the contact pair can connect to the DI terminal — polarity does not matter for dry contacts. Polarity does matter for open-collector pulse outputs; always connect the labeled **+** to the DI terminal and **−** to GND.
+</Note>

@@ -1,0 +1,160 @@
+---
+title: "Cortex PQM Configuration File Parameters Reference"
+sidebarTitle: "File Definitions"
+description: "Complete reference for all Cortex PQM configuration file parameters: network, device info, circuit settings, and measurement options."
+---
+
+This page documents every parameter available in the Cortex PQM JSON configuration file. Parameters are grouped by their top-level object key. All parameters are optional unless noted otherwise — the device applies its built-in default for any parameter you omit.
+
+For guidance on editing and uploading the configuration file, see [Editing Configuration Files](/configuration/editing-files) and [Uploading Configuration Files](/configuration/uploading-files).
+
+---
+
+## Network settings — `network`
+
+The `network` object controls how the Cortex PQM connects to your local network. Changes to network settings require a device reboot to take effect.
+
+<ParamField body="dhcp" type="boolean" default="true">
+  When `true`, the device requests an IP address from a DHCP server on the network. Set to `false` to use the static IP settings below.
+</ParamField>
+
+<ParamField body="ip" type="string">
+  Static IPv4 address assigned to the device. Only used when `dhcp` is `false`. Example: `"192.168.1.100"`.
+</ParamField>
+
+<ParamField body="subnet" type="string">
+  Subnet mask for the static IP configuration. Example: `"255.255.255.0"`. Only used when `dhcp` is `false`.
+</ParamField>
+
+<ParamField body="gateway" type="string">
+  Default gateway IP address. Only used when `dhcp` is `false`. Example: `"192.168.1.1"`.
+</ParamField>
+
+<ParamField body="dns" type="string">
+  DNS server IP address used for hostname resolution. Example: `"8.8.8.8"`. Only used when `dhcp` is `false`.
+</ParamField>
+
+<ParamField body="hostname" type="string">
+  Network hostname for the device. Used for mDNS discovery and DHCP registration. Example: `"pqm-main-panel"`.
+</ParamField>
+
+---
+
+## Device information — `device`
+
+The `device` object stores human-readable identity fields that appear in the web interface, log exports, and API responses.
+
+<ParamField body="name" type="string">
+  A descriptive name for this device. Displayed in the web interface header and included in data exports. Example: `"Main Panel PQM"`.
+</ParamField>
+
+<ParamField body="location" type="string">
+  Physical location of the device installation. Useful when managing multiple units. Example: `"Building A - Electrical Room"`.
+</ParamField>
+
+<ParamField body="timezone" type="string">
+  IANA timezone identifier used to timestamp all measurements and log entries. Example: `"America/New_York"`. See the [IANA timezone database](https://www.iana.org/time-zones) for a full list of valid values.
+</ParamField>
+
+---
+
+## Circuit configuration — `circuits`
+
+The `circuits` value is a JSON **array**. Each element in the array is an object describing one monitored circuit. Add one object per circuit you want to configure.
+
+<ParamField body="id" type="integer" required>
+  Circuit number using a 1-based index. Must be unique within the array. Corresponds to the physical CT input channel on the device.
+</ParamField>
+
+<ParamField body="name" type="string">
+  Human-readable label for the circuit. Displayed in the web interface and included in data exports. Example: `"HVAC Unit 1"`.
+</ParamField>
+
+<ParamField body="ct_ratio" type="integer">
+  The primary current rating of the current transformer connected to this circuit, in amps. For example, use `200` for a 200:5 A CT. The device uses this value to convert raw CT output into engineering units.
+</ParamField>
+
+<ParamField body="enabled" type="boolean" default="true">
+  Set to `false` to disable monitoring and data collection for this circuit without removing it from the configuration.
+</ParamField>
+
+<ParamField body="phase" type="string">
+  The AC phase this circuit is associated with. Accepted values: `"A"`, `"B"`, or `"C"`. Used for per-phase aggregation and reporting.
+</ParamField>
+
+---
+
+## Measurement settings — `measurement`
+
+The `measurement` object controls how the Cortex PQM acquires and processes electrical measurements. Changes to these settings require a device reboot.
+
+<ParamField body="wiring_config" type="string">
+  Describes the wiring topology of the monitored service. The device uses this to select the correct power calculation method. Accepted values:
+
+  | Value | Description |
+  |---|---|
+  | `"1P2W"` | Single-phase, 2-wire (hot + neutral) |
+  | `"1P3W"` | Single-phase, 3-wire (split-phase, e.g. US residential) |
+  | `"3P3W"` | Three-phase, 3-wire (delta, no neutral) |
+  | `"3P4W"` | Three-phase, 4-wire (wye with neutral) |
+</ParamField>
+
+<ParamField body="frequency" type="integer" default="60">
+  Nominal line frequency in hertz. Accepted values: `50` or `60`.
+</ParamField>
+
+<ParamField body="sample_rate" type="integer" default="1">
+  Measurement update interval in seconds. Determines how often the device computes and stores a new reading. Lower values produce higher-resolution data at the cost of increased storage usage.
+</ParamField>
+
+---
+
+## Complete example
+
+The following is a full configuration file that demonstrates all four top-level objects working together. Use it as a starting template and modify the values to match your installation.
+
+```json config.json
+{
+  "network": {
+    "dhcp": false,
+    "ip": "192.168.1.100",
+    "subnet": "255.255.255.0",
+    "gateway": "192.168.1.1",
+    "dns": "8.8.8.8",
+    "hostname": "pqm-main-panel"
+  },
+  "device": {
+    "name": "Main Panel PQM",
+    "location": "Building A - Electrical Room",
+    "timezone": "America/New_York"
+  },
+  "circuits": [
+    {
+      "id": 1,
+      "name": "HVAC Unit 1",
+      "ct_ratio": 200,
+      "enabled": true,
+      "phase": "A"
+    },
+    {
+      "id": 2,
+      "name": "Lighting Panel L1",
+      "ct_ratio": 100,
+      "enabled": true,
+      "phase": "B"
+    },
+    {
+      "id": 3,
+      "name": "Server Room UPS Feed",
+      "ct_ratio": 100,
+      "enabled": true,
+      "phase": "C"
+    }
+  ],
+  "measurement": {
+    "wiring_config": "3P4W",
+    "frequency": 60,
+    "sample_rate": 1
+  }
+}
+```

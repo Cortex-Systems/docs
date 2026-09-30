@@ -1,0 +1,146 @@
+---
+title: "Cortex PQM Quick Start Guide: From Unboxing to Live Data"
+sidebarTitle: "Quick Start"
+description: "Mount, wire, and connect your Cortex PQM CSM-1-00 or CSM-2-00 to your local network and begin reading live power quality data in under 30 minutes."
+---
+
+This guide walks you through the complete first-time installation of your Cortex PQM CSM-1-00 or CSM-2-00 — from unboxing to reading live power data on your network. By the end, your device will be mounted inside your electrical panel, wired to the circuits you want to monitor, connected to your local network, and ready for configuration. Plan for approximately 20–30 minutes of hands-on time, not including any time required to de-energize panel circuits.
+
+<Warning>
+  Installation of the Cortex PQM requires working inside an electrical panel. This work **must be performed by a qualified electrician** who is trained, authorized, and equipped for the task. Ensure all applicable lockout/tagout procedures are followed before opening any panel enclosure or connecting wiring to live conductors.
+</Warning>
+
+<Steps>
+  <Step title="Unbox and inspect the device">
+    Before installing anything, inspect the device and verify you have everything needed for the installation.
+
+    Remove the Cortex PQM and all accessories from the packaging and lay them out on a clean, flat surface. Check the device for any physical damage — cracks in the housing, bent terminals, or a cracked display window are signs of shipping damage. Do not install a damaged device; contact your supplier before proceeding.
+
+    Verify the model number printed on the device label matches what you ordered:
+    - **CSM-1-00** — single-phase model (one voltage input channel, one base CT input)
+    - **CSM-2-00** — three-phase model (three voltage input channels, three base CT inputs)
+
+    Confirm the following items are present in the box:
+
+    | Item | Notes |
+    |---|---|
+    | Cortex PQM device (CSM-1-00 or CSM-2-00) | Check model number on label |
+    | CT shorting links | Pre-installed on CT terminals at the factory |
+    | DIN rail mounting clip | Attached to the device rear |
+    | Quick reference card | Keep for on-site reference |
+    | DC power terminal connector | 2-position pluggable screw connector |
+
+    <Note>
+      CT clamp sensors are ordered separately and may not be included in the device box. Verify you have the correct CT clamps for your conductor sizes and current ranges before beginning installation.
+    </Note>
+  </Step>
+
+  <Step title="Mount the device on the DIN rail">
+    The Cortex PQM is designed for tool-free snap mounting on a standard 35 mm DIN rail (EN 60715) inside your electrical panel or enclosure.
+
+    Choose a mounting position that provides:
+    - At least **25 mm of clearance** above and below the device for airflow and cable routing
+    - Unobstructed access to all front-panel ports and terminals
+    - A routing path for the Ethernet cable from the device to your network patch panel or switch — avoid routing the Ethernet cable alongside high-voltage conductors where possible
+
+    To mount the device:
+
+    1. Tilt the top edge of the device toward the DIN rail so that the upper mounting clip hooks over the top edge of the rail.
+    2. Press the bottom of the device firmly toward the rail until the spring-loaded lower clip snaps into place with a click.
+    3. Verify the device is secure by gently attempting to pull it away from the rail — it should not move.
+
+    To remove the device, insert a flat-blade screwdriver into the release slot on the lower clip, lever the clip down to release it, and tilt the device off the rail.
+  </Step>
+
+  <Step title="Connect DC power">
+    The Cortex PQM requires a **12–24 VDC regulated power supply** connected to its DC power input terminals. The device does not draw power from the monitored voltage inputs.
+
+    Identify a suitable DC supply in or near the panel. If one is not already present, install a DIN-rail mounted 24 VDC power supply fed from a spare circuit breaker in the panel.
+
+    To connect DC power:
+
+    1. Ensure the DC power supply is **off or disconnected** before wiring.
+    2. Locate the 2-position DC power terminal on the Cortex PQM. The terminals are labeled **+** (positive) and **−** (negative / GND) on the device housing.
+    3. Strip approximately 7 mm of insulation from your DC supply wires.
+    4. Insert the wires into the pluggable terminal connector — positive to **+**, negative to **−** — and tighten the screw clamps firmly.
+    5. Plug the connector into the device's power input socket.
+    6. Apply power to the DC supply.
+
+    **Expected result:** The **PWR** LED lights solid green within a few seconds. The **STS** LED will blink green slowly during boot, then turn solid green once the device is fully initialized (typically 15–30 seconds).
+
+    If the PWR LED does not illuminate, switch off the supply and verify polarity and supply voltage at the terminals with a multimeter before re-applying power.
+  </Step>
+
+  <Step title="Wire voltage inputs and CT clamps">
+    <Warning>
+      Connecting voltage input wiring to live conductors must be performed by a **qualified electrician**. De-energize all circuits that will be wired to the device's voltage input terminals before making any connections. Follow all applicable lockout/tagout and safe work procedures.
+    </Warning>
+
+    **Voltage input wiring**
+
+    Connect the line voltage sensing wires from the device's voltage input terminals to the appropriate conductors or bus bars in the panel. Refer to the wiring schematic in the Device Overview for terminal assignments for your wiring configuration (single-phase 2-wire, split-phase 3-wire, three-phase delta, or three-phase wye).
+
+    Use appropriately rated wire for the panel's voltage class. Protect the sense wires with an in-line fuse or miniature circuit breaker (typically 1 A) as close to the source conductor as practical — this is a common code requirement and protects the device wiring.
+
+    **CT clamp installation**
+
+    CT clamps measure current non-invasively by clamping around a single conductor. Install them as follows:
+
+    1. Identify the conductors you want to monitor. Each CT clamp must clamp around **one conductor only** — do not clamp around a pair of conductors or a cable assembly, as the magnetic fields will cancel and you will read zero current.
+    2. Verify the CT clamp's current range is appropriate for the expected load current on each conductor.
+    3. Open the CT clamp, position it around the target conductor, and close it firmly until it clicks or latches shut.
+    4. Note the directional marking (usually an arrow or **P1/P2** label) on the CT clamp. For accurate power factor measurements, orient all CTs in the same direction relative to the direction of current flow (toward the load).
+    5. Remove the factory-installed CT shorting link from the corresponding CT input terminal on the Cortex PQM.
+    6. Connect the CT clamp's output leads to the CT input terminal pair — **+** signal wire to the positive terminal, **−** / shield to the negative terminal.
+    7. Leave the shorting link installed on any CT terminal that does not have a CT clamp connected to it.
+
+    <Note>
+      If you need to disconnect a CT clamp from a terminal while the monitored conductor is energized, **re-install the shorting link on the terminal before disconnecting the CT leads**. An open-circuit CT clamp on an energized conductor can develop a dangerously high secondary voltage.
+    </Note>
+  </Step>
+
+  <Step title="Connect Ethernet and access the device">
+    With power applied and wiring complete, connect the Cortex PQM to your local network and verify that you can reach the device.
+
+    **Connect the Ethernet cable**
+
+    Plug a standard Cat 5e or Cat 6 patch cable into the RJ45 port on the Cortex PQM, and connect the other end to your network switch or router. The **LNK** LED on the device will turn solid green when a link is established, and will blink green when data is being exchanged.
+
+    **Determine the device IP address**
+
+    By default, the Cortex PQM requests an IP address via **DHCP**. Check your DHCP server's lease table or your router's connected-devices list for the device. It will appear with the hostname `cortex-pqm-<last6ofMAC>` (for example, `cortex-pqm-a1b2c3`). The device's MAC address is printed on the label on the side of the housing.
+
+    If your network does not have a DHCP server, the device falls back to the link-local address range (`169.254.x.x`). You can connect a laptop directly to the device with a patch cable and scan the `169.254.0.0/16` subnet to find it, then assign a static address through the web interface before connecting to your production network.
+
+    **Access the web interface**
+
+    Open a web browser and navigate to the device's IP address:
+
+    ```
+    http://<device-ip-address>
+    ```
+
+    You will be prompted to log in. The default credentials are printed on the device label. Change the password immediately after your first login.
+
+    **Verify measurements**
+
+    Navigate to the **Live Readings** or **Dashboard** section of the web interface. If voltage inputs are connected and the circuits are energized, you should see live voltage readings. If CT clamps are installed on energized conductors carrying load, current and power readings will appear as well.
+
+    If readings are zero or unexpected, verify your wiring configuration setting in the device settings matches your actual panel wiring (single-phase, split-phase, three-phase wye, or three-phase delta), and confirm that the CT ratio entered for each channel matches the CT clamps you installed.
+  </Step>
+</Steps>
+
+## What to Do Next
+
+Your Cortex PQM is now installed and connected. Before putting it into production, complete the following configuration tasks to ensure accurate measurements and secure operation:
+
+<Note>
+  **Recommended next steps:**
+  - Set the correct **CT ratio** for each connected channel — this is essential for accurate current and power readings. Navigate to **Settings → Channels** in the web interface.
+  - Select the correct **wiring configuration** (single-phase, split-phase, three-phase wye, or three-phase delta) in **Settings → System**.
+  - Assign a **static IP address** or a DHCP reservation so the device address does not change.
+  - Change the default **admin password** if you have not already done so.
+  - Configure **energy accumulation** start dates and any alarm thresholds relevant to your site.
+
+  See the [Configuration Guide](/configuration/overview) for step-by-step instructions on all of these settings, and the [REST API Reference](/api/overview) to begin integrating measurement data into your applications or building management system.
+</Note>

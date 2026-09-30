@@ -1,0 +1,39 @@
+---
+title: "Connecting Power, Voltage, and Ethernet to the CSM Device"
+sidebarTitle: "Connecting"
+description: "How to connect DC power, line voltage inputs, CT clamp wiring, Ethernet, and expansion modules to the Cortex PQM CSM-1-00 or CSM-2-00."
+---
+
+After mounting the CSM device on the DIN rail, you are ready to make the electrical and network connections. Complete all connections in the order described below — power first, then signal wiring, then network. This sequence allows you to verify each stage before proceeding and reduces the risk of energizing incomplete connections.
+
+<Warning>
+  **De-energize all circuits before making any voltage connections.** Verify with a meter that all conductors are at zero volts before touching or terminating them. Line voltage wiring must be performed by a qualified electrician in accordance with applicable local codes.
+</Warning>
+
+## Connection Sequence
+
+<Steps>
+  <Step title="Connect the DC power supply">
+    Wire a regulated 12–24VDC power supply to the DC power input terminals on the top of the CSM device. Connect the positive lead to the **+** terminal and the negative lead to the **−** terminal. Do not apply power yet — leave the supply off until all other connections are complete. See [DC Wiring Instructions](/csm/dc-wiring) for full details.
+  </Step>
+  <Step title="Connect the line voltage input terminals">
+    Wire the line conductors from the circuit you are monitoring to the voltage input terminal block. For the **CSM-1-00**, connect L1 and L2 (plus Neutral if applicable). For the **CSM-2-00**, connect L1, L2, and L3 (plus Neutral for wye configurations). Each line voltage input must be wired through a suitably rated fuse or circuit breaker. Do not exceed 600V line-to-line.
+  </Step>
+  <Step title="Install CT clamp wires to FLEX port module terminals">
+    Route the secondary leads from each current transformer (CT clamp) to the terminal blocks on the CT card installed in the FLEX port. Observe the polarity markings on each CT and match them to the terminal markings on the CT card. Refer to the CT card documentation for terminal assignments and torque specifications.
+  </Step>
+  <Step title="Connect expansion modules">
+    If you are installing additional FLEX modules (analog inputs, etc.) or an AUX module (digital I/O, thermal), plug them into their respective ports now. FLEX modules attach to the FLEX port slots on the right side of the device. The AUX module attaches to the AUX port header on the left side. Ensure each module is fully seated and latched before wiring its terminals.
+  </Step>
+  <Step title="Connect the Ethernet cable">
+    Plug a standard Cat5e or Cat6 Ethernet cable into the RJ45 jack on the front face of the CSM device. Connect the other end to your network switch or router. The Network Link LED will illuminate once the link is established.
+  </Step>
+</Steps>
+
+<Tip>
+  Follow the dedicated wiring guide for each connection type to ensure correct terminal assignments, wire gauge selection, and fusing requirements. See the [Wiring Overview](/wiring/overview) for a complete index of wiring documentation.
+</Tip>
+
+## After Connecting
+
+Once all connections are in place, verify each termination visually before applying power. Confirm that no bare conductors are exposed outside of terminal blocks and that all unused terminals are covered. Apply DC power and observe the Power LED — it should illuminate solid green within a few seconds. If the Power LED does not illuminate or the Status LED shows red, refer to the troubleshooting section before proceeding.

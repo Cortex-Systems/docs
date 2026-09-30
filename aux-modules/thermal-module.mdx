@@ -1,0 +1,82 @@
+---
+title: "Thermal Module CS18-01-TMP Installation and Probe Guide"
+sidebarTitle: "Thermal Module"
+description: "How to install the CS18-01-TMP thermal module and connect TPS temperature probes for monitoring busbar, cable, and ambient temperatures."
+---
+
+The CS18-01-TMP Thermal Module brings multi-point temperature monitoring to the Cortex PQM, supporting up to eight simultaneous measurement channels via the TPS family of probe accessories. Typical applications include busbar temperature monitoring for thermal overload detection, cable hot-spot identification at connection points, and ambient air temperature tracking inside switchgear enclosures. All temperature data is available through the REST API and Modbus registers in real time.
+
+<Warning>
+  Probes installed on or near live conductors must be rated for the voltage level present. Only use Cortex-approved TPS probes with the CS18-01-TMP module. Using unapproved probes may result in inaccurate readings, equipment damage, or a safety hazard.
+</Warning>
+
+## Specifications
+
+| Parameter | Value |
+|---|---|
+| Part Number | CS18-01-TMP |
+| Number of Probe Channels | 8 |
+| Compatible Probes | TPS-TB-010, TPS-RL-010, TPS-CM-010 |
+| Data Interface | REST API and Modbus registers |
+
+## Compatible Probes
+
+| Probe | Part Number | Best Used For |
+|---|---|---|
+| Tape Mount Probe | TPS-TB-010 | Flat surfaces — busbars, flat conductors, cable jackets |
+| Ring Lug Probe | TPS-RL-010 | Bolted connections — terminal lugs, bus bars with bolt patterns |
+| Ambient Temperature Probe | TPS-CM-010 | Open-air enclosure temperature |
+
+## Module Installation
+
+<Steps>
+  <Step title="Power off the CSM device">
+    Remove power from the CSM device and confirm all indicator LEDs are off before handling any module or probes.
+  </Step>
+  <Step title="Connect the CS18-01-TMP to the AUX port">
+    Align the module connector with the AUX port header on the CSM device and press firmly until fully seated. Engage the retention clip if supplied.
+  </Step>
+  <Step title="Power on the device">
+    Restore power to the CSM device. The thermal module is detected automatically and all eight probe channels appear in the REST API response.
+  </Step>
+  <Step title="Connect probe cables">
+    Plug each TPS probe cable into one of the eight numbered probe terminals on the CS18-01-TMP module. Note the channel number for each probe so you can label them correctly in your configuration.
+  </Step>
+</Steps>
+
+## Probe Installation
+
+### TPS-TB-010 Tape Mount Probe
+
+The TPS-TB-010 uses an adhesive backing to mount directly onto flat surfaces such as busbar faces and cable jackets.
+
+1. Clean the mounting surface thoroughly with isopropyl alcohol and allow it to dry completely. Residue or moisture will reduce adhesion.
+2. Peel the protective backing from the probe and press it firmly onto the surface, applying even pressure across the full probe area.
+3. Route the probe cable away from high-voltage conductors. Use cable ties or adhesive clips to keep the cable tidy and clear of moving parts.
+
+<Note>
+  For best accuracy, ensure the probe is in full contact with the surface. Air gaps between the probe and the conductor will cause the reading to lag behind the true conductor temperature.
+</Note>
+
+### TPS-RL-010 Ring Lug Probe
+
+The TPS-RL-010 is designed to be captured under a bolt or terminal screw, placing the sensing element in direct contact with the connection point.
+
+1. Identify the bolt or terminal screw at the connection point you want to monitor.
+2. Place the ring lug of the probe over the bolt shaft before reinstalling the fastener.
+3. Torque the bolt to the fastener manufacturer's specification. Do not over-torque — excessive force may damage the probe's sensing element.
+4. Route the probe cable away from live conductors and secure with cable ties.
+
+### TPS-CM-010 Ambient Temperature Probe
+
+The TPS-CM-010 measures the air temperature inside an enclosure and clips onto DIN rail or a panel wall — no adhesive is required.
+
+1. Choose a mounting location that represents the general air temperature inside the enclosure: away from heat sources such as transformers, power supplies, and the CSM device itself.
+2. Clip the probe onto the DIN rail or attach it to the panel wall using the built-in clip.
+3. Route the cable to the CS18-01-TMP module and connect it to the desired probe terminal.
+
+## Data Access and Modbus Register Map
+
+Temperature readings from all connected probes are available through the Cortex PQM REST API. The thermal module also exposes its data through a dedicated Modbus register map.
+
+For the full register map, see the [Thermal Module Modbus Register Map](/modbus/thermal-register-map).

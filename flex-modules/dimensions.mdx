@@ -1,0 +1,55 @@
+---
+title: "FLEX Port Module Dimensions for Cortex PQM Installation"
+sidebarTitle: "Dimensions"
+description: "Physical dimensions and mounting clearance specifications for all Cortex PQM FLEX port modules, including CT cards and the CS12-42-5-SA1 card."
+---
+
+Use this page as a reference when planning enclosure space, DIN rail layouts, or conduit routing for your Cortex PQM installation. All FLEX modules plug into the CSM device directly, so their dimensions affect how much depth and clearance you need inside the host enclosure — particularly when ribbon cables are attached and routed to a panel.
+
+<Note>
+The dimensions listed on this page are approximate reference values derived from the product design specifications. Always refer to the official product datasheet or request CAD drawings from Cortex Systems for precise mechanical dimensions before finalising an enclosure design.
+</Note>
+
+## Module Dimensions
+
+| Module | Width | Height | Depth | Weight |
+|---|---|---|---|---|
+| CT Card Module (FLEX) | ~60 mm | ~80 mm | ~25 mm | ~80 g |
+| Multi-Circuit Card CS12-42-5-SA1 | ~60 mm | ~120 mm | ~30 mm | ~120 g |
+| CT Strip 42–48 pole | ~38 mm | ~420 mm | ~18 mm | ~210 g |
+| CT Strip 72–84 pole | ~38 mm | ~680 mm | ~18 mm | ~340 g |
+
+Depth figures above are measured from the FLEX port slot face to the outermost point of the module body, excluding connectors and cables.
+
+## CSM Device FLEX Port Slot Dimensions and Spacing
+
+The FLEX port slots are located on the right-hand side face of the CSM-1-00 and CSM-2-00. Slot dimensions are identical across both device models:
+
+| Parameter | Value |
+|---|---|
+| Slot opening width | ~62 mm |
+| Slot opening height | ~22 mm |
+| Centre-to-centre spacing (CSM-2-00, dual slot) | ~90 mm |
+| Connector depth inside chassis | ~12 mm |
+
+## Minimum Enclosure Depth
+
+When a FLEX module is installed in the CSM, the total depth projection from the enclosure back wall is the sum of the CSM device depth plus the module depth. Use the following minimums as a starting point:
+
+| Configuration | Minimum Enclosure Depth |
+|---|---|
+| CSM device only (no FLEX modules) | 80 mm |
+| CSM + CT Card Module | 110 mm |
+| CSM + Multi-Circuit Card CS12-42-5-SA1 | 115 mm |
+
+## Ribbon Cable Clearance
+
+When the CS12-42-5-SA1 or a CT Card Module is connected to a CT strip via ribbon cable, you must account for the cable bend radius and routing path inside the enclosure.
+
+- **Minimum ribbon cable bend radius:** 25 mm. Do not kink or crease the ribbon cable — sharp bends will damage the conductors and cause intermittent channel faults.
+- **Cable exit direction:** Ribbon cables exit from the face of the module perpendicular to the FLEX slot. Allow at least 60 mm of clearance in front of the module face before the cable makes its first bend.
+- **Recommended routing:** Route ribbon cables vertically down (or up) the enclosure interior before turning horizontally toward the panel knockout. Use adhesive cable guides to keep the cable from obstructing air flow or other components.
+
+<Note>
+Contact Cortex Systems at support@cortexsystems.io to request CAD drawings and DXF files for all FLEX port modules and the CSM device body. These files are available free of charge for enclosure design and panel layout purposes.
+</Note>

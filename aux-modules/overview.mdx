@@ -1,0 +1,36 @@
+---
+title: "AUX Port Expansion Modules for the Cortex PQM Monitor"
+sidebarTitle: "Overview"
+description: "Overview of all three AUX port modules for the Cortex PQM: digital input CS18-00-INC, digital I/O with serial CS18-02-SR1, and thermal CS18-01-TMP."
+---
+
+The AUX port on the CSM device accepts plug-in expansion modules that extend its capabilities with digital I/O and temperature sensing. Each module connects directly to the AUX port header and is recognized automatically by the device firmware, making it straightforward to tailor your Cortex PQM installation to the specific monitoring and control requirements of your site.
+
+## Available AUX Modules
+
+| Module | Part Number | Primary Function |
+|---|---|---|
+| Digital Input Module | CS18-00-INC | Dry contact status inputs |
+| Digital I/O + Serial Module | CS18-02-SR1 | RS-485 serial communication combined with digital input and output channels |
+| Thermal Module | CS18-01-TMP | Multi-channel temperature monitoring via RTD probe |
+
+<Note>
+  Only one AUX module can be installed at a time. If you need to swap modules, power off the CSM device before disconnecting or connecting any AUX module to ensure safe handling.
+</Note>
+
+## Module Pages
+
+<CardGroup cols={2}>
+  <Card title="Digital Input Module" icon="toggle-on" href="/aux-modules/digital-input">
+    **CS18-00-INC** — Add 8 digital input channels for pulse counting and dry contact status monitoring.
+  </Card>
+  <Card title="Digital I/O + Serial Module" icon="arrow-right-arrow-left" href="/aux-modules/digital-io-serial">
+    **CS18-02-SR1** — Combine RS-485 serial communication with 4-channel digital inputs and outputs.
+  </Card>
+  <Card title="Thermal Module" icon="temperature-half" href="/aux-modules/thermal-module">
+    **CS18-01-TMP** — Monitor up to 8 temperature points using compatible TPS probe accessories.
+  </Card>
+  <Card title="Physical Dimensions" icon="ruler" href="/aux-modules/dimensions">
+    Reference dimensions and weight specifications for all AUX port expansion modules.
+  </Card>
+</CardGroup>

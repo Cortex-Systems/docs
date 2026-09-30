@@ -1,0 +1,150 @@
+---
+title: "Cortex PQM CSM Modbus Register Map: All Holding Registers"
+sidebarTitle: "Register Map"
+description: "Complete Modbus TCP and RTU register map for the Cortex PQM CSM device — voltage, current, power, energy, and device status registers."
+---
+
+The Cortex PQM CSM-1-00 and CSM-2-00 devices support Modbus TCP over Ethernet and Modbus RTU over RS-485, making them compatible with SCADA systems, building management systems (BMS), and any Modbus-capable data acquisition platform. This page documents all standard holding registers for device status, voltage, current, power, and energy measurements.
+
+## Connection Details
+
+| Setting | Value |
+|---|---|
+| **Modbus TCP port** | 502 |
+| **Modbus RTU interface** | RS-485 via CS18-02-SR1 module |
+| **Default RTU slave address** | 1 (configurable) |
+| **Function code** | 03 — Read Holding Registers |
+
+Modbus RTU requires the optional CS18-02-SR1 serial interface module. Configure the slave address in the device configuration file if you have multiple devices on the same RS-485 bus.
+
+## Data Types and Conventions
+
+All registers are Holding Registers, read with function code 03. The two data types used throughout this map are:
+
+| Type | Size | Description |
+|---|---|---|
+| `UINT16` | 1 register (16-bit) | Unsigned integer |
+| `UINT32` | 2 registers (32-bit) | Unsigned 32-bit integer, high word first |
+| `FLOAT32` | 2 registers (32-bit) | IEEE 754 single-precision float, high word first |
+
+<Note>
+  All FLOAT32 values occupy two consecutive 16-bit holding registers. When reading a FLOAT32, issue a function code 03 request with a quantity of 2 registers. The high word (most significant 16 bits) is at the lower address.
+</Note>
+
+Register addresses in this document follow the standard **40001-offset convention** used by most SCADA tools. When constructing a raw Modbus request, subtract 40001 to get the zero-based address. For example, register 40017 uses starting address `0x0010` (16 decimal) in the PDU.
+
+<Note>
+  This register map reflects firmware v1.x. Refer to the firmware changelog for any register additions or changes introduced in newer versions.
+</Note>
+
+---
+
+## Device Status Registers
+
+These registers report device identification and health information. They begin at address `0x0000` (register 40001).
+
+| Register Name | Register | Address | Data Type | Description |
+|---|---|---|---|---|
+| Firmware Version Major | 40001 | 0x0000 | UINT16 | Major component of the firmware version number |
+| Firmware Version Minor | 40002 | 0x0001 | UINT16 | Minor component of the firmware version number |
+| Device Model | 40003 | 0x0002 | UINT16 | `1` = CSM-1-00, `2` = CSM-2-00 |
+| Uptime (seconds) | 40004–40005 | 0x0003 | UINT32 | Elapsed seconds since last device boot |
+
+**Device Model values**
+
+| Value | Model |
+|---|---|
+| `1` | CSM-1-00 |
+| `2` | CSM-2-00 |
+
+---
+
+## Voltage Registers
+
+Phase voltage registers begin at address `0x0010` (register 40017). Both line-to-neutral and line-to-line voltages are available.
+
+| Register Name | Register | Address | Data Type | Unit | Description |
+|---|---|---|---|---|---|
+| Voltage L1-N | 40017–40018 | 0x0010 | FLOAT32 | V | Phase A line-to-neutral voltage |
+| Voltage L2-N | 40019–40020 | 0x0012 | FLOAT32 | V | Phase B line-to-neutral voltage |
+| Voltage L3-N | 40021–40022 | 0x0014 | FLOAT32 | V | Phase C line-to-neutral voltage |
+| Voltage L1-L2 | 40023–40024 | 0x0016 | FLOAT32 | V | Line-to-line voltage, phases A–B |
+| Voltage L2-L3 | 40025–40026 | 0x0018 | FLOAT32 | V | Line-to-line voltage, phases B–C |
+| Voltage L1-L3 | 40027–40028 | 0x001A | FLOAT32 | V | Line-to-line voltage, phases C–A |
+
+<Tip>
+  For single-phase or split-phase installations, only the applicable line-to-neutral registers will return valid readings. Unused phase registers return `0.0`.
+</Tip>
+
+---
+
+## Current Registers
+
+Per-circuit RMS current registers begin at address `0x0030` (register 40049). Registers repeat in pairs for each circuit in sequence.
+
+| Register Name | Register | Address | Data Type | Unit | Description |
+|---|---|---|---|---|---|
+| Current Circuit 1 | 40049–40050 | 0x0030 | FLOAT32 | A | Circuit 1 RMS current |
+| Current Circuit 2 | 40051–40052 | 0x0032 | FLOAT32 | A | Circuit 2 RMS current |
+| Current Circuit N | … | … | FLOAT32 | A | Repeating pattern — 2 registers per circuit |
+
+Each additional circuit follows the same two-register FLOAT32 pattern. The number of valid circuit registers depends on the number of CT inputs configured on your device. Registers for unconfigured circuits return `0.0`.
+
+---
+
+## Power Registers
+
+Active power and power factor registers begin at address `0x0060` (register 40097). Per-phase active power and total system power are available.
+
+| Register Name | Register | Address | Data Type | Unit | Description |
+|---|---|---|---|---|---|
+| Active Power L1 | 40097–40098 | 0x0060 | FLOAT32 | kW | Phase A active power |
+| Active Power L2 | 40099–40100 | 0x0062 | FLOAT32 | kW | Phase B active power |
+| Active Power L3 | 40101–40102 | 0x0064 | FLOAT32 | kW | Phase C active power |
+| Total Active Power | 40103–40104 | 0x0066 | FLOAT32 | kW | Sum of active power across all phases |
+| Power Factor L1 | 40105–40106 | 0x0068 | FLOAT32 | — | Phase A power factor (range: 0.00–1.00) |
+
+<Note>
+  Power factor values are dimensionless and range from `0.00` to `1.00`. A value of `1.00` indicates unity power factor (purely resistive load).
+</Note>
+
+---
+
+## Energy Registers
+
+Cumulative energy registers begin at address `0x0080` (register 40129). Energy values accumulate from the last reset and are stored in kWh as FLOAT32 pairs per circuit.
+
+| Register Name | Register | Address | Data Type | Unit | Description |
+|---|---|---|---|---|---|
+| Energy Circuit 1 | 40129–40130 | 0x0080 | FLOAT32 | kWh | Cumulative energy, circuit 1 |
+| Energy Circuit 2 | 40131–40132 | 0x0082 | FLOAT32 | kWh | Cumulative energy, circuit 2 |
+
+Additional circuits follow the same two-register FLOAT32 pattern beyond register 40132. Energy registers are non-volatile and retain their values across power cycles.
+
+<Warning>
+  Energy registers can be reset via the device configuration interface. Resetting energy registers is irreversible. Ensure you record or export energy totals before performing a reset.
+</Warning>
+
+---
+
+## Reading FLOAT32 Values
+
+Because each FLOAT32 measurement spans two consecutive 16-bit registers, you must read both registers together and reassemble them into a 32-bit float. The following Python example reads Phase A voltage using pymodbus:
+
+```python read_voltage.py
+import struct
+from pymodbus.client import ModbusTcpClient
+
+client = ModbusTcpClient("192.168.1.100", port=502)
+client.connect()
+
+# Voltage L1-N starts at address 0x0010 (register 40017)
+result = client.read_holding_registers(address=0x0010, count=2, slave=1)
+raw = struct.pack('>HH', result.registers[0], result.registers[1])
+voltage = struct.unpack('>f', raw)[0]
+
+print(f"Phase A Voltage: {voltage:.1f} V")
+client.close()
+```
+
+Apply the same pattern to any FLOAT32 register pair — substitute the starting address and adjust the label accordingly.

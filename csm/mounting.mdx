@@ -1,0 +1,54 @@
+---
+title: "DIN Rail Mounting Guide for the CSM-1-00 and CSM-2-00"
+sidebarTitle: "Mounting"
+description: "Step-by-step instructions for mounting the Cortex PQM CSM-1-00 or CSM-2-00 on a standard 35mm DIN rail inside an electrical enclosure."
+---
+
+The CSM-1-00 and CSM-2-00 mount on a standard 35mm DIN rail using an integrated clip mechanism. Before mounting, verify that the enclosure provides adequate space for the device body, the wiring harness, and any expansion modules you intend to install on the FLEX and AUX ports. Proper clearance above and below the device is also necessary for airflow and safe operating temperature.
+
+## Requirements
+
+- Standard 35mm (TS-35) DIN rail, installed horizontally in the enclosure
+- Enclosure with sufficient interior dimensions (see table below)
+- Clear access to the rail at the intended mounting position
+
+## Mounting Steps
+
+<Steps>
+  <Step title="Verify enclosure space">
+    Confirm the enclosure has sufficient interior dimensions to accommodate the device, all planned expansion modules, and the required clearances. Refer to the minimum enclosure dimensions table below. Check that the DIN rail is securely fastened to the enclosure back plate before proceeding.
+  </Step>
+  <Step title="Position the device on the DIN rail">
+    Hold the CSM device at a slight upward angle and hook the top mounting clip over the top edge of the DIN rail. The top clip is fixed; the bottom clip is spring-loaded.
+  </Step>
+  <Step title="Snap the device into place">
+    Rotate the bottom of the device toward the rail and press firmly until the spring-loaded bottom clip snaps over the bottom edge of the rail. You will hear and feel a click when the device is fully seated.
+  </Step>
+  <Step title="Verify the device is secure">
+    Attempt to slide the device left and right along the rail. It should not shift or wobble. Attempt to pull the front of the device away from the rail — the clips should hold it firmly against the back plate. If the device moves or feels loose, press down and re-snap the bottom clip.
+  </Step>
+  <Step title="Confirm clearance for expansion modules">
+    With the device secured, verify that the FLEX port slots on the right side and the AUX port on the left side are unobstructed. Modules plug directly into these ports, so adjacent components or enclosure walls must not block the connector faces. Refer to the individual module documentation for module-specific clearance requirements.
+  </Step>
+</Steps>
+
+<Note>
+  Maintain at least **50mm of clearance** above and below the device for airflow. Insufficient airflow may cause the device to operate above its rated temperature, leading to reduced accuracy or thermal shutdown.
+</Note>
+
+<Warning>
+  Mount the device only in a **clean, dry enclosure** rated for the installation environment. Exposure to moisture, condensation, conductive dust, or corrosive gases may damage the device and will void the warranty. Ensure the enclosure provides an ingress protection rating appropriate for the location.
+</Warning>
+
+## Minimum Enclosure Dimensions
+
+The following dimensions represent the minimum interior space required to mount the CSM device with the listed configuration. Additional space is required for wire routing, conduit entry, and any other components sharing the enclosure.
+
+| Configuration | Minimum Width | Minimum Height | Minimum Depth |
+|---|---|---|---|
+| CSM only (no modules) | 80mm | 200mm | 100mm |
+| CSM + 1 FLEX module | 110mm | 200mm | 100mm |
+| CSM + 2 FLEX modules | 140mm | 200mm | 100mm |
+| CSM + 2 FLEX + 1 AUX module | 160mm | 200mm | 110mm |
+
+These dimensions account for the device body and module bodies only. Add clearance for terminal block wiring (typically 80–100mm of vertical space for wire bends) and for the Ethernet cable bend radius at the front of the device.

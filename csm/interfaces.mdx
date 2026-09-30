@@ -1,0 +1,90 @@
+---
+title: "Physical Interface Reference for the CSM-1-00 and CSM-2-00"
+sidebarTitle: "Interfaces"
+description: "Complete description of all physical interfaces on the CSM-1-00 and CSM-2-00: terminal blocks, FLEX ports, AUX port, and Ethernet connector."
+---
+
+The CSM-1-00 and CSM-2-00 expose all electrical, expansion, and network interfaces on the device body. Understanding the location and function of each interface is essential before wiring the device. This page describes every interface by name, physical type, function, and relevant notes for each model.
+
+## Interface Summary
+
+| Interface | Type | Function | Notes |
+|---|---|---|---|
+| DC Power Input | 2-pin screw terminal block | Accepts 12–24VDC regulated supply | Polarity marked + and −; reverse polarity may damage the device |
+| Line Voltage Input — L1 | Screw terminal | AC voltage measurement, phase 1 | Present on both models |
+| Line Voltage Input — L2 | Screw terminal | AC voltage measurement, phase 2 | Present on both models |
+| Line Voltage Input — L3 | Screw terminal | AC voltage measurement, phase 3 | CSM-2-00 only |
+| Neutral (N) | Screw terminal | Neutral reference for voltage measurement | Required for wye and split-phase configurations |
+| FLEX Port Slot 1 | Proprietary 40-pin connector | Attach CT card or other FLEX modules | Right side of device; accepts one FLEX module |
+| FLEX Port Slot 2 | Proprietary 40-pin connector | Attach CT card or other FLEX modules | Right side of device; second slot below Slot 1 |
+| AUX Port | 26-pin 2.54mm pitch header | Digital I/O and thermal expansion | Left side of device; accepts one AUX module |
+| Ethernet | RJ45 (10/100Base-T) | Network connectivity, REST API access | Front face; supports DHCP and static IP |
+| Power LED | LED indicator (green) | DC power present and within range | Solid green = normal; off = no power |
+| Status LED | LED indicator (green/amber/red) | Device operating state | Green = normal; amber = warning; red = fault |
+| Network Link LED | LED indicator (green/amber) | Ethernet link and activity | Green = link established; blinking = traffic |
+
+## Line Voltage Input Schematic
+
+The line voltage inputs on the CSM device are designed to measure AC line voltage directly from the monitored circuit. Each line input is wired through a customer-supplied fused disconnect, with the conductor terminating at the corresponding screw terminal on the top terminal block. The neutral terminal provides the reference point for voltage measurements in single-phase and wye-connected three-phase circuits.
+
+**Maximum rated voltage:** 600V line-to-line (CAT III)
+
+**Fusing requirement:** Each line voltage input must be protected by a fuse or circuit breaker rated for the circuit, with a maximum of 20A. Use fast-blow fuses where required by local code.
+
+**Wiring path summary:**
+
+```
+Monitored Circuit → Fused Disconnect → CSM Line Input Terminal (L1 / L2 / L3)
+Monitored Circuit Neutral → CSM Neutral Terminal (N)
+```
+
+For the CSM-1-00, the L3 terminal is not present. For single-phase 2-wire configurations, the Neutral terminal serves as the low-side voltage reference.
+
+## FLEX and AUX Port Expansion
+
+<Info>
+  The FLEX and AUX ports are the primary expansion mechanism for the Cortex PQM system. FLEX port CT cards are required to measure current and calculate power — without at least one CT card installed, the CSM measures voltage only. The AUX port adds non-measurement I/O such as dry-contact inputs, relay outputs, and ambient temperature sensing. All modules are powered through the CSM; no additional supply is needed for the modules themselves.
+</Info>
+
+### FLEX Ports
+
+Each FLEX port slot accepts one FLEX-format module. The most common FLEX module is the CT card, which provides terminal blocks for wiring current transformer secondary leads. The FLEX port connector is keyed — modules can only be inserted in the correct orientation. Press the module firmly into the slot until the retention latch engages. Do not force or twist the module during insertion.
+
+### AUX Port
+
+The AUX port is a 26-pin 2.54mm pitch header on the left side of the device. It accepts a single AUX module using a mating ribbon or direct-plug connector, depending on the module type. The AUX port carries both power and signal lines. Do not connect non-AUX peripherals to this header.
+
+## Ethernet Interface
+
+The RJ45 jack on the front face of the CSM device provides 10/100Base-T Ethernet connectivity. The device supports both DHCP-assigned and static IP addressing. All REST API communication and network-based firmware updates use this interface. A Cat5e or Cat6 patch cable is recommended. The Ethernet interface does not require any driver installation — it is accessible as a standard HTTP endpoint on your local network at `http://{device-ip}/api` once the device has obtained an IP address.
+
+## LED Indicators
+
+The front panel of the CSM device includes three LED indicators that provide at-a-glance status information without requiring network access or software.
+
+### Power LED
+
+The Power LED illuminates solid green when the DC supply voltage is present and within the acceptable 12–24VDC range. If this LED is off, the device is not receiving power. Check the DC supply output voltage and verify the terminal connections before proceeding.
+
+### Status LED
+
+The Status LED reflects the overall operating state of the device after startup.
+
+| Status LED State | Meaning |
+|---|---|
+| Solid green | Device operating normally |
+| Solid amber | Warning condition — device is functional but requires attention |
+| Solid red | Fault condition — device has detected an error and may not be measuring correctly |
+| Off | Device not powered or in early boot |
+
+After applying power, the Status LED will cycle through colors briefly during initialization before settling on solid green under normal conditions. If the LED remains amber or red after 30 seconds, refer to the LED Indicator Reference for fault descriptions and remediation steps.
+
+### Network Link LED
+
+The Network Link LED indicates the state of the Ethernet connection.
+
+| Network Link LED State | Meaning |
+|---|---|
+| Solid green | Ethernet link established at 10 or 100 Mbps |
+| Blinking green | Link established; network traffic active |
+| Off | No Ethernet link; check cable and switch port |

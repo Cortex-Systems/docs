@@ -1,0 +1,97 @@
+---
+title: "AC Voltage Input Wiring for the Cortex PQM CSM Device"
+sidebarTitle: "AC Wiring"
+description: "How to wire AC line voltage inputs to the Cortex PQM for 1P2W, 1P3W, 3P3W delta, and 3P4W wye systems, including fusing requirements."
+---
+
+The CSM device measures line voltage by connecting directly to the panel's voltage buses through fused connections. Because the device taps directly into live panel voltage, correct fusing and wire gauge are mandatory — not optional. Read through this entire page before picking up a wire, and ensure the panel is fully de-energized before you begin.
+
+## Voltage Input Specifications
+
+| Parameter | Specification |
+|---|---|
+| Maximum voltage (L-L) | 600VAC |
+| Maximum voltage (L-N) | 347VAC |
+| Required fusing (per input) | 1A maximum, dedicated fuse or breaker |
+| Minimum wire gauge | 14 AWG |
+
+## Required Fusing
+
+Each voltage input line must be protected by a dedicated 1A (or lower rated) fuse or circuit breaker before it reaches the voltage tap terminals on the CSM. Use an appropriately rated fuse block or a dedicated single-pole breaker for each line. Do not share a fuse between multiple voltage input lines.
+
+<Warning>
+  Never connect voltage inputs without appropriate fusing. An overvoltage condition or short circuit on the voltage input terminals may permanently damage the device and will void the warranty.
+</Warning>
+
+## Wiring by System Configuration
+
+Select the accordion below that matches your electrical system configuration.
+
+<AccordionGroup>
+  <Accordion title="Single-Phase 2-Wire (1P2W)">
+    A single-phase 2-wire system has one hot line and a neutral. This is the most common configuration for small residential or commercial branch circuits.
+
+    | CSM Terminal | Connect To |
+    |---|---|
+    | Line 1 | L1 (hot) |
+    | Neutral | N (neutral) |
+    | Line 2 | Leave unconnected |
+    | Line 3 | Leave unconnected |
+
+    1. Run a 14 AWG (minimum) wire from L1 through a dedicated 1A fuse to the **Line 1** terminal.
+    2. Run a 14 AWG (minimum) wire from N to the **Neutral** terminal.
+    3. Leave the Line 2 and Line 3 terminals unconnected.
+  </Accordion>
+
+  <Accordion title="Split-Phase 3-Wire (1P3W)">
+    A split-phase 3-wire system uses two hot lines 180° apart and a shared neutral. This is standard for North American residential services (120/240V).
+
+    | CSM Terminal | Connect To |
+    |---|---|
+    | Line 1 | L1 (hot leg 1) |
+    | Line 2 | L2 (hot leg 2) |
+    | Neutral | N (neutral) |
+    | Line 3 | Leave unconnected |
+
+    1. Run a 14 AWG (minimum) wire from L1 through a dedicated 1A fuse to the **Line 1** terminal.
+    2. Run a 14 AWG (minimum) wire from L2 through a dedicated 1A fuse to the **Line 2** terminal.
+    3. Run a 14 AWG (minimum) wire from N to the **Neutral** terminal.
+    4. Leave the Line 3 terminal unconnected.
+  </Accordion>
+
+  <Accordion title="Three-Phase 3-Wire Delta (3P3W)">
+    A three-phase 3-wire delta system has three hot lines and no neutral conductor. This is common in industrial motor loads.
+
+    | CSM Terminal | Connect To |
+    |---|---|
+    | Line 1 | L1 |
+    | Line 2 | L2 |
+    | Line 3 | L3 |
+    | Neutral | Leave unconnected |
+
+    1. Run a 14 AWG (minimum) wire from L1 through a dedicated 1A fuse to the **Line 1** terminal.
+    2. Run a 14 AWG (minimum) wire from L2 through a dedicated 1A fuse to the **Line 2** terminal.
+    3. Run a 14 AWG (minimum) wire from L3 through a dedicated 1A fuse to the **Line 3** terminal.
+    4. Leave the Neutral terminal unconnected.
+  </Accordion>
+
+  <Accordion title="Three-Phase 4-Wire Wye (3P4W)">
+    A three-phase 4-wire wye system has three hot lines and a neutral. This is the most common configuration for commercial and industrial three-phase services (e.g., 208Y/120V or 480Y/277V).
+
+    | CSM Terminal | Connect To |
+    |---|---|
+    | Line 1 | L1 |
+    | Line 2 | L2 |
+    | Line 3 | L3 |
+    | Neutral | N (neutral) |
+
+    1. Run a 14 AWG (minimum) wire from L1 through a dedicated 1A fuse to the **Line 1** terminal.
+    2. Run a 14 AWG (minimum) wire from L2 through a dedicated 1A fuse to the **Line 2** terminal.
+    3. Run a 14 AWG (minimum) wire from L3 through a dedicated 1A fuse to the **Line 3** terminal.
+    4. Run a 14 AWG (minimum) wire from N to the **Neutral** terminal.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+For details on how each configuration affects measurement calculations and which configuration identifier to use in the device settings, see the [wiring configurations reference](/csm/wiring-configurations).

@@ -1,0 +1,108 @@
+---
+title: "CT Card Module (FLEX) Installation, Wiring, and Setup"
+sidebarTitle: "CT Card Module"
+description: "How to install and wire the Cortex PQM FLEX CT Card Module: supported CT types, K/L terminal polarity, installation steps, and configuration."
+---
+
+The CT Card Module is a FLEX port expansion card that adds a bank of CT (current transformer) input channels to your CSM device. Each card provides either 6 or 12 numbered input channels — you wire individual CT clamps directly to the terminal blocks on the card face, and the CSM exposes those channels through its REST API the moment you power back on. Because CT clamps install around a live conductor without breaking the circuit, you can commission most installations without shutting down the load.
+
+## Supported CT Types
+
+The CT Card Module accepts the following CT output signals:
+
+| Output Type | Signal Range | Typical CT Form Factor |
+|---|---|---|
+| 333 mV | 0–333 mV AC | Split-core, solid-core |
+| 0–5 V | 0–5 V AC | Split-core, solid-core |
+
+Always verify that the CT output type matches the CT Card variant you have ordered. Mixing signal levels between card and CT will produce inaccurate readings and may damage the input circuit.
+
+## Installing the CT Card Module
+
+Before you begin, confirm that the card and the FLEX slot key notches are oriented the same way — the connector is polarised and inserts in one direction only.
+
+<Steps>
+  <Step title="Power off the CSM device">
+    Remove power from the CSM device at the source. Wait for the status LED to go dark before handling any modules.
+  </Step>
+  <Step title="Align the CT Card with the FLEX port slot">
+    Hold the CT Card Module with the terminal blocks facing outward and align the card-edge connector with the FLEX slot on the CSM. The key notch on the card must line up with the guide rib inside the slot.
+  </Step>
+  <Step title="Seat the card">
+    Press the card firmly and evenly into the slot until you feel and hear a definitive click. The card face should sit flush with the adjacent CSM panel surface. If the card resists, do not force it — re-check the alignment.
+  </Step>
+  <Step title="Power on the device">
+    Restore power to the CSM. The new CT Card channels appear automatically in the REST API response and in the device configuration interface within a few seconds of boot.
+  </Step>
+</Steps>
+
+<Warning>
+Do not short-circuit an open CT secondary terminal. If you remove a CT clamp from a live circuit conductor without first shorting or connecting its output leads, the transformer can produce a dangerously high voltage. Always connect the CT leads to the terminal block — or short them together — before clamping around a live conductor.
+</Warning>
+
+## Wiring CT Clamps to the CT Card
+
+Each channel on the CT Card has a two-position terminal block marked **K** and **L**. Wire the CT output leads as follows:
+
+- **K terminal** — connect the white (K/P1) lead from the CT clamp
+- **L terminal** — connect the black (L/P2) lead from the CT clamp
+
+Reversing polarity inverts the phase angle reported for that channel but does not damage the card. You can correct polarity in software if physical re-wiring is inconvenient.
+
+### Terminal Block Pinout
+
+| Channel | Terminal | Signal |
+|---|---|---|
+| 1 | K | CT positive (white) |
+| 1 | L | CT negative (black) |
+| 2 | K | CT positive (white) |
+| 2 | L | CT negative (black) |
+| 3 | K | CT positive (white) |
+| 3 | L | CT negative (black) |
+| 4 | K | CT positive (white) |
+| 4 | L | CT negative (black) |
+| 5 | K | CT positive (white) |
+| 5 | L | CT negative (black) |
+| 6 | K | CT positive (white) |
+| 6 | L | CT negative (black) |
+
+12-channel cards continue the same pattern through Channel 12.
+
+### CT Ratio Configuration
+
+After wiring, update your device configuration file to set the correct CT ratio for each channel. The ratio must match the ampere rating printed on the CT clamp body (for example, `100:0.333` for a 100 A / 333 mV CT).
+
+```yaml
+flex:
+  slot_1:
+    type: ct_card
+    channels:
+      - id: 1
+        label: "Panel A — Circuit 1"
+        ct_ratio: "100:0.333"
+      - id: 2
+        label: "Panel A — Circuit 2"
+        ct_ratio: "100:0.333"
+```
+
+## REST API Representation
+
+Each CT Card appears as a group of additional circuit channels in the REST API. A card in FLEX slot 1 exposes its channels under the `flex.slot_1` key:
+
+```json
+{
+  "flex": {
+    "slot_1": {
+      "type": "ct_card",
+      "channels": [
+        { "id": 1, "label": "Panel A — Circuit 1", "current_a": 12.4 },
+        { "id": 2, "label": "Panel A — Circuit 2", "current_a": 8.7 }
+      ]
+    }
+  }
+}
+```
+
+<Note>
+Channel numbering in the API corresponds directly to the physical terminal block numbers printed on the CT Card face. Channel 1 in the API is always terminal block 1 on the card.
+</Note>

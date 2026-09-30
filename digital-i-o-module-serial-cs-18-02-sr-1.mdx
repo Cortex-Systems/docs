@@ -1,0 +1,113 @@
+---
+title: "Digital I/O Module + Serial: CS18-02-SR1"
+---
+
+Part Number: CS18-02-SR1 | Digital I/O Module + Serial
+
+### **Product Information**
+
+<Columns cols={2}>
+  <Column>
+    <img
+      src="/images/image-4.png"
+      alt="Image"
+      title="Image"
+      style={{ width:"95%" }}
+    />
+  </Column>
+  <Column>
+    <Card title="**Features**" icon="sparkles">
+      - Monitors up to 18 dry contact inputs, two digital outputs and provides RS-485 Modbus RTU communications.
+      - Daisy chain up to 4 modules for added capacity<br />• Smart auto adaption / no configuration needed<br />• Assign friendly names to each channel<br />• Easy to view via web console<br />• Supports bit reads for reduced network traffic<br />• Place modules close to contacts using standard network cable to minimize wiring<br />• Standard 35mm DIN rail mounting
+    </Card>
+  </Column>
+</Columns>
+
+<Card title="**Product Information**" icon="sparkles">
+  The Cortex Digital I/O and serial interface module expands a single or dual input monitor with 18 dry contact inputs, 2 digital outputs, and RS-485 Modbus RTU communications. The module auto-connects to the host monitor with no configuration required. Up to 6x CS18-02-SR1 modules can be daisy-chained in series for added input/output capacity.
+
+  Note: CSM-1 or CSM-2 must have firmware version 1.9 / 2.9 or higher to communicate with this card.
+</Card>
+
+<Columns cols={2}>
+  <Column>
+  </Column>
+  <Column>
+  </Column>
+  ## **Connection Guide**
+</Columns>
+
+### **Connecting the DI/DO + Serial Module to the Meter**
+
+The DI/DO module connects to the meter’s **AUX port** using a standard Ethernet cable. Do **not** connect it to the Flex ports.
+
+Always connect the **IN** port of the first module to the meter’s AUX port. The module’s **OUT** port can then be connected to the **IN** port of the next AUX port device (such as a DI card, Thermal Card, or Multi-Card), as shown in the diagram below.
+
+When the module is connected to the meter, the green LED on the card blinks to show that it is communicating.
+
+![Image](/images/image-5.png "Image")
+
+All field wiring terminates on removable 3.5 mm terminal blocks. Each card provides:
+
+- 18 digital inputs (dry contact)
+- 2 digital outputs (100 mA @ 30 VDC max.)
+- 1 RS-485 serial port (2-wire Modbus RTU)
+
+![Image](/images/image-6.png "Image")
+
+### **Digital Inputs**
+
+The digital inputs are designed for voltage-free (dry) contacts. An input reads as closed when the resistance across its contacts drops below 1 kΩ.
+
+The first pin on each terminal block is common. When one common wire serves several contacts, always land it on the first pin.
+
+![Image](/images/image-7.png "Image")
+
+You can also check input status in the meter’s HTML console under **Data > Contacts**. Closed contacts are highlighted in green.
+
+![Image](/images/image-8.png "Image")
+
+### **Digital Outputs**
+
+The digital outputs are rated for 100 mA @ 30 VDC. They can be switched by Modbus command or manually from the HTML console. A future firmware release will add the option to switch outputs on alarm conditions.
+
+<img
+  src="/images/image-9.png"
+  alt="Image"
+  title="Image"
+  style={{ width:"59%" }}
+/>
+
+### **Digital Input Registers**
+
+Digital input registers are grouped in sequential blocks, one per card. Cards are numbered 1 through 8 in the order they are connected, starting with the card plugged directly into the AUX port (Card 1). A card’s position in the chain decides which register block it uses.
+
+**Individual input registers:** Each of the 18 inputs has its own status register. For Card 1, these start at register 2046 (Input 1) and run through 2063 (Input 18). A value of 0 means the contact is open, and 1 means it is closed.
+
+![Image](/images/image-10.png "Image")
+
+**Block read registers:** The status of all 18 inputs on a card can also be read from a two-register block. For Card 1, this block is registers 2001–2002:
+
+- Register 2001, bits 0–15: Inputs 1–16
+- Register 2002, bit 0: Input 17
+- Register 2002, bit 1: Input 18
+
+A bit value of 1 means the contact is closed, and 0 means it is open. Each following card uses the next two registers (Card 2: 2003–2004, Card 3: 2005–2006, and so on through Card 8: 2015–2016).
+
+<img
+  src="/images/image-11.png"
+  alt="Image"
+  title="Image"
+  style={{ width:"26%" }}
+/>
+
+### **Digital Output Registers**
+
+Digital output registers are also grouped by card number. Card numbers are assigned by position in the chain, and Card 1 is the card closest to the AUX port. **Every** device connected to the AUX port counts as a card when numbers are assigned, including Thermal Cards and Multi-Cards.
+
+<img
+  src="/images/image-12.png"
+  alt="Image"
+  title="Image"
+  style={{ width:"26%" }}
+/>

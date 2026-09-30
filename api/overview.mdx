@@ -1,0 +1,326 @@
+---
+title: "Cortex PQM REST API Reference — CSM Device Endpoints"
+sidebarTitle: "REST API"
+description: "Complete REST API reference for the Cortex PQM CSM device — read power measurements, manage configuration, and update firmware over HTTP."
+---
+
+The Cortex PQM CSM-1-00 and CSM-2-00 devices expose a JSON REST API on port 80 (HTTP). Use it to read real-time and historical power measurements, push configuration changes, and trigger firmware updates from any HTTP client — no special library required. All requests and responses use `application/json` unless otherwise noted.
+
+## Base URL
+
+```
+http://{device-ip}/api
+```
+
+Replace `{device-ip}` with the device's assigned IP address or hostname. For example, `http://192.168.1.100/api/status`.
+
+## Authentication
+
+No authentication is required by default. The device assumes it is deployed on a trusted local network or VLAN. Restrict access at the network layer using a firewall or VLAN segmentation — do not expose the device API directly to the public internet.
+
+<Warning>
+  The REST API has no built-in access control. Any client that can reach the device on port 80 can read measurements, change configuration, and initiate firmware updates. Always isolate the device on a dedicated management network or VLAN.
+</Warning>
+
+## Content-Type
+
+All request and response bodies use `Content-Type: application/json`, except for firmware uploads which use `application/octet-stream`. Always include the `Content-Type` header in POST requests.
+
+---
+
+## Endpoints
+
+### GET /api/status
+
+Returns the current device status, including model, firmware version, uptime, and network information. Use this endpoint to verify connectivity and confirm the firmware version before issuing other requests.
+
+**Response fields**
+
+| Field | Type | Description |
+|---|---|---|
+| `model` | string | Device model identifier (`CSM-1-00` or `CSM-2-00`) |
+| `firmware_version` | string | Installed firmware version |
+| `uptime_seconds` | integer | Seconds elapsed since last boot |
+| `ip` | string | Current IP address of the device |
+| `hostname` | string | Device hostname |
+
+**Example response**
+
+```json
+{
+  "model": "CSM-2-00",
+  "firmware_version": "1.3.0",
+  "uptime_seconds": 86400,
+  "ip": "192.168.1.100",
+  "hostname": "cortex-pqm-main"
+}
+```
+
+---
+
+### GET /api/measurements
+
+Returns real-time power measurements for all phases and circuits. This is the primary endpoint for live monitoring integrations.
+
+**Query parameters**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `circuit` | integer | Optional. Filter results to a single circuit by its numeric ID. |
+
+**Response fields**
+
+| Field | Type | Description |
+|---|---|---|
+| `timestamp` | string | ISO 8601 UTC timestamp of the measurement snapshot |
+| `phases` | array | Per-phase voltage, current, power, and power factor readings |
+| `circuits` | array | Per-circuit current, active power, and cumulative energy readings |
+
+**Example response**
+
+```json
+{
+  "timestamp": "2024-01-15T10:30:00Z",
+  "phases": [
+    { "phase": "A", "voltage": 120.3, "current": 15.2, "power_kw": 1.824, "power_factor": 0.98 },
+    { "phase": "B", "voltage": 119.8, "current": 12.1, "power_kw": 1.451, "power_factor": 0.97 },
+    { "phase": "C", "voltage": 120.5, "current": 18.4, "power_kw": 2.217, "power_factor": 0.99 }
+  ],
+  "circuits": [
+    { "id": 1, "name": "HVAC Unit 1", "current": 15.2, "power_kw": 1.824, "energy_kwh": 1243.5 },
+    { "id": 2, "name": "Lighting Panel L1", "current": 8.4, "power_kw": 0.987, "energy_kwh": 892.1 }
+  ]
+}
+```
+
+<Tip>
+  Use the `?circuit={id}` query parameter in high-frequency polling scenarios to reduce payload size and parsing overhead when you only need data for a specific circuit.
+</Tip>
+
+---
+
+### GET /api/energy
+
+Returns cumulative energy totals (kWh) per circuit since the last energy reset or a specified start time. Use this endpoint for billing, reporting, or sub-metering integrations.
+
+**Query parameters**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `circuit` | integer | Optional. Filter results to a single circuit by its numeric ID. |
+| `since` | string | Optional. ISO 8601 datetime. Return energy accumulated since this point in time. |
+
+**Example response**
+
+```json
+{
+  "circuits": [
+    { "id": 1, "name": "HVAC Unit 1", "energy_kwh": 1243.5, "since": "2024-01-01T00:00:00Z" }
+  ]
+}
+```
+
+---
+
+### GET /api/config
+
+Returns the device's current configuration as a JSON object. Use this endpoint to back up configuration before making changes or to inspect the active settings.
+
+**Example response**
+
+```json
+{
+  "device": {
+    "hostname": "cortex-pqm-main",
+    "modbus_slave_address": 1
+  },
+  "circuits": [
+    { "id": 1, "name": "HVAC Unit 1", "ct_ratio": 100 },
+    { "id": 2, "name": "Lighting Panel L1", "ct_ratio": 50 }
+  ]
+}
+```
+
+---
+
+### POST /api/config
+
+Uploads a new configuration to the device. The request body must be a complete, valid JSON configuration object. Partial updates are not supported — always upload the full configuration.
+
+**Request body**
+
+A complete JSON configuration object. See [Configuration File Definitions](/configuration/file-definitions) for the full schema and field reference.
+
+**Response**
+
+Returns `{"status": "ok"}` on success, or an error object with details if the configuration is invalid.
+
+<Warning>
+  Uploading an invalid configuration can disrupt measurement collection. Validate your configuration file against the schema before posting, and keep a backup of the last known-good configuration retrieved via `GET /api/config`.
+</Warning>
+
+---
+
+### GET /api/version
+
+Returns the installed firmware version and build date. Equivalent to the `firmware_version` field in `/api/status`, but lighter weight for version-check scripts.
+
+**Example response**
+
+```json
+{ "version": "1.3.0", "build_date": "2024-01-10" }
+```
+
+---
+
+### POST /api/firmware
+
+Uploads a firmware binary to the device and triggers an update. The device reboots automatically after the update completes.
+
+**Request headers**
+
+| Header | Value |
+|---|---|
+| `Content-Type` | `application/octet-stream` |
+
+**Request body**
+
+The raw firmware binary file provided by Cortex.
+
+**Response**
+
+```json
+{ "status": "updating" }
+```
+
+The device will be unreachable for approximately 60–90 seconds while it applies the update and reboots. Poll `/api/firmware/status` or `/api/status` to confirm the update completed successfully.
+
+<Warning>
+  Do not power cycle or disconnect the device during a firmware update. Interrupting the update process may corrupt the firmware and require a factory recovery procedure.
+</Warning>
+
+---
+
+### GET /api/firmware/status
+
+Returns the current firmware update state. Poll this endpoint after calling `POST /api/firmware` to track update progress.
+
+**Response**
+
+| Status value | Meaning |
+|---|---|
+| `idle` | No update in progress; device is operating normally |
+| `updating` | Firmware update is being applied |
+| `complete` | Update completed successfully; device has rebooted |
+| `error` | Update failed; check device logs or retry the upload |
+
+**Example response**
+
+```json
+{ "status": "idle" }
+```
+
+---
+
+### GET /api/temperature
+
+Returns temperature readings from all connected probe channels in degrees Celsius. This endpoint is only available when the CS18-01-TMP thermal module is installed.
+
+<Note>
+  If the CS18-01-TMP module is not installed, this endpoint returns HTTP 404. See the [Thermal Module register map](/modbus/thermal-register-map) and the [Thermal Module installation guide](/aux-modules/thermal-module) for details.
+</Note>
+
+**Response fields**
+
+| Field | Type | Description |
+|---|---|---|
+| `probes` | array | One entry per probe channel |
+| `probes[].channel` | integer | Probe channel number (1–8) |
+| `probes[].temperature_c` | number or null | Temperature in °C, or `null` if the probe is disconnected |
+
+**Example response**
+
+```json
+{
+  "probes": [
+    { "channel": 1, "temperature_c": 23.4 },
+    { "channel": 2, "temperature_c": 41.7 },
+    { "channel": 3, "temperature_c": null },
+    { "channel": 4, "temperature_c": null },
+    { "channel": 5, "temperature_c": null },
+    { "channel": 6, "temperature_c": null },
+    { "channel": 7, "temperature_c": null },
+    { "channel": 8, "temperature_c": null }
+  ]
+}
+```
+
+---
+
+### GET /api/digital-inputs
+
+Returns the current state and accumulated pulse counts for all digital input channels. This endpoint is only available when the CS18-00-INC digital input module is installed.
+
+**Response fields**
+
+| Field | Type | Description |
+|---|---|---|
+| `inputs` | array | One entry per digital input channel |
+| `inputs[].channel` | integer | Channel number |
+| `inputs[].state` | boolean | Current logic-level state (`true` = high, `false` = low) |
+| `inputs[].pulse_count` | integer | Accumulated pulse count since last reset |
+
+**Example response**
+
+```json
+{
+  "inputs": [
+    { "channel": 1, "state": false, "pulse_count": 1042 },
+    { "channel": 2, "state": true,  "pulse_count": 378 }
+  ]
+}
+```
+
+---
+
+## Error Responses
+
+All error responses use a consistent JSON structure. The HTTP status code indicates the class of error, and the response body provides a machine-readable error code and a human-readable message.
+
+| HTTP Status | Meaning |
+|---|---|
+| `400 Bad Request` | The request body is malformed, contains invalid JSON, or fails schema validation |
+| `404 Not Found` | The requested endpoint does not exist, or an optional module required by the endpoint is not installed |
+| `500 Internal Server Error` | An unexpected error occurred on the device |
+
+**Error response format**
+
+```json
+{ "error": "invalid_config", "message": "ct_ratio must be a positive integer" }
+```
+
+Use the `error` field for programmatic error handling and the `message` field for logging and diagnostics.
+
+---
+
+## Code Example: Polling Measurements
+
+The following Python script polls the `/api/measurements` endpoint every 30 seconds and prints the active power reading for each circuit. Use it as a starting point for SCADA integrations, dashboards, or data loggers.
+
+```python poll_measurements.py
+import requests
+import time
+
+DEVICE_IP = "192.168.1.100"
+
+while True:
+    resp = requests.get(f"http://{DEVICE_IP}/api/measurements")
+    data = resp.json()
+    for circuit in data["circuits"]:
+        print(f"{circuit['name']}: {circuit['power_kw']:.3f} kW")
+    time.sleep(30)
+```
+
+<Tip>
+  Add error handling with `resp.raise_for_status()` and a `try/except` block around the request to gracefully handle network interruptions in production deployments.
+</Tip>

@@ -1,0 +1,115 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "Cortex PQM",
+  "theme": "aspen",
+  "favicon": {
+    "light": "/images/logosquare.png",
+    "dark": "/images/logosquare.png"
+  },
+  "logo": {
+    "light": "/images/logo.png",
+    "dark": "/images/logo.png"
+  },
+  "colors": {
+    "primary": "#0c5859",
+    "light": "#6c6c6c",
+    "dark": "#3c3d3d"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "User Manual",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "introduction",
+              "quick-reference",
+              "quick-start-guide"
+            ]
+          },
+          {
+            "group": "CSM Device Setup",
+            "pages": [
+              "csm/overview",
+              "csm/mounting",
+              "csm/connecting",
+              "csm/interfaces",
+              "csm/wiring-configurations",
+              "csm/dc-wiring"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/overview",
+              "configuration/using-files",
+              "configuration/uploading-files",
+              "configuration/editing-files",
+              "configuration/file-definitions"
+            ]
+          },
+          {
+            "group": "Firmware Updates",
+            "pages": [
+              "firmware/overview",
+              "firmware/update-via-usb",
+              "firmware/update-via-network",
+              "firmware/changelog"
+            ]
+          },
+          {
+            "group": "FLEX Port Modules",
+            "pages": [
+              "flex-modules/overview",
+              "flex-modules/ct-card",
+              "flex-modules/solid-core-ct-strips",
+              "flex-modules/multi-circuit-card",
+              "flex-modules/dimensions"
+            ]
+          },
+          {
+            "group": "AUX Port Modules",
+            "pages": [
+              "digital-input-module-cs-18-00-inc",
+              "aux-modules/overview",
+              "aux-modules/digital-input",
+              "aux-modules/digital-io-serial",
+              "aux-modules/thermal-module",
+              "aux-modules/dimensions",
+              "digital-i-o-module-serial-cs-18-02-sr-1"
+            ]
+          },
+          {
+            "group": "Wiring Guide",
+            "pages": [
+              "wiring/overview",
+              "wiring/ac-wiring",
+              "wiring/dc-wiring",
+              "wiring/flex-port",
+              "wiring/ethernet"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Integration Reference",
+        "groups": [
+          {
+            "group": "REST API",
+            "pages": [
+              "api/overview"
+            ]
+          },
+          {
+            "group": "Modbus",
+            "pages": [
+              "modbus/register-map",
+              "modbus/thermal-register-map"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+---
+title: "DC Power Supply Wiring Instructions for the CSM Device"
+sidebarTitle: "DC Wiring"
+description: "How to wire a regulated 12–24VDC power supply to the CSM-1-00 or CSM-2-00, including polarity, wire gauge, and terminal torque specs."
+---
+
+The CSM-1-00 and CSM-2-00 require an external regulated DC power supply. The device does not include an internal AC-DC power supply, so you must provide one appropriate for your installation. The DC supply powers the CSM itself as well as any expansion modules connected to the FLEX and AUX ports, so factor in module current draw when sizing the supply.
+
+## Power Supply Specifications
+
+| Parameter | Requirement |
+|---|---|
+| Supply type | Regulated DC |
+| Voltage range | 12–24VDC |
+| Minimum current (CSM only) | 500mA |
+| Recommended current (CSM + full expansion) | 1.5A or greater |
+| Connector | 2-pin screw terminal block |
+| Terminal polarity | + (positive) and − (negative/ground) |
+
+Use a UL-listed or CE-marked regulated DC power supply. Unregulated or poorly filtered supplies may cause device instability or false fault indications.
+
+<Note>
+  Select a wire gauge appropriate for the length of the DC supply run. For runs up to 3 meters, 24 AWG (0.2mm²) is sufficient. For longer runs or higher current loads, increase wire gauge accordingly to keep voltage drop below 0.5V at the device terminals.
+</Note>
+
+## Wiring Steps
+
+<Warning>
+  **Reverse polarity may permanently damage the device and is not covered under warranty.** Always verify polarity with a multimeter before applying power. Do not rely solely on wire color coding, as supply cable colors vary between manufacturers and regions.
+</Warning>
+
+<Steps>
+  <Step title="Select an appropriate regulated DC power supply">
+    Choose a supply with an output voltage of 12–24VDC and sufficient current capacity for the CSM and all installed expansion modules. If you are unsure of the total current requirement, use a supply rated for at least 1.5A. Confirm the supply is switched off before proceeding.
+  </Step>
+  <Step title="Identify the DC power input terminals on the CSM device">
+    Locate the 2-pin screw terminal block on the top edge of the CSM device. The terminals are labeled **+** (positive) and **−** (negative). The **+** terminal is on the left and the **−** terminal is on the right when the device is viewed from the front with the terminals facing up.
+  </Step>
+  <Step title="Prepare and connect the positive lead">
+    Strip approximately 7mm of insulation from the positive lead of your DC supply cable. Insert the stripped end into the **+** terminal and tighten the screw to the torque specification printed on the terminal block (typically 0.5–0.6 Nm for this terminal size). Tug gently on the wire to confirm it is held securely.
+  </Step>
+  <Step title="Prepare and connect the negative lead">
+    Strip approximately 7mm of insulation from the negative (or ground) lead of your DC supply cable. Insert the stripped end into the **−** terminal and tighten the screw to the same torque specification. Tug gently to confirm the connection is secure.
+  </Step>
+  <Step title="Verify polarity before powering on">
+    Before applying power, use a multimeter set to DC voltage to confirm the polarity at the terminal block. Place the positive probe on the **+** terminal wire and the negative probe on the **−** terminal wire and confirm that the reading matches your expected supply voltage with a positive sign. A negative reading indicates the leads are reversed — remove and re-terminate them correctly before proceeding.
+  </Step>
+  <Step title="Apply power and verify the Power LED">
+    Switch on the DC power supply. Within a few seconds, the **Power LED** on the front panel of the CSM device should illuminate solid green, indicating that the supply voltage is present and within the acceptable range. If the Power LED does not illuminate, switch off the supply immediately and verify the connections and supply output voltage before troubleshooting further.
+  </Step>
+</Steps>
+
+## After Powering On
+
+Once the Power LED is solid green, observe the Status LED. During normal startup, the Status LED will cycle through colors briefly before settling on solid green, indicating the device has completed its initialization. If the Status LED remains red or amber after 30 seconds, refer to the [LED Indicator Reference](/quick-reference) for a description of the fault state and next steps.

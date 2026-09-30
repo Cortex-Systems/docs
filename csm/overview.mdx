@@ -1,0 +1,60 @@
+---
+title: "CSM-1-00 and CSM-2-00 Power Quality Monitor Overview"
+sidebarTitle: "Overview"
+description: "Overview of the Cortex PQM CSM-1-00 and CSM-2-00 power quality monitors: features, interfaces, expansion ports, and supported models."
+---
+
+The CSM (Controller and Signal Module) is the main controller unit of the Cortex PQM system. It measures line voltage, accepts current transformer (CT) inputs through expansion modules, and exposes all collected data over a local Ethernet network via REST API. The CSM mounts on a standard 35mm DIN rail inside an electrical enclosure and serves as the foundation to which all other Cortex PQM modules connect. Two models are available — the CSM-1-00 for single-phase installations and the CSM-2-00 for three-phase installations.
+
+## Model Comparison
+
+The CSM-1-00 and CSM-2-00 share the same physical form factor and software platform. The difference between them is the number of voltage input channels and the wiring configurations each model supports.
+
+| Feature | CSM-1-00 | CSM-2-00 |
+|---|---|---|
+| Phase support | Single-phase | Single-phase, split-phase, three-phase |
+| Voltage input channels | 2 (L1, L2) | 4 (L1, L2, L3, N) |
+| Maximum line voltage | 600V (line-to-line) | 600V (line-to-line) |
+| FLEX port slots | 4 | 4 |
+| AUX port | Yes | Yes |
+| Ethernet | Yes (RJ45 10/100Base-T) | Yes (RJ45 10/100Base-T) |
+| DIN rail mount | 35mm standard | 35mm standard |
+| DC supply input | 12–24VDC | 12–24VDC |
+
+## Physical Description
+
+Both models share the same compact DIN-rail form factor. The front panel exposes all user-facing connectors and indicators in a single accessible face, so the device can be fully commissioned without removing it from the rail. Terminal blocks for DC power and line voltage inputs are located along the top edge. FLEX port slots are positioned on the right side of the device, and the AUX port header is located on the left side. The Ethernet RJ45 jack is on the front face alongside the LED indicator array.
+
+The front panel includes the following LED indicators:
+
+- **Status** — indicates device operating state
+- **Network Link** — indicates Ethernet link and activity
+
+## Expansion Capability
+
+The CSM device is designed to be expanded through two types of ports:
+
+**FLEX Ports** — Two proprietary FLEX port slots accept CT cards and other FLEX-format expansion modules. CT cards connect current transformer wiring to the system for current and power measurement. Additional FLEX modules may add analog inputs or other measurement channels depending on the module type.
+
+All expansion modules connect directly to the CSM and are powered through it; no separate power supply is required for individual modules.
+
+## Communication
+
+The CSM exposes a REST API over its Ethernet interface, making measurement data and device configuration available to any networked client. The device supports static and DHCP-assigned addressing. All data including real-time measurements, configuration parameters, and device status are accessible through the API without requiring proprietary software.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Mounting" icon="screwdriver-wrench" href="/csm/mounting">
+    Mount the CSM device on a standard 35mm DIN rail inside your electrical enclosure.
+  </Card>
+  <Card title="Connecting" icon="plug" href="/csm/connecting">
+    Connect power, voltage inputs, CT clamps, and Ethernet to the CSM device.
+  </Card>
+  <Card title="Interfaces" icon="list" href="/csm/interfaces">
+    Detailed description of every physical interface on the CSM-1-00 and CSM-2-00.
+  </Card>
+  <Card title="Configuration" icon="gear" href="/configuration/overview">
+    Configure the device for your wiring configuration and network environment.
+  </Card>
+</CardGroup>

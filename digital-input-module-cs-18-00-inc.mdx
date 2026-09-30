@@ -1,0 +1,105 @@
+---
+title: "Digital Input Module: CS18-00-INC"
+---
+
+Part Number: CS18-00-INC | 18 CHANNEL DIGITAL INPUT MODULE
+
+### **Product Information**
+
+<img
+  src="/images/image.png"
+  alt="Digital Input Module"
+  title="Image"
+  className="mr-auto"
+  style={{ width:"36%" }}
+/>
+
+The CORTEX CS18-00-INC supports 18 dry contact inputs per module with a total of four compatible modules connected in series for expansion. The module automatically connects to the Cortex single or dual input monitor and requires no configuration.
+
+This module is part of the Cortex family of interface modules which includes thermal, digital I/O, serial, RCM and other elements need to monitor critical power.
+
+### **Features**
+
+- Monitor status on up to 18 dry contact inputs
+- Daisy chain up to 4 Digital Input Modules
+- Smart auto adaption / no configuration needed
+- Assign friendly names to each channel
+- Easy to view via web console
+- Smart tags show registers for each channel to simplify integration
+- Supports bit reads for reduced network traffic
+- Place modules close to contacts using standard network cable to minimize wiring
+- Standard 35mm DIN rail mounting
+
+## **Connection Guide**
+
+#### **Connectivity**
+
+- Connects to the Cortex CSM-1-00 or CSM-2-00 using standard Ethernet cables up to 100’ (33m)
+- Interfaces with standard dry contact outputs
+
+![Image](/images/image-1.png "Image")
+
+### **Connecting Your Digital Input Module**
+
+<img
+  src="/images/image-2.png"
+  alt="Image"
+  title="Image"
+  style={{ width:"89%" }}
+/>
+
+#### **Connecting to the Monitor**
+
+The Digital Input Module connects to the **AUX port** using a standard Ethernet cable. Do not connect the module to a FLEX port.
+
+- Connect the “IN” port of the first module to the AUX port on the CSM monitor.
+- To add further modules, connect the “OUT” port of each module to the “IN” port of the next, as shown in the diagram above.
+
+#### **Wiring the Inputs**
+
+Dry contacts are wired to the removable 3.5mm connectors. Each Digital Input card provides 18 input positions.
+
+- The inputs sense voltage-free dry contacts, registering a closed contact when the resistance between the contacts falls below 1k Ohms.
+- The second pin on each terminal is common. When running a shared common wire between multiple contacts, always land the common conductor on the second pin.
+
+#### **Verifying Operation**
+
+Once the monitor is energized, a flashing green LED on the module indicates normal operation.
+
+### **Digital Input Module Registers**
+
+![Image](/images/image-3.png "Image")
+
+Each connector position corresponds to a fixed register, advancing sequentially with the input number. Module numbering follows the installation sequence: the module connected directly to the meter is Module 1, the next module in the chain is Module 2, and so on.
+
+#### **Individual Input Registers**
+
+Each module reports the state of its 18 inputs in 18 consecutive registers, where 0 = open and 1 = closed. Module 1 begins at register 2046, and each additional module is offset by a further 49 registers.
+
+| Module | Registers (Inputs 1-18) |
+| :-- | :-- |
+| 1 | 2046-2063 |
+| 2 | 2095-2112 |
+| 3 | 2144-2161 |
+| 4 | 2193-2210 |
+| 5 | 2242-2259 |
+| 6 | 2291-2308 |
+| 7 | 2340-2357 |
+| 8 | 2389-2406 |
+
+To locate a single input, add the input number less one to the module’s first register. For example, Input 5 on Module 3 is register 2144 + 4 = 2148.
+
+#### **Block Reads**
+
+Each module also reports all 18 inputs as a packed two-register block, allowing the entire module to be polled in a single transaction. Inputs 1 through 16 are returned in the first register as bits 0 through 15; inputs 17 and 18 are returned in the second register as bits 0 and 1.
+
+| Module | Inputs 1-16 | Inputs 17-18 |
+| :-- | :-- | :-- |
+| 1 | 2001 | 2002 |
+| 2 | 2003 | 2004 |
+| 3 | 2005 | 2006 |
+| 4 | 2007 | 2008 |
+| 5 | 2009 | 2010 |
+| 6 | 2011 | 2012 |
+| 7 | 2013 | 2014 |
+| 8 | 2015 | 2016 |

@@ -1,0 +1,47 @@
+---
+title: "FLEX Port Expansion Modules for Cortex PQM CSM Devices"
+sidebarTitle: "Overview"
+description: "Overview of available FLEX port expansion modules for the Cortex PQM: CT Card Module, Solid Core CT Strips, and the CS12-42-5-SA1 Multi-Circuit Card."
+---
+
+The FLEX port system lets you expand the current measurement capacity of your Cortex PQM CSM device by snapping in dedicated CT (current transformer) modules. Each module plugs directly into a FLEX port slot on the front of the CSM-1-00 or CSM-2-00, and the device recognises the new channels automatically — no firmware update or manual channel mapping is required at the hardware level.
+
+## Available FLEX Modules
+
+Three FLEX module types are available, each suited to a different installation scenario:
+
+- **CT Card Module (FLEX)** — A general-purpose expansion card that adds 6 or 12 individual CT input channels. Use this card when you need to monitor a small to medium number of discrete circuits using split-core or solid-core clamp-on CTs.
+- **Solid Core CT Strips** — Pre-wired arrays of solid-core current transformers sized to fit inside 42–48 or 72–84 pole electrical panels. Pair these strips with a CT Card Module or the Multi-Circuit Card.
+- **Multi-Circuit Card (CS12-42-5-SA1)** — A single FLEX module that accepts a CT strip ribbon cable and monitors up to 42 circuits simultaneously. Designed for large panels where installing individual clamp-on CTs is impractical.
+
+## How the FLEX Port Works
+
+FLEX modules connect directly to the keyed edge-connector slots on the CSM device. When you insert a module and power on the device, the CSM enumerates the attached cards and exposes their channels through the REST API and configuration interface without additional setup.
+
+The number of FLEX slots available depends on your device model:
+
+| Device Model | FLEX Slots |
+|---|---|
+| CSM-1-00 | 1 |
+| CSM-2-00 | 2 |
+
+<Warning>
+Only use Cortex Systems approved FLEX modules. Third-party modules are not electrically or mechanically compatible and may damage the device or produce inaccurate measurements. Using unapproved modules voids the product warranty.
+</Warning>
+
+## Module Pages
+
+<CardGroup cols={2}>
+  <Card title="CT Card Module" icon="bolt" href="/flex-modules/ct-card">
+    Add individual CT clamp input channels to your CSM device. Supports split-core and solid-core CTs with 333 mV or 0–5 V output.
+  </Card>
+  <Card title="Solid Core CT Strips" icon="table-rows" href="/flex-modules/solid-core-ct-strips">
+    Pre-wired CT arrays for 42–48 and 72–84 pole panels. One installation step covers all branch circuits.
+  </Card>
+  <Card title="Multi-Circuit Card" icon="server" href="/flex-modules/multi-circuit-card">
+    Monitor up to 42 circuits from a single FLEX slot using the CS12-42-5-SA1 and a solid core CT strip.
+  </Card>
+  <Card title="Dimensions" icon="ruler" href="/flex-modules/dimensions">
+    Physical dimensions and clearance requirements for all FLEX port modules to support enclosure and panel space planning.
+  </Card>
+</CardGroup>

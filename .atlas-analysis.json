@@ -1,0 +1,124 @@
+{
+  "projectType": "general",
+  "projectName": "Cortex PQM",
+  "projectDescription": "User and installation manual for the Cortex Power Quality Monitor (PQM) CSM-1-00 and CSM-2-00 hardware devices, covering installation, wiring, configuration, expansion modules, and integration interfaces.",
+  "theme": "aspen",
+  "primaryColor": "#0c5859",
+  "lightColor": "#6c6c6c",
+  "darkColor": "#3c3d3d",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "User Manual",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "introduction",
+              "quick-reference",
+              "quick-start-guide"
+            ]
+          },
+          {
+            "group": "CSM Device Setup",
+            "pages": [
+              "csm/overview",
+              "csm/mounting",
+              "csm/connecting",
+              "csm/interfaces",
+              "csm/wiring-configurations",
+              "csm/dc-wiring"
+            ]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "configuration/overview",
+              "configuration/using-files",
+              "configuration/uploading-files",
+              "configuration/editing-files",
+              "configuration/file-definitions"
+            ]
+          },
+          {
+            "group": "Firmware Updates",
+            "pages": [
+              "firmware/overview",
+              "firmware/update-via-usb",
+              "firmware/update-via-network",
+              "firmware/changelog"
+            ]
+          },
+          {
+            "group": "FLEX Port Modules",
+            "pages": [
+              "flex-modules/overview",
+              "flex-modules/ct-card",
+              "flex-modules/solid-core-ct-strips",
+              "flex-modules/multi-circuit-card",
+              "flex-modules/dimensions"
+            ]
+          },
+          {
+            "group": "AUX Port Modules",
+            "pages": [
+              "aux-modules/overview",
+              "aux-modules/digital-input",
+              "aux-modules/digital-io-serial",
+              "aux-modules/thermal-module",
+              "aux-modules/dimensions"
+            ]
+          },
+          {
+            "group": "Wiring Guide",
+            "pages": [
+              "wiring/overview",
+              "wiring/ac-wiring",
+              "wiring/dc-wiring",
+              "wiring/flex-port",
+              "wiring/ethernet"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Integration Reference",
+        "groups": [
+          {
+            "group": "REST API",
+            "pages": [
+              "api/overview"
+            ]
+          },
+          {
+            "group": "Modbus",
+            "pages": [
+              "modbus/register-map",
+              "modbus/thermal-register-map"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Power Quality Monitoring (PQM) for electrical panels",
+    "CSM-1-00 and CSM-2-00 main controller units",
+    "FLEX Port expansion modules (CT Card, Solid Core CT Strips, Multi-Circuit Card)",
+    "AUX Port expansion modules (Digital Input, Digital I/O + Serial, Thermal Module)",
+    "REST API for remote data access and integration",
+    "Modbus register map for SCADA and BMS integration",
+    "Firmware updates via USB or network",
+    "JSON-based configuration file system",
+    "Support for 42–48 and 72–84 pole electrical panels",
+    "Ambient and contact temperature monitoring via thermal probes"
+  ],
+  "publicApiSurface": [
+    "REST API endpoints (GET /api/...)",
+    "Modbus register map — CSM device registers",
+    "Modbus register map — Thermal module (CS18-01-TMP) registers",
+    "Configuration file upload interface",
+    "Firmware update via network endpoint",
+    "Digital I/O serial interface (CS18-02-SR1)"
+  ]
+}

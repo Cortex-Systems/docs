@@ -1,0 +1,46 @@
+---
+title: "Cortex PQM Wiring Guide: All Connection Types Overview"
+sidebarTitle: "Overview"
+description: "Complete wiring guide for the Cortex PQM CSM device — AC voltage inputs, DC power supply, FLEX port CT modules, and Ethernet network connections."
+---
+
+The Cortex PQM CSM device requires four categories of wiring connections to operate correctly. Before you begin, read through this overview to understand what each connection type does and which pages cover the detailed instructions. Completing all four connection types in the correct order — starting with DC power last — reduces the risk of accidental energization during installation.
+
+## Connection Summary
+
+| Connection | Type | Purpose |
+|---|---|---|
+| AC Voltage Inputs | Terminal block | Line voltage measurement |
+| DC Power Supply | Terminal block | Device power (12–24VDC) |
+| FLEX Port | Ribbon/direct | CT clamp inputs for current measurement |
+| Ethernet | RJ45 | Network, REST API, configuration |
+
+## General Wiring Safety Rules
+
+Follow these rules for every connection type throughout the installation:
+
+- **De-energize circuits** before making any connections to live conductors. Verify with a meter that the circuit is de-energized before touching terminals.
+- **Use appropriate wire gauge** for each connection type. The minimum and maximum wire gauges for each terminal block are specified on the relevant sub-page.
+- **Comply with local electrical codes.** All wiring must meet the requirements of your local jurisdiction, including conduit, labeling, and breaker sizing rules.
+- **Use ferruled or tinned wire ends** on all terminal block connections to prevent stray strands from causing short circuits or intermittent contact.
+
+<Warning>
+  AC voltage wiring must be performed by a licensed electrician. Incorrect AC wiring can result in electric shock, equipment damage, or fire.
+</Warning>
+
+## Wiring Sub-Pages
+
+<CardGroup cols={2}>
+  <Card title="AC Wiring" icon="bolt" href="/wiring/ac-wiring">
+    Wire AC line voltage inputs for single-phase, split-phase, and three-phase systems.
+  </Card>
+  <Card title="DC Wiring" icon="battery-half" href="/wiring/dc-wiring">
+    Wire the DC power supply input and digital pulse/status inputs.
+  </Card>
+  <Card title="FLEX Port Wiring" icon="plug" href="/wiring/flex-port">
+    Connect CT clamp modules to the FLEX port for current measurement.
+  </Card>
+  <Card title="Ethernet Wiring" icon="network-wired" href="/wiring/ethernet">
+    Connect to your local network and configure IP addressing.
+  </Card>
+</CardGroup>

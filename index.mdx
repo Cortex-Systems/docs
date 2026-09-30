@@ -1,0 +1,62 @@
+---
+title: "Cortex PQM: Power Quality Monitor User & Installation Manual"
+sidebarTitle: "Home"
+description: "Complete documentation for the Cortex PQM CSM-1-00 and CSM-2-00 power quality monitors — installation, wiring, configuration, and integration."
+---
+
+The Cortex Power Quality Monitor (PQM) is a DIN-rail mounted energy monitoring device designed for electrical panels. The CSM-1-00 and CSM-2-00 models measure voltage, current, and power quality parameters across your facility, and expose data through a REST API and Modbus interface for integration with SCADA systems, building management software, and custom dashboards.
+
+<CardGroup cols={2}>
+  <Card title="Quick Start Guide" icon="rocket" href="/quick-start-guide">
+    Get your CSM device powered, wired, and communicating in minutes
+  </Card>
+  <Card title="Quick Reference" icon="bolt" href="/quick-reference">
+    Key specifications, LED indicators, and interface summary
+  </Card>
+  <Card title="CSM Device Setup" icon="microchip" href="/csm/overview">
+    Mounting, connecting, and configuring the CSM-1-00 and CSM-2-00
+  </Card>
+  <Card title="Wiring Guide" icon="plug" href="/wiring/overview">
+    AC, DC, FLEX port, and Ethernet wiring diagrams and instructions
+  </Card>
+  <Card title="REST API" icon="code" href="/api/overview">
+    Access power data programmatically via the built-in HTTP API
+  </Card>
+  <Card title="Modbus Register Map" icon="table" href="/modbus/register-map">
+    Full register map for SCADA and BMS integration
+  </Card>
+</CardGroup>
+
+## What's in This Manual
+
+This manual covers everything you need to install, configure, and integrate the Cortex PQM family of power quality monitors.
+
+<Steps>
+  <Step title="Install the Hardware">
+    Mount the CSM device on your DIN rail and connect it to your electrical panel. See [CSM Device Setup](/csm/overview) and the [Wiring Guide](/wiring/overview).
+  </Step>
+  <Step title="Configure the Device">
+    Upload or edit configuration files to set up circuit names, CT ratios, network settings, and more. See [Configuration](/configuration/overview).
+  </Step>
+  <Step title="Connect FLEX and AUX Modules">
+    Expand monitoring capability by adding CT card modules, solid core CT strips, digital I/O, or thermal probes. See [FLEX Port Modules](/flex-modules/overview) and [AUX Port Modules](/aux-modules/overview).
+  </Step>
+  <Step title="Integrate with Your Systems">
+    Pull live power data from the device's [REST API](/api/overview) or read Modbus registers directly from your [SCADA or BMS](/modbus/register-map).
+  </Step>
+</Steps>
+
+## Device Overview
+
+The Cortex PQM family includes two main device variants:
+
+| Model | Description |
+|-------|-------------|
+| **CSM-1-00** | Single-phase power quality monitor with FLEX and AUX expansion ports |
+| **CSM-2-00** | Three-phase power quality monitor with FLEX and AUX expansion ports |
+
+Both models support the same expansion modules, configuration system, REST API, and Modbus interface.
+
+<Note>
+  Always follow your local electrical codes and safety regulations when installing the Cortex PQM. Work performed inside electrical panels must be carried out by a qualified electrician.
+</Note>

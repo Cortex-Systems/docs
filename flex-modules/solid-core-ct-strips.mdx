@@ -1,0 +1,115 @@
+---
+title: "Solid Core CT Strip Installation for Electrical Panels"
+sidebarTitle: "CT Strips"
+description: "How to install Cortex PQM solid core CT strips in 42–48 and 72–84 pole electrical panels for full multi-circuit current monitoring."
+---
+
+Solid Core CT Strips are factory-assembled arrays of solid-core current transformers mounted on a rigid carrier board sized to fit inside a standard electrical panel. Instead of clamping individual CTs around each conductor one at a time, you thread all branch circuit conductors through the CT windows in a single installation pass, then route a single ribbon cable from the strip to the CSM device. This approach dramatically reduces installation time in large panels and keeps wiring neat and repeatable across sites.
+
+## Compatible Panel Sizes
+
+Cortex Systems offers two CT strip sizes to match the most common North American panel configurations:
+
+| Strip Model | Compatible Panel Size | Circuits Covered |
+|---|---|---|
+| CT Strip 42–48 | 42–48 pole panels | Up to 48 circuits |
+| CT Strip 72–84 | 72–84 pole panels | Up to 84 circuits |
+
+<Note>
+For double-row (back-to-back bus) 42–48 pole panels, you may need two CT strips — one per row — to cover all branch circuits. Each strip connects to its own CT Card Module or to separate ribbon connectors on the Multi-Circuit Card.
+</Note>
+
+## Product Dimensions
+
+For full mechanical drawings and CAD files, see the [FLEX Port Module Dimensions](/flex-modules/dimensions) page or contact Cortex Systems support.
+
+| Strip Model | Length | Width | CT Window Diameter | Weight |
+|---|---|---|---|---|
+| CT Strip 42–48 | ~420 mm | ~38 mm | 12 mm | ~210 g |
+| CT Strip 72–84 | ~680 mm | ~38 mm | 12 mm | ~340 g |
+
+## Installation Instructions
+
+<Warning>
+Solid-core CTs cannot be installed around a conductor that is already terminated at both ends — the conductor must pass through the CT window. Plan your installation sequence before terminating any circuit breakers. Threading conductors through the CT windows before landing them on the breaker terminals is the recommended approach.
+</Warning>
+
+<Tip>
+Label each CT window with a permanent marker or adhesive label showing the circuit number before you begin threading conductors. Doing this while the strip is on a workbench is far easier than working inside a live panel enclosure.
+</Tip>
+
+### Steps for All Panel Sizes
+
+<Steps>
+  <Step title="De-energise the panel">
+    Turn off the main breaker to remove power from all bus bars. Use a non-contact voltage tester to confirm that the bus bars are de-energised before proceeding. Follow all applicable lockout/tagout procedures.
+  </Step>
+  <Step title="Remove the panel cover">
+    Remove the dead front cover and set it aside. Identify the circuit breaker columns and note the physical order of circuits — this determines which conductor goes through which CT window.
+  </Step>
+  <Step title="Position the CT strip">
+    Lay the CT strip along the panel bus bar row with CT window 1 aligned to circuit breaker position 1. Use the mounting holes on the strip carrier to secure the strip to the panel knockout rail or with adhesive cable mounts if no rail is present. The strip must sit flat and stable — do not allow it to flex or bow.
+  </Step>
+  <Step title="Thread circuit conductors through CT windows">
+    Pass each branch circuit conductor through its corresponding CT window. Feed the conductor in the direction printed on the CT window face (the arrow indicates the conventional positive-current direction). Keep one conductor per window — never thread a neutral or two hots through the same window.
+  </Step>
+  <Step title="Route the ribbon cable to the CSM device">
+    Guide the CT strip ribbon cable out of the panel through an available knockout and along your cable management path to the CSM device. Leave enough slack for the panel cover to be replaced without straining the cable.
+  </Step>
+  <Step title="Connect the ribbon cable to the CT Card">
+    Plug the ribbon cable into the ribbon connector on the CT Card Module (or Multi-Circuit Card) installed in the CSM FLEX port. Press the connector fully until the latch engages.
+  </Step>
+  <Step title="Replace the panel cover">
+    Reinstall the dead front cover, routing the ribbon cable through the appropriate knockout or gland fitting. Ensure the cable is not pinched by the cover.
+  </Step>
+  <Step title="Re-energise the panel">
+    Turn the main breaker back on. Verify that normal operation is restored before proceeding to CSM configuration.
+  </Step>
+</Steps>
+
+## Wiring Diagrams
+
+### 42–48 Pole Panels
+
+In a 42–48 pole single-row panel, one CT strip covers all branch circuit positions in a single column. The ribbon cable runs from the strip at the bottom of the panel (or top, depending on panel orientation) to the CT Card Module on the CSM device.
+
+```
+Panel Bus Bar Column (42–48 pole, single row)
+┌─────────────────────────┐
+│ Breaker 1  [CT 1 ]──┐   │
+│ Breaker 2  [CT 2 ]  │   │
+│ Breaker 3  [CT 3 ]  │   │
+│   ...               │   │
+│ Breaker 48 [CT 48]  │   │
+└─────────────────────┼───┘
+                      │ Ribbon Cable
+                 ┌────▼────┐
+                 │ CT Card │
+                 │  FLEX   │
+                 └─────────┘
+```
+
+For double-row (back-to-back) 42–48 pole panels, install one CT strip per row and connect each strip to a separate CT Card Module or to the two available ribbon connectors on the Multi-Circuit Card.
+
+### 72–84 Pole Panels
+
+In a 72–84 pole panel, use the longer CT strip model. Depending on the panel's physical layout, the strip may span two sections of the bus bar assembly. Route the ribbon cable to the CSM device as above. If the panel has more circuits than a single strip covers (for example, two 42-pole sub-panels in the same enclosure), use two CT strips with two CT Card Modules.
+
+```
+Panel Bus Bar Column (72–84 pole)
+┌─────────────────────────┐
+│ Breaker 1   [CT 1 ]──┐  │
+│ Breaker 2   [CT 2 ]  │  │
+│   ...                │  │
+│ Breaker 84  [CT 84]  │  │
+└──────────────────────┼──┘
+                       │ Ribbon Cable
+                 ┌─────▼────┐
+                 │ CT Card  │
+                 │  FLEX    │
+                 └──────────┘
+```
+
+<Warning>
+A 72–84 pole CT strip paired with a standard 6- or 12-channel CT Card Module will only monitor the first 6 or 12 circuits wired to the card. To monitor all circuits on a 72–84 pole strip, use the Multi-Circuit Card (CS12-42-5-SA1), which supports up to 42 channels per card, and combine two cards if your panel exceeds 42 circuits.
+</Warning>
