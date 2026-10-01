@@ -107,14 +107,14 @@ Part Number: CS18-00-INC | 18 CHANNEL DIGITAL INPUT MODULE
   style={{ width:"89%" }}
 />
 
-#### **Wiring the Inputs**
+### **Wiring the Inputs**
 
 Dry contacts are wired to the removable 3.5mm connectors. Each Digital Input card provides 18 input positions.
 
 - The inputs sense voltage-free dry contacts, registering a closed contact when the resistance between the contacts falls below 1k Ohms.
 - The second pin on each terminal is common. When running a shared common wire between multiple contacts, always land the common conductor on the second pin.
 
-#### **Verifying Operation**
+### **Verifying Operation**
 
 Once the monitor is energized, a flashing green LED on the module indicates normal operation.
 
@@ -124,7 +124,7 @@ Once the monitor is energized, a flashing green LED on the module indicates norm
 
 Each connector position corresponds to a fixed register, advancing sequentially with the input number. Module numbering follows the installation sequence: the module connected directly to the meter is Module 1, the next module in the chain is Module 2, and so on.
 
-#### **Individual Input Registers**
+### **Individual Input Registers**
 
 Each module reports the state of its 18 inputs in 18 consecutive registers, where 0 = open and 1 = closed. Module 1 begins at register 2046, and each additional module is offset by a further 49 registers.
 
@@ -141,7 +141,7 @@ Each module reports the state of its 18 inputs in 18 consecutive registers, wher
 
 To locate a single input, add the input number less one to the module’s first register. For example, Input 5 on Module 3 is register 2144 + 4 = 2148.
 
-#### **Block Reads**
+### **Block Reads**
 
 Each module also reports all 18 inputs as a packed two-register block, allowing the entire module to be polled in a single transaction. Inputs 1 through 16 are returned in the first register as bits 0 through 15; inputs 17 and 18 are returned in the second register as bits 0 and 1.
 
