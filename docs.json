@@ -76,7 +76,6 @@
             "group": "AUX Port Modules",
             "pages": [
               "digital-i-o-module-serial-cs-18-02-sr-1",
-              "aux-modules/digital-io-serial",
               "aux-modules/thermal-module",
               "digital-input-module-cs-18-00-inc",
               "aux-modules/digital-input",
