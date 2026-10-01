@@ -21,7 +21,7 @@
         "tab": "User Manual",
         "groups": [
           {
-            "group": "MOPs",
+            "group": "Cortex MOPs",
             "public": true,
             "pages": [
               "mops"
