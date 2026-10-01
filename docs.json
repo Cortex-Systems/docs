@@ -21,8 +21,16 @@
         "tab": "User Manual",
         "groups": [
           {
+            "group": "MOPs",
+            "public": true,
+            "pages": [
+              "mops"
+            ]
+          },
+          {
             "group": "Overview",
             "pages": [
+              "safety",
               "introduction",
               "safety",
               "quick-reference",
