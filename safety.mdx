@@ -1,0 +1,90 @@
+---
+title: "Safety information"
+sidebarTitle: "Safety"
+description: "Read these safety messages before you install, wire, or service any Cortex Systems equipment."
+icon: "triangle-exclamation"
+---
+
+export const ORANGE = "#F7941D";
+export const RED = "#ED1C24";
+
+export const DangerBanner = () => (
+  <div style={{ background: ORANGE, color: "#000", borderRadius: "14px 14px 0 0", padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", fontWeight: 800, letterSpacing: "0.02em" }}>
+    <span style={{ fontSize: "1.4rem" }} aria-hidden="true">»»»</span>
+    <span style={{ fontSize: "2rem", lineHeight: 1 }}>⚠ DANGER ⚠</span>
+    <span style={{ fontSize: "1.4rem" }} aria-hidden="true">«««</span>
+  </div>
+);
+
+export const BlackBar = ({ children }) => (
+  <div style={{ background: "#000", color: "#fff", fontWeight: 800, textAlign: "center", padding: "14px 12px", textTransform: "uppercase", lineHeight: 1.35 }}>{children}</div>
+);
+
+export const Item = ({ children }) => (
+  <div style={{ display: "flex", gap: "10px", alignItems: "flex-start", padding: "12px 16px", borderBottom: "1px dotted #9a9a9a", color: "#111" }}>
+    <span style={{ flex: "0 0 auto", width: "12px", height: "12px", marginTop: "6px", background: ORANGE }} aria-hidden="true" />
+    <span>{children}</span>
+  </div>
+);
+
+<div className="not-prose grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <div style={{ border: "2px solid #000", borderRadius: "16px", overflow: "hidden", background: "#f2f2f2" }}>
+    <DangerBanner />
+
+    <BlackBar>Hazard of electric shock, explosion, or arc flash</BlackBar>
+    <Item>This product must be installed inside a suitable fire and electrical enclosure.</Item>
+    <Item>Follow safe electrical work practices. See NFPA 70E in the USA, or applicable local codes.</Item>
+    <Item>This equipment must only be installed and serviced by qualified electrical personnel.</Item>
+    <Item>Do not use this product for life or safety applications.</Item>
+    <Item>Do not install this product in hazardous or classified locations.</Item>
+    <Item>Read, understand and follow the instructions before installing this product.</Item>
+    <Item>Turn off all power supplying equipment before working on or inside the equipment.</Item>
+    <Item>Product may use multiple voltage/power sources. Disconnect ALL sources before servicing.</Item>
+    <Item>Use a properly rated voltage sensing device to confirm that power is off. DO NOT depend on this product for voltage indication.</Item>
+    <Item>Current transformer secondaries (current mode) must be shorted or connected to a burden at all times.</Item>
+    <Item>Products rated only for basic insulation must be installed on insulated conductors.</Item>
+    <Item>Replace all doors, covers and protective devices before powering the equipment.</Item>
+    <Item>The installer is responsible for conformance to all applicable codes.</Item>
+    <Footer>Failure to follow these instructions will result in death or serious injury.</Footer>
+  </div>
+
+  <div className="flex flex-col gap-4">
+    <div style={{ background: "#000", border: "2px solid #000", borderRadius: "16px", overflow: "hidden", padding: "20px 20px 0" }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ background: RED, color: "#000", border: "5px solid #fff", borderRadius: "50%", padding: "6px 40px", fontWeight: 700, fontSize: "2.1rem", lineHeight: 1.1, letterSpacing: "0.02em" }}>⚠ WARNING!</div>
+      </div>
+
+      <div style={{ background: "#d9d9d9", color: "#333", textAlign: "center", textTransform: "uppercase", fontWeight: 600, padding: "14px 16px", margin: "20px 0", lineHeight: 1.4 }}>
+        To reduce the risk of electric shock, always open or disconnect circuit from power-distribution system (or service) of building before installing or servicing current sensors or metering equipment.
+      </div>
+
+      <div style={{ height: "44px", background: `repeating-linear-gradient(135deg, ${RED} 0 28px, #000 28px 56px)` }} aria-hidden="true" />
+
+      <div style={{ height: "20px" }} />
+    </div>
+
+    <div style={{ border: "2px solid #000", borderRadius: "16px", overflow: "hidden", background: "#e6e6e6" }}>
+      <DangerBanner />
+
+      <div className="grid grid-cols-2">
+        <div style={{ borderRight: "1px solid #888" }}>
+          <BlackBar>Hazard of electric shock, explosion, or arc flash</BlackBar>
+          <Item>While removing or installing panels and covers, assure that they do not contact an energized bus.</Item>
+          <Item>NEVER bypass external fusing.</Item>
+          <Item>NEVER short the secondary of a potential transformer.</Item>
+          <Item>Before closing covers and doors, carefully inspect the work area and remove any tools, wire scraps or other objects that may have been left inside the equipment.</Item>
+          <Footer>Failure to follow these instructions will result in death or serious injury.</Footer>
+        </div>
+
+        <div lang="fr">
+          <BlackBar>Risque de choc électrique, explosion ou arc flash</BlackBar>
+          <Item>Lors du retrait ou de l’installation des panneaux et des capots, assurez-vous qu’ils ne touchent pas un bus sous tension.</Item>
+          <Item>NE JAMAIS contourner les fusibles externes.</Item>
+          <Item>NE JAMAIS court-circuiter le secondaire d’un transformateur de potentiel.</Item>
+          <Item>Avant de fermer les capots et les portes, inspectez soigneusement la zone de travail et retirez les outils, bouts de fil ou autres objets éventuellement restés à l’intérieur de l’équipement.</Item>
+          <Footer>Si ces précautions ne sont pas respectées, cela entraînera la mort ou des blessures graves.</Footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -24,6 +24,7 @@
             "group": "Overview",
             "pages": [
               "introduction",
+              "safety",
               "quick-reference",
               "quick-start-guide",
               "mops"
