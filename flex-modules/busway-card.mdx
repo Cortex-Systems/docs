@@ -1,27 +1,55 @@
 ---
-title: "Busway CT Interface Card Installation and Connection Guide"
+title: "Busway CT Interface Card Installation Guide"
 sidebarTitle: "Busway Card"
-description: "Cortex 6-circuit Busway CT Interface Card (BUSWAY_6CT): internal and external mount options, intelligent CTs, system architecture, and how to connect and daisy-chain cards to the Flex Ports."
+description: "Cortex 6-circuit Busway CT Interface Card"
 ---
 
-The Cortex Busway CT Interface Card is an ultra-compact, 6-circuit CT interface for monitoring busway tap-offs. Each card mounts in or on a tap box and daisy-chains back to a single Cortex monitor housed in a tap-off or end feed. The monitor identifies the card as device type **25 (`BUSWAY_6CT`)**.
+Part Number: 
+
+The Cortex Busway CT Interface Card is an ultra-compact, 6-circuit CT interface for monitoring busway tap-offs. Each card mounts in or on a tap box and daisy-chains back to a single Cortex CSM.
+
+## 6 Circuit Busway CT Card
+
+<Columns cols={2}>
+  <Column>
+    Internal Mount Variant
+
+    <img
+      src="/images/ct-card.png"
+      alt="Ct Card"
+      title="Ct Card"
+      style={{ width:"82%" }}
+    />
+  </Column>
+  <Column>
+    External Mount Variant
+
+    <img
+      src="/images/ct-card-gland.png"
+      alt="Ct Card Gland"
+      title="Ct Card Gland"
+    />
+
+    <img
+      src="/images/image-17.png"
+      alt="Image"
+      title="Image"
+      className="mr-auto"
+      style={{ width:"20%" }}
+    />
+  </Column>
+</Columns>
 
 {/* IMAGE: busway-card-internal.png / busway-card-external.png — product photos of both form factors */}
 
 ## Highlights
 
 <CardGroup cols={2}>
-  <Card title="6 circuits per card" icon="plug">
+  <Card title="6 circuits per card" color="#000000">
     Supports up to six circuits using any solid or split core CT.
   </Card>
-  <Card title="1.8 in square footprint" icon="minimize">
+  <Card title="1.8 in square footprint">
     Ultra-compact body fits inside congested tap-cans and end feeds.
-  </Card>
-  <Card title="No voltage or power wiring" icon="bolt-slash">
-    Power and data are carried on the Ethernet cable. No contact with line voltage is needed.
-  </Card>
-  <Card title="Single IP address" icon="network-wired">
-    All communication is centralized on the head end monitor, under one IP address.
   </Card>
 </CardGroup>
 
@@ -29,12 +57,13 @@ The Cortex Busway CT Interface Card is an ultra-compact, 6-circuit CT interface 
 
 A Cortex busway system uses a single head end monitor installed in a tap-off or end feed. Busway cards are connected to the monitor's four Flex Ports with standard Ethernet cable in a daisy chain.
 
-| | Per card | Per Flex Port | Per monitor |
-| --- | --- | --- | --- |
-| Cards | 1 | 8 | 32 |
-| Circuits | 6 | 48 | 192 |
-
 {/* IMAGE: busway-system-architecture.png — Flex Ports, 8 cards per port, 6 circuits per card, auto CT correction */}
+
+<img
+  src="/images/2026-09-28-11-33-05.png"
+  alt="2026 09 28 11 33 05"
+  title="2026 09 28 11 33 05"
+/>
 
 ### Auto CT Correction
 
@@ -45,11 +74,29 @@ Standard CTs and intelligent CTs can be mixed on the same card.
 
 ## Form Factors
 
-The card is available in two form factors to suit the mounting requirements of the tap box.
+The card is available in two form factors to suit the mounting requirements.
+
+<img
+  src="/images/2026-09-28-11-33-32.png"
+  alt="2026 09 28 11 33 32"
+  title="2026 09 28 11 33 32"
+  style={{ width:"77%" }}
+/>
 
 <Tabs>
   <Tab title="Internal mount">
-    The internal mount card installs inside the tap box enclosure. CT leads plug directly into the card's terminal headers, and the **IN** / **OUT** RJ45 ports are exposed for the Ethernet daisy chain.
+    The internal mount card installs inside the tap box enclosure. CT leads plug directly into the card's terminal headers. The **IN** / **OUT** RJ45 ports are exposed for the FLEX Port daisy chain.
+
+    <Frame>
+      <Columns cols={2}>
+        <Column>
+          ![Image](/images/image-22.png "Image")
+        </Column>
+        <Column>
+          ![Buswaycard Interior](/images/buswaycard-interior.png "Buswaycard Interior")
+        </Column>
+      </Columns>
+    </Frame>
 
     {/* IMAGE: busway-card-internal.png */}
   </Tab>
@@ -57,6 +104,17 @@ The card is available in two form factors to suit the mounting requirements of t
     The external mount card sits in its own enclosure on the outside of the tap box. An integrated chase nipple mounts the card through a **single knockout hole**, and CT leads pass through into the enclosure.
 
     The external mount is designed for **retrofit** applications, where there is limited space inside an existing tap box.
+
+    <Frame>
+      <Columns cols={2}>
+        <Column>
+          ![Ct Card Gland](/images/ct-card-gland-2.png "Ct Card Gland")
+        </Column>
+        <Column>
+          ![Image](/images/image-24.png "Image")
+        </Column>
+      </Columns>
+    </Frame>
 
     {/* IMAGE: busway-card-external.png */}
   </Tab>
@@ -80,12 +138,11 @@ Busway cards are available with intelligent CTs that include a wire-free, non-co
 
 ## Connection Guide
 
+![2026 09 28 11 33 10](/images/2026-09-28-11-33-10.png "2026 09 28 11 33 10")
+
 {/* IMAGE: busway-installation-overview.png — end feed monitor, tap boxes 1–8, Flex Ports 1–4 */}
 
 <Steps>
-  <Step title="Install the head end monitor">
-    Install the Cortex monitor (for example, the CSM-1-00) in the busway end feed or in a tap-off. Connect the monitor's voltage sensing inputs in the end feed. The busway cards do not need their own voltage connection.
-  </Step>
   <Step title="Mount a card at each tap box">
     Mount one busway card at each tap box, using either the internal or external form factor. No modification is needed to most tap-cans or end feeds. For the external mount, fit the card's chase nipple through a single knockout in the tap box.
   </Step>
@@ -95,7 +152,7 @@ Busway cards are available with intelligent CTs that include a wire-free, non-co
     {/* IMAGE: busway-ct-installation.png */}
   </Step>
   <Step title="Connect the first card to a Flex Port">
-    Run a standard Ethernet cable from a **Flex Port (1–4)** on the monitor to the **IN** port of the first card.
+    Run a CAT6A Ethernet cable from a **FLEX Port (1–4)** on the monitor to the **IN** port of the first card.
   </Step>
   <Step title="Daisy chain the remaining cards">
     Connect the **OUT** port of each card to the **IN** port of the next card on the same Flex Port. Up to eight cards can be chained on each Flex Port.
@@ -113,7 +170,7 @@ Busway cards are available with intelligent CTs that include a wire-free, non-co
 </Warning>
 
 <Note>
-  The Flex Port a card is connected to, and its position in the daisy chain, determine its register assignment. Keep a record of which tap box is on which Flex Port and chain position.
+  The position in the daisy chain determines register assignment. Keep a record of which Busway Card is on which Flex Port and chain position.
 </Note>
 
 ### Example Layout
@@ -129,7 +186,6 @@ Busway cards are available with intelligent CTs that include a wire-free, non-co
 
 | Item | Specification |
 | --- | --- |
-| Device type code | 25 (`BUSWAY_6CT`) |
 | Circuits per card | 6 |
 | Cards per Flex Port | 8 (48 circuits) |
 | Cards per monitor | 32 (192 circuits) |
@@ -137,7 +193,5 @@ Busway cards are available with intelligent CTs that include a wire-free, non-co
 | Form factors | Internal mount, external mount (chase nipple, single knockout) |
 | CT type | Any solid or split core CT; intelligent CT with voltage field sensor optional |
 | CT connection | Pre-wired CT leads with quick-connect terminals |
-| Interface ports | RJ45 x 2 (**IN**, **OUT**) |
-| Communication cable | Standard Ethernet cable |
-| Supply power | Integrated into communication cable |
-| Voltage inputs | None required at the card |
+| Interface ports (FLEX) | RJ45 x 2 (**IN**, **OUT**) |
+| Communication cable | CAT6A ethernet cable |

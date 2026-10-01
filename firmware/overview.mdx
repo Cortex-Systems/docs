@@ -20,10 +20,36 @@ Before deciding whether an update is needed, confirm the version currently runni
 
 Two methods are available for updating firmware on the Cortex PQM:
 
-| Method | Requirements | Downtime | Best For |
-|---|---|---|---|
-| USB Flash Drive | USB flash drive, FAT32 formatted | ~2 min | No network access, field updates |
-| Network (OTA) | Ethernet connected, firmware file URL or local file | ~3 min | Remote updates, multiple devices |
+<table>
+  <colgroup>
+    <col width="157" />
+    <col width="325" />
+    <col width="100" />
+    <col width="271" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Requirements</th>
+      <th>Downtime</th>
+      <th>Best For</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>USB Flash Drive</td>
+      <td>USB flash drive, FAT32 formatted</td>
+      <td>~2 min</td>
+      <td>No network access, field updates</td>
+    </tr>
+    <tr>
+      <td>Network (OTA)</td>
+      <td>Ethernet connected, firmware file URL or local file</td>
+      <td>~3 min</td>
+      <td>Remote updates, multiple devices</td>
+    </tr>
+  </tbody>
+</table>
 
 **Use the USB method** when the device is deployed in a location without network access, or when you are performing an on-site field update and a laptop is unavailable for a network-based workflow.
 
@@ -37,13 +63,14 @@ Two methods are available for updating firmware on the Cortex PQM:
 
 <CardGroup cols={2}>
   <Card title="Update via USB" icon="usb-drive" href="/firmware/update-via-usb">
-    Update firmware using a FAT32-formatted USB flash drive — no network connection required.
+    Update firmware using a FAT32-formatted USB flash drive no network connection required.
   </Card>
-  <Card title="Update via Network (OTA)" icon="wifi" href="/firmware/update-via-network">
-    Push firmware over Ethernet using the web interface or REST API — no physical access needed.
+
+  <Card title="Update via Network (OTA)" icon="network-wired" href="/firmware/update-via-network">
+    Push firmware over ethernet using the web interface or REST API — no physical access needed.
   </Card>
 </CardGroup>
 
 <Tip>
-  Subscribe to firmware release notifications on the Cortex Systems support portal to be alerted when new versions are available. Review the [Changelog](/firmware/changelog) to understand what changed before updating.
+  Review the [Changelog](/firmware/changelog)to understand what changed before updating.
 </Tip>

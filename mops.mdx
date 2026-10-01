@@ -1,0 +1,710 @@
+---
+title: "MOPs"
+---
+
+### CSM Topics
+
+<AccordionGroup>
+  <Accordion title="**Downloading Configuration Files**">
+    The configuration of a Cortex monitor can be downloaded as a JSON file. The file can be kept as a backup, edited, and uploaded to other monitors to speed up deployment across multiple panels.
+
+    You can edit the configuration file so it contains only the sections you need. If you remove device-specific settings such as the IP address and device name, the same file can be used on multiple monitors without changing each monitor’s network settings or name.
+
+    #### **Downloading from the Web Console**
+
+    1. Open the web console. See **Connecting to the Web Console** below.
+    2. Select System on the left hand menu.
+    3. Under the Miscellaneous box, select Download Settings.
+    4. The file is saved to a USB drive if one is inserted in the monitor, or downloaded directly to the PC.
+
+    <br />
+
+    #### **File Naming**
+
+    The downloaded file may be renamed, provided the name begins with one of the accepted prefixes and ends with one of the accepted extensions.
+
+    | Accepted Prefix | Accepted Extension |
+    | :-- | :-- |
+    | `Cortexsettings` | `.json` |
+
+    Example: `Cortexsettings PDU-4B.json`
+
+    **!**Download and store a copy of the configuration before making changes or performing a factory reset. A factory reset erases all settings.
+  </Accordion>
+
+  <Accordion title="**Editing Configuration Files**">
+    Configuration files are plain text JSON files and can be edited in any text editor. Recommended editor: [Sublime Text](https://www.sublimetext.com/). Notepad may also be used.
+
+    <Warning>
+      Do not edit configuration files in Excel or other spreadsheet programs. These can insert hidden characters and commas that corrupt the file.
+    </Warning>
+
+    #### **Editing Guidelines**
+
+    - Maintain JSON syntax. Every opening bracket `{` must have a matching closing bracket `}`, and entries within a section are separated by commas.
+    - Text values are enclosed in double quotes. Numeric and `true` / `false` values are not.
+    - Keep the file name prefix and extension. See **Downloading Configuration Files** above.
+    - Validate the file in a JSON checker before uploading if it has been edited by hand.
+
+    #### **Uploading Partial Configurations**
+
+    A file does not need to contain the full configuration. Any section omitted from the file is left unchanged on the monitor. This allows a single setting to be pushed to many monitors without overwriting their other settings.
+
+    For example, to change only the device name, include only the `deviceConfig` section:
+
+    ```text
+    {
+      "deviceConfig": {
+        "deviceId": 0,
+        "deviceName": "Cortex Example PDU 4B-5C",
+        "setupLocked": 0,
+        "httpsEnable": false,
+        "modbusTCPEnable": true,
+        "modbusTLSEnable": false,
+        "webAuthEnable": false,
+        "accessBanner": "NOTICE: Authorized use only. Activity on this device is recorded."
+      }
+    }
+    ```
+
+    To change only the network settings, include only the `ipv4` section:
+
+    ```text
+    {
+      "ipv4": {
+        "enable": true,
+        "dhcpEnable": false,
+        "address": "192.168.7.3",
+        "gateway": "192.168.7.1",
+        "subnetMask": "255.255.255.0",
+        "dns1": "8.8.8.8",
+        "dns2": "0.0.0.0",
+        "ntpIpAddress": "0.0.0.0",
+        "ntpURL": "time.windows.com"
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="**Uploading Configuration Files**">
+    Configuration files can be uploaded from a USB drive or from the web console.
+
+    ### **Uploading via USB**
+
+    #### **Preparing the USB Drive**
+
+    1. Use a USB drive of 32 GB or less, formatted FAT32.
+    2. Place the configuration file in the root directory of the drive, not inside a folder.
+    3. Only one configuration file may be in the root directory. Other configuration files must be moved into a folder so they are not read.
+    4. Confirm the file name uses an accepted prefix and extension. See **Downloading Configuration Files** above.
+
+    #### **Applying the Configuration**
+
+    1. Insert the USB drive into the USB port on the monitor.
+    2. Reboot the monitor by power cycling it, or by pressing and holding the reset button for 6 seconds until the status light turns solid green, then release.
+    3. Wait while the monitor reads the drive.
+    4. When the status light blinks rapidly orange and red, the configuration file has been detected. Press the reset button once, quickly, to confirm.
+    5. The status light blinks green at 1 Hz when the update is complete.
+
+    <Note>
+      Do not hold the reset button for longer than 10 seconds. Doing so restores the monitor to factory default settings, including the IP address.
+    </Note>
+
+    <Note>
+      If a firmware file is also on the drive, the status light blinks green and blue first. Do not press the reset button during this cycle unless you intend to update the firmware.
+    </Note>
+
+    #### **Troubleshooting**
+
+    <table>
+      <colgroup>
+        <col width="232" />
+        <col width="287" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Symptom</th>
+          <th>Cause</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Status light does not blink orange and red</td>
+          <td>File not found. Check the file name prefix and extension, and confirm the file is in the root directory.</td>
+        </tr>
+        <tr>
+          <td>Monitor restarts without applying changes</td>
+          <td>Reset button was not pressed while the file was detected. Repeat the sequence.</td>
+        </tr>
+        <tr>
+          <td>Settings not as expected after upload</td>
+          <td>JSON syntax error or section omitted. Check the file in a JSON validator.</td>
+        </tr>
+      </tbody>
+    </table>
+  </Accordion>
+
+  <Accordion title="**Uploading Firmware via USB**">
+    <Warning>
+      Confirm whether your monitor requires a 1.XX or 2.XX firmware version before proceeding. Never apply firmware from one set to a monitor running the other. The installed firmware version is shown on the main page of the web console.
+    </Warning>
+
+    #### **Preparing the USB Drive**
+
+    1. Use a USB drive of 32 GB or less, formatted FAT32.
+    2. Unzip the firmware file and place it in the root directory of the drive, not inside a folder.
+    3. Remove any configuration files from the root directory unless you intend to apply them. Confirm behavior when both file types are present.
+
+    | Update Type | File Name |
+    | :-- | :-- |
+    | Firmware | `CortexFW_x.xx.bin` Confirm naming format. |
+
+    #### **Applying the Firmware**
+
+    1. Insert the USB drive into the USB port on the monitor.
+    2. Reboot the monitor by power cycling it, or by pressing and holding the reset button for 5 to 10 seconds until the status light turns solid green, then release.
+    3. When the status light blinks green and blue, the firmware file has been detected. Press the reset button once, quickly, to begin programming.
+    4. The status light blinks blue while programming. This takes approximately three minutes.
+    5. The status light blinks green at 1 Hz when the update is complete.
+
+    If the reset button is not pressed while the firmware file is detected, the monitor starts normally without updating. The sequence can be repeated.
+
+    <Warning>
+      Do not remove the USB drive or interrupt power while programming is in progress.
+    </Warning>
+
+    #### **Status Light Reference**
+
+    <table>
+      <colgroup>
+        <col width="227" />
+        <col width="357" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Indication</th>
+          <th>Meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Solid green</td>
+          <td>Reset sequence accepted; release the button</td>
+        </tr>
+        <tr>
+          <td>Rapid orange and red blink</td>
+          <td>Configuration file detected</td>
+        </tr>
+        <tr>
+          <td>Green and blue blink</td>
+          <td>Firmware file detected</td>
+        </tr>
+        <tr>
+          <td>Blue blink</td>
+          <td>Firmware programming in progress</td>
+        </tr>
+        <tr>
+          <td>Green blink (1 Hz)</td>
+          <td>Normal operation / update complete</td>
+        </tr>
+        <tr>
+          <td>Solid orange</td>
+          <td>Factory default restored</td>
+        </tr>
+      </tbody>
+    </table>
+  </Accordion>
+
+  <Accordion title="**Uploading Firmware via Network**">
+    <Warning>
+      Confirm whether your monitor requires a 1.XX or 2.XX firmware version before proceeding. Never apply firmware from one set to a monitor running the other. If incorrect firmware has been loaded and the web console is not accessible, use **Uploading Firmware via USB** above to load the correct firmware.
+    </Warning>
+
+    1. Open the web console. See **Connecting to the Web Console** below.
+    2. Note the installed firmware version on the main page.
+    3. Select Settings > System on the left hand menu.
+    4. Select Choose Files and select the firmware file (e.g. `CortexFW_1.3.x.bin`).
+    5. Select Upload Files. The file is uploaded and unpacked.
+    6. The monitor restarts automatically when the process is complete. This can take up to 4 minutes.
+
+    <Warning>
+      Do not select restart or close the browser while the file is uploading and unpacking. If the process is interrupted, it can be started again.
+    </Warning>
+  </Accordion>
+
+  <Accordion title="**Recovering Lost IP Address**">
+    If the IP address of a monitor is unknown, it can be read from a USB drive without changing any settings.
+
+    1. Insert a USB drive of 32 GB or less, formatted FAT32, into the USB port while the monitor is powered.
+    2. Wait approximately 5 seconds.
+    3. Remove the drive and open the IP settings file on a PC. <br />ip_settings.json
+    4. The file lists the monitor’s current IP address, subnet mask and gateway.
+
+    If the IP address cannot be recovered this way, the monitor can be reset to the default IP address of 192.168.7.3. This also erases all other settings. 
+  </Accordion>
+
+  <Accordion title="**Connecting to the Web Console**">
+    The web console is used to view readings, configure the monitor and update firmware. It is accessed from any browser.
+
+    #### **Physical Connection**
+
+    - Connect a PC or network switch to Ethernet Port 1 or 2 on the monitor. Both ports share a common IP address.
+    - Do not connect to a Flex Port. The four Flex Ports use similar RJ45 jacks but are for CT interface devices only.
+
+    #### **Setting the PC IP Address**
+
+    The PC must be on the same subnet as the monitor. For a monitor at the default address of 192.168.7.3:
+
+    1. Open the Ethernet adapter settings on the PC.
+    2. Set a static IP address such as `192.168.7.10`, with subnet mask `255.255.255.0`.
+    3. Confirm no other device on the network uses the same address as the monitor or the PC.
+
+    #### **Opening the Console**
+
+    1. Enter the monitor IP address in the browser address bar, e.g. `http://192.168.7.3`.
+    2. The main page of the web console appears, showing device information and the installed firmware version.
+
+    #### **Troubleshooting**
+
+    - If the IP address is unknown, see **Recovering Lost IP Address** above.
+    - If the console does not load, disconnect the monitor from the main network and connect directly from the PC to rule out an IP conflict.
+  </Accordion>
+
+  <Accordion title="**Using REST APIs to View Data**">
+    The Cortex monitor provides a REST API for reading meter data over HTTP. Responses are returned in JSON format. No authentication is required. For the full endpoint reference, see
+
+    #### **Requirements**
+
+    - Network access to the monitor. See **Connecting to the Web Console** above.
+    - A tool capable of HTTP requests, such as a browser, `curl` or a scripting language.
+
+    #### **Making a Request**
+
+    All requests use the format:
+
+    ```text
+    http://<device-ip>/api/<endpoint>
+    ```
+
+    To test the connection, enter the following in a browser. A response with `"data": 1` confirms the monitor is reachable.
+
+    ```text
+    http://192.168.7.3/api/healthcheck
+    ```
+
+    #### **Common Endpoints**
+
+    | Endpoint | Returns |
+    | :-- | :-- |
+    | `/api/deviceinfo` | Serial number, model, firmware version, connected cards |
+    | `/api/volts` | Voltage, frequency and voltage alarm status for V1 and V2 |
+    | `/api/current` | RMS current per circuit |
+    | `/api/kw` | Real power per circuit |
+    | `/api/kwh` | Cumulative energy per circuit |
+    | `/api/alarms` | Alarm status per circuit |
+    | `/api/breakerutilization` | Breaker utilization % per circuit |
+    | `/api/flexmeter` | Grouped per-circuit and total readings for flex meters |
+    | `/api/aggregatemeter` | Grouped readings for aggregate meters |
+    | `/api/help` | List of all endpoints supported by the installed firmware |
+
+    #### **Selecting Circuits**
+
+    Per-circuit endpoints return all 192 circuits by default. Use `?id=N` for a single circuit or `?start=N&end=M` for a range.
+
+    ```text
+    curl http://192.168.7.3/api/kw?start=1&end=4
+    ```
+
+    ```text
+    {
+      "endpoint": "/api/kw",
+      "url": "http://192.168.7.3/api/kw",
+      "data": {
+        "dataType": "kw",
+        "readings": {
+          "circuit_1": 0.0258,
+          "circuit_2": 0.0131,
+          "circuit_3": 0.0259,
+          "circuit_4": 0.0132
+        }
+      }
+    }
+    ```
+
+    **!**Endpoints and field names may change between firmware versions. Test any integration (SCADA, BMS, dashboards) after each firmware update.
+
+    **Resetting the IP Address Using the Reset Button**
+
+    **!**A factory reset restores **all** settings to factory default, not only the IP address. Download the configuration first if possible. See **Downloading Configuration Files** above.
+
+    1. With the monitor powered, press and hold the reset button for more than 10 seconds. 
+    2. The status light turns solid green at around 5 seconds. Continue holding.
+    3. Release the button when the status light turns solid orange. All settings have been restored to factory default.
+    4. Connect to the monitor at the default IP address of 192.168.7.3. See **Connecting to the Web Console** above.
+    5. Set the required IP address and restore the configuration by uploading the saved configuration file. See **Uploading Configuration Files** above.
+
+    #### **Default Network Settings**
+
+    | Setting | Default |
+    | :-- | :-- |
+    | IP Address | 192.168.7.3 |
+    | Subnet Mask | 255.255.255.0 |
+    | Gateway | 192.168.7.1 |
+    | DHCP | Disabled |
+  </Accordion>
+
+  <Accordion title="**Resetting the IP Address Using the Reset Button**">
+    1. With the monitor powered and no usb drives inserted, press and hold the reset button for around 10 seconds until the light flashes orange around .
+    2. The status light turns solid green at around 6 seconds. Continue holding.
+    3. Release the button when the status light blinks orange
+    4. Connect to the monitor at the default IP address of 192.168.7.3. See **Connecting to the Web Console** above.
+    5. Set the required IP address and restore the configuration by uploading the saved configuration file. See **Uploading Configuration Files** above.
+
+    #### **Default Network Settings**
+
+    | Setting | Default |
+    | :-- | :-- |
+    | IP Address | 192.168.7.3 |
+    | Subnet Mask | 255.255.255.0 |
+    | Gateway | 192.168.7.1 |
+    | DHCP | Disabled |
+  </Accordion>
+
+  <Accordion title="**Minimum Configuration Settings**">
+    The following settings must be configured before the monitor reports correct readings. 
+
+    <table>
+      <colgroup>
+        <col width="164" />
+        <col width="257" />
+        <col width="220" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Setting</th>
+          <th>Location</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>IP address, subnet mask, gateway</td>
+          <td>Web console > Settings > System</td>
+          <td>Must be unique on the network</td>
+        </tr>
+        <tr>
+          <td>Device name</td>
+          <td>Web console > Support > Information</td>
+          <td>Match the panel label for identification</td>
+        </tr>
+        <tr>
+          <td>Voltage input configuration</td>
+          <td>Configuration > Meter Config</td>
+          <td>Service type and voltage reference. Volt Input 2 on CSM-2-00 only</td>
+        </tr>
+        <tr>
+          <td>Flex Port / Panelboard configuration</td>
+          <td>Configuration > Meter Config > Step 1 Type</td>
+          <td>Select the panelboard type matching the installation</td>
+        </tr>
+        <tr>
+          <td>CT Size</td>
+          <td>Configuration > Meter Config > Step 2 Details</td>
+          <td>Ct size must match what's installed</td>
+        </tr>
+        <tr>
+          <td>Circuit configuration</td>
+          <td>Configuration > Meter Config</td>
+          <td>Assign CT channels to circuits</td>
+        </tr>
+      </tbody>
+    </table>
+
+    #### **Notes**
+
+    - CT orientation and wiring polarity are corrected automatically.
+    - A neutral current transformer (CT) is not required. When the voltage inputs are connected, the monitor calculates neutral current from the measured phase currents.
+    - Flex Port assignment determines register assignment. Start with Flex Port 1 and proceed through 2, 3, and 4.
+    - Once one monitor is configured, download its configuration and upload it to other monitors of the same type. See **Downloading Configuration Files** above.
+  </Accordion>
+</AccordionGroup>
+
+### HMI Topics
+
+<Tabs>
+  <Tab title="IP Series">
+    <AccordionGroup>
+      <Accordion title="**Updating the native HMI IP address - IP Series**">
+        The HMI communicates with the CSM monitor over ethernet. <br />Two IP addresses must be set on the HMI.
+
+        <Tip>
+          The native IP address of the HMI is visible for a couple settings during startup.
+        </Tip>
+
+         
+
+        <table>
+          <colgroup>
+            <col width="113" />
+            <col width="328" />
+            <col width="184" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Address</th>
+              <th>Description</th>
+              <th>Setting location</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Native IP</td>
+              <td>The HMI’s own address. Must be on the same subnet as the monitor and unique on the network.</td>
+              <td>HMI Settings menu</td>
+            </tr>
+            <tr>
+              <td>Destination IP</td>
+              <td>The IP address of the Cortex monitor.</td>
+              <td>Configuration button on home screen</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <Steps>
+          <Step title="Click on the arrow on the bottom right hand of the HMI">
+            <img
+              src="/images/image-29.png"
+              alt="Image"
+              title="Image"
+              style={{ width:"22%" }}
+            />
+          </Step>
+          <Step title="Click the settings icon">
+            <img
+              src="/images/image-30.png"
+              alt="Image"
+              title="Image"
+              style={{ width:"20%" }}
+            />
+          </Step>
+          <Step title="Enter the password">
+            Password: 111111
+
+            (Press 1 six times)
+
+            <img
+              src="/images/image-31.png"
+              alt="Image"
+              title="Image"
+              style={{ width:"33%" }}
+            />
+          </Step>
+          <Step title="Set the IP address details">
+            Enter an IP making sure that it's on the same subnet as the monitor and that it has a unique device address.
+
+            <img
+              src="/images/image-32.png"
+              alt="Image"
+              title="Image"
+              style={{ width:"64%" }}
+            />
+
+            Example configuration
+
+            | **Field** | **HMI** | **CSM** |
+            | :-- | :-- | :-- |
+            | IP address | 192.168.7.15 | 192.168.7.211 |
+            | Subnet mask | 255.255.255.0 | 255.255.255.0 |
+            | Gateway | 192.168.7.1 | 192.168.7.1 |
+            | DNS | 8.8.8.8 | 8.8.8.8 |
+          </Step>
+        </Steps>
+      </Accordion>
+
+      <Accordion title="**Updating the HMI program via USB - IP Series**">
+        These instructions are specific to the IP Series HMI with single ethernet ports.
+
+        <Steps>
+          <Step title="Plugin the USB thumb drive">
+            Plug the USB drive in the USB port or external enclosure USB port if cable is connected to HMI. The “MTIP” folder must be unzipped on the USB drive.
+
+            <img
+              src="/images/image-38.png"
+              alt="Image"
+              title="Image"
+              style={{ width:"73%" }}
+            />
+          </Step>
+          <Step title="Select Download">
+            The display will automatically detect USB and generate a prompt; select “Download”
+          </Step>
+          <Step title="Enter the password">
+            Password: 111111
+
+            (Press 1 six times)
+
+            <img
+              src="/images/image-39.png"
+              alt="Image"
+              title="Image"
+              style={{ width:"44%" }}
+            />
+          </Step>
+          <Step title="Navigate to the directory">
+            Move down the root directory that appears until “disk a 1” is highlighted and select “OK”. The directory may vary depending on installations.
+
+            <img
+              src="/images/image-40.png"
+              alt="Image"
+              title="Image"
+              style={{ width:"69%" }}
+            />
+          </Step>
+          <Step title="Complete">
+            The upload process will initiate and the monitor will reboot after approximately 20-30 seconds and the home screen will appear.
+
+            <img
+              src="/images/image-41.png"
+              alt="Image"
+              title="Image"
+              style={{ width:"86%" }}
+            />
+
+            Common issues may result from:
+
+            1. Using a USB drive that is larger than 32 GB
+            2. Not unzipping the MTIP folder
+            3. Exposing the subdirectories on the USB vs. just the MTIP folder
+          </Step>
+        </Steps>
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  <Tab title="CMT Series">
+    <AccordionGroup>
+      <Accordion title="**Updating the native HMI IP address - CMT Series**">
+        The HMI communicates with the CSM monitor over ethernet. <br />Two IP addresses must be set on the HMI.
+
+        <table>
+          <colgroup>
+            <col width="113" />
+            <col width="328" />
+            <col width="184" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Address</th>
+              <th>Description</th>
+              <th>Setting location</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Native IP</td>
+              <td>The HMI’s own address. Must be on the same subnet as the monitor and unique on the network.</td>
+              <td>HMI Settings menu</td>
+            </tr>
+            <tr>
+              <td>Destination IP</td>
+              <td>The IP address of the Cortex monitor.</td>
+              <td>Configuration button on home screen</td>
+            </tr>
+          </tbody>
+        </table>
+
+        ### **Setting the Native IP - CMT Series HMI**
+
+        The following instructions pertain to the CMT2078x series HMI (dual ethernet ports)
+
+        <Steps>
+          <Step title="Access the settings menu">
+            Click on the top left hand side of the screen over the light colored circle to reveal the Settings menu. Click on the Network tab followed by the “Manual” selection for LAN 1 and enter the default password of “11111” (Press 1 six times).
+
+            <img
+              src="/images/image-26.png"
+              alt="Image"
+              title="Image"
+              style={{ width:"93%" }}
+            />
+          </Step>
+          <Step title="Select the Network tab, then Manual for LAN 1.">
+            Enter an IP making sure that it is on the same subnet as the monitor and that it has a unique device address. Enter the correct subnet mask and select “Save”.
+
+            ![Image](/images/image-33.png "Image")
+
+            Example configuration
+
+            | Field | HMI | CSM |
+            | :-- | :-- | :-- |
+            | IP address | 192.168.7.50 | 192.168.7.3 |
+            | Subnet mask | 255.255.255.0 | 255.255.255.0 |
+            | Gateway | 192.168.7.1 | 192.168.7.1 |
+            | DNS | 8.8.8.8 | 8.8.8.8 |
+          </Step>
+        </Steps>
+      </Accordion>
+
+      <Accordion title="**Updating the HMI program via USB - CMT Series**">
+        HMI programs are loaded from a USB drive. The procedure depends on the HMI series.
+
+        #### **Preparing the USB Drive**
+
+        1. Use a USB drive of 32 GB or less.
+        2. Unzip the program folder onto the root of the drive. Only the program folder should be exposed, not its subdirectories.
+
+        <table>
+          <colgroup>
+            <col width="114" />
+            <col width="129" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>HMI Series</th>
+              <th>Ethernet Ports</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>IP Series</td>
+              <td>Single</td>
+            </tr>
+            <tr>
+              <td>CMT Series</td>
+              <td>Dual</td>
+            </tr>
+          </tbody>
+        </table>
+
+        ### **CMT Series HMI**
+
+        <Steps>
+          <Step title="Plug in USB drive">
+            Plug the USB drive in the USB port or external enclosure USB port if cable is connected to HMI. The “PROJECT.CXOB” folder must be unzipped on the USB drive.
+
+            <img
+              src="/images/image-34.png"
+              alt="Image"
+              title="Image"
+              style={{ width:"90%" }}
+            />
+          </Step>
+          <Step title="Select Download">
+            The display will automatically detect USB and generate a prompt; select “Download”. When prompted enter the default password “111111”. (Press 1 six times)
+
+            ![Image](/images/image-35.png "Image")
+          </Step>
+          <Step title="Locate the file">
+            Select “choose” under the project option followed by “project.cxob” followed by “ok”.
+
+            ![Image](/images/image-36.png "Image")
+          </Step>
+          <Step title="Downloading">
+            Select “ok” when the Project tab is checked and the download sequence will begin. The HMI will reboot with the new project loaded when successful.
+
+            ![Image](/images/image-42.png "Image")
+          </Step>
+        </Steps>
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+</Tabs>
