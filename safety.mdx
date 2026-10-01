@@ -10,9 +10,9 @@ export const RED = "#ED1C24";
 
 export const DangerBanner = () => (
   <div style={{ background: ORANGE, color: "#000", borderRadius: "14px 14px 0 0", padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", fontWeight: 800, letterSpacing: "0.02em" }}>
-    <span style={{ fontSize: "1.4rem" }} aria-hidden="true">»»»</span>
-    <span style={{ fontSize: "2rem", lineHeight: 1 }}>⚠ DANGER ⚠</span>
-    <span style={{ fontSize: "1.4rem" }} aria-hidden="true">«««</span>
+    <span style={{ fontSize: "1.2rem" }} aria-hidden="true">»»»</span>
+    <span style={{ fontSize: "1.8rem", lineHeight: 1 }}>⚠ DANGER ⚠</span>
+    <span style={{ fontSize: "1.2rem" }} aria-hidden="true">«««</span>
   </div>
 );
 
@@ -21,7 +21,7 @@ export const BlackBar = ({ children }) => (
 );
 
 export const Item = ({ children }) => (
-  <div style={{ display: "flex", gap: "10px", alignItems: "flex-start", padding: "12px 16px", borderBottom: "1px dotted #9a9a9a", color: "#111" }}>
+  <div style={{ display: "flex", gap: "6px", alignItems: "flex-start", padding: "10px 5px", borderBottom: "1px dotted #9a9a9a", color: "#111" }}>
     <span style={{ flex: "0 0 auto", width: "12px", height: "12px", marginTop: "6px", background: ORANGE }} aria-hidden="true" />
     <span>{children}</span>
   </div>
@@ -45,7 +45,7 @@ export const Item = ({ children }) => (
     <Item>Products rated only for basic insulation must be installed on insulated conductors.</Item>
     <Item>Replace all doors, covers and protective devices before powering the equipment.</Item>
     <Item>The installer is responsible for conformance to all applicable codes.</Item>
-    <Footer>Failure to follow these instructions will result in death or serious injury.</Footer>
+    <Item>Failure to follow these instructions will result in death or serious injury.</Item>
   </div>
 
   <div className="flex flex-col gap-4">
@@ -73,7 +73,7 @@ export const Item = ({ children }) => (
           <Item>NEVER bypass external fusing.</Item>
           <Item>NEVER short the secondary of a potential transformer.</Item>
           <Item>Before closing covers and doors, carefully inspect the work area and remove any tools, wire scraps or other objects that may have been left inside the equipment.</Item>
-          <Footer>Failure to follow these instructions will result in death or serious injury.</Footer>
+          <Item>Failure to follow these instructions will result in death or serious injury.</Item>
         </div>
 
         <div lang="fr">
@@ -82,7 +82,7 @@ export const Item = ({ children }) => (
           <Item>NE JAMAIS contourner les fusibles externes.</Item>
           <Item>NE JAMAIS court-circuiter le secondaire d’un transformateur de potentiel.</Item>
           <Item>Avant de fermer les capots et les portes, inspectez soigneusement la zone de travail et retirez les outils, bouts de fil ou autres objets éventuellement restés à l’intérieur de l’équipement.</Item>
-          <Footer>Si ces précautions ne sont pas respectées, cela entraînera la mort ou des blessures graves.</Footer>
+          <Item>Si ces précautions ne sont pas respectées, cela entraînera la mort ou des blessures graves.</Item>
         </div>
       </div>
     </div>
