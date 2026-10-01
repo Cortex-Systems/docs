@@ -16,36 +16,83 @@ Part Number: CS18-02-SR1 | Digital I/O Module + Serial
     />
   </Column>
   <Column>
-    <Card title="**Features**" icon="sparkles">
-      - Monitors up to 18 dry contact inputs, two digital outputs and provides RS-485 Modbus RTU communications.
-      - Daisy chain up to 6 modules for added capacity<br />• Smart auto adaption / no configuration needed<br />• Assign friendly names to each channel<br />• Easy to view via web console<br />• Supports bit reads for reduced network traffic<br />• Place modules close to contacts using standard network cable to minimize wiring<br />• Standard 35mm DIN rail mounting
-    </Card>
+    The Cortex Digital I/O and serial interface module expands a single or dual input monitor with 18 dry contact inputs, 2 digital outputs, and RS-485 Modbus RTU communications. The module auto-connects to the host monitor with no configuration required. Up to 6x CS18-02-SR1 modules can be daisy-chained in series for added input/output capacity.
+
+    Note: CSM-1 or CSM-2 must have firmware version 1.9 / 2.9 or higher to communicate with this card.
   </Column>
 </Columns>
 
-<Card title="**Product Information**" icon="sparkles">
-  The Cortex Digital I/O and serial interface module expands a single or dual input monitor with 18 dry contact inputs, 2 digital outputs, and RS-485 Modbus RTU communications. The module auto-connects to the host monitor with no configuration required. Up to 6x CS18-02-SR1 modules can be daisy-chained in series for added input/output capacity.
-
-  Note: CSM-1 or CSM-2 must have firmware version 1.9 / 2.9 or higher to communicate with this card.
+<Card title="**Features**">
+  - Monitors up to 18 dry contact inputs, two digital outputs and provides RS-485 Modbus RTU communications.
+  - Daisy chain up to 6 modules for added capacity<br />• Smart auto adaption / no configuration needed<br />• Assign friendly names to each channel<br />• Easy to view via web console<br />• Supports bit reads for reduced network traffic<br />• Place modules close to contacts using standard network cable to minimize wiring<br />• Standard 35mm DIN rail mounting
 </Card>
 
-<Columns cols={2}>
-  <Column>
-  </Column>
-  <Column>
-  </Column>
-  ## **Connection Guide**
-</Columns>
+## Specifications
 
-### **Connecting the DI/DO + Serial Module to the Meter**
+<table>
+  <colgroup>
+    <col width="180" />
+    <col width="550" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Part number</td>
+      <td>CS18-02-SR1</td>
+    </tr>
+    <tr>
+      <td>Digital inputs</td>
+      <td>18 (dry contact; closed when resistance is below 1 kΩ)</td>
+    </tr>
+    <tr>
+      <td>Digital outputs</td>
+      <td>2, rated 100 mA @ 30 VDC max.</td>
+    </tr>
+    <tr>
+      <td>Serial port</td>
+      <td>1 x RS-485, 2-wire Modbus RTU</td>
+    </tr>
+    <tr>
+      <td>Field wiring</td>
+      <td>Removable 3.5 mm terminal blocks</td>
+    </tr>
+    <tr>
+      <td>Connection</td>
+      <td>AUX port, standard Ethernet cable up to 100 ft (33 m)</td>
+    </tr>
+    <tr>
+      <td>Current draw</td>
+      <td>82 mA (from the AUX port 500 mA budget)</td>
+    </tr>
+    <tr>
+      <td>Maximum modules</td>
+      <td>6 in a single-type chain (500 mA budget)</td>
+    </tr>
+  </tbody>
+</table>
 
-The DI/DO module connects to the meter’s **AUX port** using a standard Ethernet cable. Do **not** connect it to the Flex ports.
+### **Connecting the DI/DO + Serial Module to the Monitor**
 
-Always connect the **IN** port of the first module to the meter’s AUX port. The module’s **OUT** port can then be connected to the **IN** port of the next AUX port device (such as a DI card, Thermal Card, or Multi-Card), as shown in the diagram below.
+<Steps>
+  <Step title="Connect to the AUX port">
+    Connect the **IN** port of the first module to the monitor's **AUX port** using a standard ethernet cable. Do **not** connect it to the Flex Ports.
+  </Step>
+  <Step title="Daisy-chain additional devices">
+    The first modules **OUT** port can then be connected to the **IN** port of the next module.
 
-When the module is connected to the meter, the green LED on the card blinks to show that it is communicating.
+    ![Image](/images/image-5.png "Image")
+  </Step>
+  <Step title="Verify communication">
+    When the module is connected to the monitor, the green LED on the card blinks to show that it is communicating.
+  </Step>
+</Steps>
 
-![Image](/images/image-5.png "Image")
+## Module Layout
 
 All field wiring terminates on removable 3.5 mm terminal blocks. Each card provides:
 

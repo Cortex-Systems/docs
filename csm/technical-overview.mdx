@@ -1,0 +1,222 @@
+---
+title: "CSM-1-00 and CSM-2-00 Technical Overview"
+sidebarTitle: "Technical Overview"
+description: "Datasheet for the Cortex CSM-1-00 single input and CSM-2-00 dual input 192 circuit power quality monitors: features, system overview, interfaces, specifications, dimensions, and part numbers."
+---
+
+**192 Circuit Advanced Power Quality Monitor**
+
+The Cortex CSM Multi-Circuit Power Quality Monitor is a single solution for critical power monitoring applications. One centralized CSM module works with a growing family of application-specific interface modules.
+
+| Model | Description |
+| --- | --- |
+| CSM-1-00 | Single voltage input |
+| CSM-2-00 | Dual voltage input |
+
+## Power Quality Metering per Circuit
+
+In addition to the features expected on high-end power quality monitors, the CSM is designed for ultra high-density critical power distribution. Real-time, high-resolution data and power quality accuracy enable analytics that help you monitor and optimize high-density data centers.
+
+## Easy to Install, Easy to Use
+
+Deployment uses plug-and-play graphical configuration. Optional centralized data aggregators auto-adopt hundreds of monitors and log, report, and export data centrally. A customized user development environment is available for advanced analytics.
+
+## Features
+
+- Supports 192 circuits
+- 0.2% accuracy
+- High-resolution power quality sampling per channel
+- HTTPS, IPv4, and IPv6
+- Compact, space-saving design
+- Single and dual voltage reference models
+- Technology and feature upgrades
+- Graphical configuration
+- Multiple protocols: Modbus TCP/IP, REST API, SNMP\*, BACnet\*, MQTT\*
+- Plug-and-play consolidator to minimize port requirements
+- Optional multi-point thermal monitoring
+- Onboard data logging\*
+- Upgradeable technology modules
+- CBEMA/ITIC capture and logging
+- Automatic waveform capture per channel
+- Detailed power quality analytics
+- Multiple display options
+
+\* Pending release
+
+## Applications
+
+The Cortex family of purpose-built peripherals covers every element of critical power monitoring from a single CSM module:
+
+<Columns cols={3}>
+  <Card title="HMI / Display" icon="display">
+  </Card>
+  <Card title="Data Aggregation and Logging" icon="database">
+  </Card>
+  <Card title="Digital I/O" icon="toggle-on">
+  </Card>
+  <Card title="Thermal Monitoring" icon="temperature-half">
+  </Card>
+  <Card title="Centralized Monitoring and Analytics" icon="chart-line">
+  </Card>
+  <Card title="Switchgear" icon="bolt">
+  </Card>
+  <Card title="Busway Monitoring" icon="grip-lines">
+  </Card>
+  <Card title="Panelboard Retrofit" icon="screwdriver-wrench">
+  </Card>
+  <Card title="New Panelboards" icon="table-cells">
+  </Card>
+</Columns>
+
+## User Interface
+
+The web console displays data according to the physical construction of the monitored equipment.
+
+- **Dashboard** - view and manage circuits by physical location and friendly name. Flex Port and Digital Flex Port panels show port status, friendly name, and alerts.
+- **Single line diagrams** - create active single line diagrams that match the equipment layout.
+- **Power quality analytics** - waveform captures, phasor diagrams, and harmonic content help you diagnose issues.
+- **Custom web pages** - product-specific web pages can be developed for OEMs (OEM only).
+- **Event log** - exportable logs capture alarms and changes of state, such as digital input contact changes and over voltage events.
+- **Data logging** - exposes trends and issues over time.
+- **Panel configuration** - configure systems according to their exact layout: panel type, strip orientation, and strip wiring.
+- **Register Reveal** - shows the Modbus register for each circuit's selected metric, which simplifies integration. See the [Modbus Register Map](/modbus/register-map).
+
+## System Overview
+
+### AUX Port
+
+The AUX port hosts auxiliary modules connected in series, including:
+
+- Thermal monitoring module
+- Serial interface
+- Digital input / output module
+- Displays
+
+<Note>
+  The datasheet lists up to 4 AUX modules. Firmware 2.9.1 or later supports up to 8 modules, provided their combined current draw does not exceed 500 mA. See [AUX Port Modules](/aux-modules/overview).
+</Note>
+
+### Flex Ports and Current Inputs
+
+Each of the four Flex Ports hosts up to 48 current channels, for a total of 192 circuits per monitor. Two 24-CT modules can be daisy-chained on each Flex Port. Supported Flex Port modules:
+
+- [Solid core CT strips](/flex-modules/solid-core-ct-strips)
+- [Busway monitors](/flex-modules/busway-card)
+- [CT interface cards](/flex-modules/ct-card)
+
+### Dual Voltage Version
+
+The CSM-2-00 has two separate voltage references, which makes it ideal for PDU and dual input RPP applications. You can assign each current channel to either voltage source. For example, assign PDU input circuits to Voltage Input 2 and PDU output circuits to Voltage Input 1.
+
+## Interface
+
+Both models share the same connections. The CSM-2-00 adds a second voltage input.
+
+| Connection | Description |
+| --- | --- |
+| DC Input | 12–24 VDC power supply input |
+| USB Port | Flash drive configuration, logging, and firmware updates |
+| AUX Port | Connects peripherals in series, including DI/DO, thermal modules, and displays |
+| Smart Button | Labeled **RESET** on the unit |
+| Status Light | Device status LED. See the [Quick Reference](/quick-reference#status-led) |
+| Ethernet 1 and 2 | Dual Ethernet ports |
+| Voltage Input | L1, L2, L3, N, and ground (CSM-1-00) |
+| Voltage Input 1 and 2 | Two independent voltage references (CSM-2-00 only) |
+| Flex Ports 1–4 | 48 current channels per port, 4 ports |
+
+For details on each connection, see [Interfaces](/csm/interfaces).
+
+## Technical Specifications
+
+### Voltage Measurements
+
+| Item | Specification |
+| --- | --- |
+| Sensing voltage 1 | 120–347 VAC L-N, 208–600 VAC L-L |
+| Sensing voltage 2 | 120–347 VAC L-N, 208–600 VAC L-L (CSM-2-00 only) |
+| Voltage source | L-L, L-N, 3W+G, 4W+G |
+| Frequency | 40–70 Hz |
+| Overvoltage category | 600 VAC CAT III |
+| Rated surge voltage | 4 kV |
+| Impedance | 2 MΩ/phase |
+| Sampling frequency | 40.9 kHz (voltage) |
+| THDV | 63rd harmonic |
+
+### Current Measurement
+
+| Item | Specification |
+| --- | --- |
+| Current channels supported | 192 |
+| Current channel interface ports | 4 x RJ45 (48 channels per port) |
+| Current transformer type | 0.33 V output |
+| Minimum current sensing threshold | Current transformer dependent |
+| Sampling frequency | 2560 Hz |
+
+### Accuracy
+
+| Item | Specification |
+| --- | --- |
+| Frequency | 40–70 Hz |
+| Voltage 1 | 0.2% |
+| Voltage 2 | 0.2% |
+| Voltage harmonics | 63rd harmonic |
+| Current | 0.2 class native |
+| Accuracy standards | 0.2 (IEC 62053 class 0.2), ANSI C12.20 class 0.2 |
+
+### Power Supply Input
+
+| Item | Specification |
+| --- | --- |
+| Nominal voltage | 12–24 VDC |
+| Operating range | 10–30 VDC |
+| Power consumption | 10 W max. |
+| Overcurrent protection | 2.0 A recommended (CAT II); 0.25 A (CAT III) |
+
+### Communications
+
+| Item | Specification |
+| --- | --- |
+| Data protocols | Modbus TCP/IP (Ethernet), Modbus RTU (RS-485 2-wire), HTML (web server), BACnet IP\*, REST API, SNMP V2\*, MQTT\* |
+| Ethernet ports | 2 x RJ45, 100 Mb / 1 Gb |
+| USB port | USB 2.0 |
+| Web server | HTML via standard browser |
+| TCP/IP standards | HTTP, HTTPS\*, IPv4/IPv6 |
+
+\* Pending release
+
+### Regulatory
+
+| Item | Specification |
+| --- | --- |
+| Agency approvals | cUL 61010 Listed / IEC/EN 61010-1, CE |
+| Installation category | CAT III, pollution degree 2 |
+| Conducted and radiated emissions | FCC Part 15 Class A, EN 55011 / EN 61000-6-4 Class A |
+| Conducted and radiated immunity | EN 61000-6-2 and EN 61326-1 |
+| RoHS | Compliant |
+| UKCA | Compliant |
+
+### Environmental
+
+| Item | Specification |
+| --- | --- |
+| Temperature | Operating: 0 °C (32 °F) to +60 °C (140 °F)<br />Non-operating: −25 °C (−13 °F) to +60 °C (140 °F) |
+| Relative humidity | 5 to 95% at 25 °C (77 °F), non-condensing |
+| Operating elevation | 2000 m with no thermal derating |
+| Pollution degree | 2 |
+
+## Mechanical Details
+
+| Dimension | CSM-1-00 | CSM-2-00 |
+| --- | --- | --- |
+| Width | 6.3 in (159.8 mm) | 6.3 in (159.8 mm) |
+| Depth | 3.4 in (87.2 mm) | 3.43 in (87.2 mm) |
+| Height | 1.5 in (37.8 mm) | 2.3 in (54.4 mm) |
+
+See [Mounting](/csm/mounting) for DIN rail installation.
+
+## Part Numbers
+
+| Part Number | Voltage Inputs | Current Channels | Ethernet Ports | Flex Ports | AUX Ports |
+| --- | --- | --- | --- | --- | --- |
+| CSM-1-00 | 1 | 192 | 2 | 4 | 1 |
+| CSM-2-00 | 2 | 192 | 2 | 4 | 1 |

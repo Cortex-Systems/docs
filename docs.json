@@ -21,8 +21,17 @@
         "tab": "User Manual",
         "groups": [
           {
+            "group": "Cortex MOPs",
+            "public": true,
+            "pages": [
+              "mops"
+            ],
+            "icon": "book"
+          },
+          {
             "group": "Overview",
             "pages": [
+              "safety",
               "introduction",
               "safety",
               "quick-reference",
@@ -33,6 +42,7 @@
           {
             "group": "CSM Device Setup",
             "pages": [
+              "csm/technical-overview",
               "csm/overview",
               "csm/mounting",
               "csm/connecting",
@@ -74,13 +84,10 @@
           {
             "group": "AUX Port Modules",
             "pages": [
-              "digital-i-o-module-serial-cs-18-02-sr-1",
-              "aux-modules/thermal-module",
-              "digital-input-module-cs-18-00-inc",
-              "aux-modules/digital-input",
               "aux-modules/overview",
-              "aux-modules/digital-io-serial",
-              "aux-modules/dimensions"
+              "digital-input-module-cs-18-00-inc",
+              "digital-i-o-module-serial-cs-18-02-sr-1",
+              "aux-modules/thermal-module"
             ]
           },
           {
