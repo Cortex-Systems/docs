@@ -50,42 +50,10 @@ The Cortex Thermal Card brings precise, flexible temperature monitoring to your 
 | Tape mount probe | TPS-TB-010 | Flat surfaces such as busbars and cable jackets |
 | Ring lug probe | TPS-RL-010 | Bolted connections and terminal lugs |
 | Ambient temperature probe | TPS-CM-010 | Enclosure air temperature |
-
-## Connecting the Module
-
-<Steps>
-  <Step title="Connect to the AUX port">
-    Connect the **IN** port of the module to the monitor's **AUX port** (or to the **OUT** port of the previous AUX module) using a standard Ethernet cable. Do not connect it to a Flex Port.
-  </Step>
-  <Step title="Connect the probes">
-    Connect each RTD probe to a channel on the module's removable 3.5 mm terminal blocks. Note the channel number for each probe.
-  </Step>
-  <Step title="Verify communication">
-    Once the monitor is energized, the green LED on the module blinks to show that it is communicating.
-  </Step>
-</Steps>
+|  |  |  |
 
 ## Probe Installation
 
 - **Tape mount (TPS-TB-010):** clean the surface, press the probe firmly onto it, and route the cable away from high-voltage conductors.
 - **Ring lug (TPS-RL-010):** place the ring lug over the bolt at the connection point and reinstall the fastener to the manufacturer's torque.
 - **Ambient (TPS-CM-010):** mount in a location representative of the enclosure air temperature, away from heat sources.
-
-## Data Access
-
-### REST API
-
-`GET /api/auxport` returns Thermal boards with `"deviceType": "thermal"`. Channels 1–18 are RTD sensors and channel 19 is the board temperature. Values are in °C; `999.99` means the sensor is not connected or is out of range. Channel names are writable via `POST /configSettings` (`rtdName.channel_N`).
-
-```json
-{ "device": 3, "deviceType": "thermal", "deviceSerial": 4294967295,
-  "channels": [
-    { "channel": 1, "name": "RTD Sensor 1", "value": 999.99 },
-    { "channel": 3, "name": "RTD Sensor 3", "value": 47.79 },
-    { "channel": 19, "name": "Board Temp", "value": 24.58 }
-  ] }
-```
-
-### Modbus
-
-RTD temperatures are available as FLOAT32 values (2 registers each) in the AUX port RTD Temperature block, registers 2884–3267 (RTD Temperature #1 at 2884–2885 through #192 at 3266–3267). See the [Thermal Module Modbus Register Map](/modbus/thermal-register-map).
