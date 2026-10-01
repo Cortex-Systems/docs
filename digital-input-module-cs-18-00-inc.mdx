@@ -80,11 +80,22 @@ Part Number: CS18-00-INC | 18 CHANNEL DIGITAL INPUT MODULE
   </tbody>
 </table>
 
-## **Connection Guide**
+## **Connecting the Digital Input Module to the Meter**
 
-#### **Connectivity**
+<Steps>
+  <Step title="Connect to the AUX port">
+    Connect the **IN** port of the first module to the monitor's **AUX port** using a standard ethernet cable. Do **not** connect it to the Flex Ports.
+  </Step>
+  <Step title="Daisy-chain additional devices">
+    The first modules **OUT** port can then be connected to the **IN** port of the next module.
 
-- Connects to the Cortex CSM-1-00 or CSM-2-00 using standard Ethernet cables up to 100’ (33m)
+    ![Image](/images/image-5.png "Image")
+  </Step>
+  <Step title="Verify communication">
+    When the module is connected to the monitor, the green LED on the card blinks to show that it is communicating.
+  </Step>
+</Steps>
+
 - Interfaces with standard dry contact outputs
 
 ![Image](/images/image-1.png "Image")
