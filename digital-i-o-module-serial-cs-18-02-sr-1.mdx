@@ -54,11 +54,21 @@ Part Number: CS18-02-SR1 | Digital I/O Module + Serial
 
 ### **Connecting the DI/DO + Serial Module to the Meter**
 
-The DI/DO module connects to the meter’s **AUX port** using a standard Ethernet cable. Do **not** connect it to the Flex ports.
-
 Always connect the **IN** port of the first module to the meter’s AUX port. The module’s **OUT** port can then be connected to the **IN** port of the next AUX port device (such as a DI card, Thermal Card, or Multi-Card), as shown in the diagram below.
 
 When the module is connected to the meter, the green LED on the card blinks to show that it is communicating.
+
+<Steps>
+  <Step title="Connect to the AUX port">
+    Connect the **IN** port of the first module to the monitor's **AUX port** using a standard ethernet cable. Do **not** connect it to the Flex Ports.
+  </Step>
+  <Step title="Daisy-chain additional devices">
+    Connect the module's **OUT** port to the **IN** port of the next AUX port device.
+  </Step>
+  <Step title="Verify communication">
+    When the module is connected to the monitor, the green LED on the card blinks to show that it is communicating.
+  </Step>
+</Steps>
 
 ![Image](/images/image-5.png "Image")
 
