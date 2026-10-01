@@ -25,7 +25,8 @@
             "public": true,
             "pages": [
               "mops"
-            ]
+            ],
+            "icon": "book"
           },
           {
             "group": "Overview",
