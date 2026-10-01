@@ -78,8 +78,7 @@
               "aux-modules/overview",
               "digital-i-o-module-serial-cs-18-02-sr-1",
               "aux-modules/thermal-module",
-              "digital-input-module-cs-18-00-inc",
-              "aux-modules/dimensions"
+              "digital-input-module-cs-18-00-inc"
             ]
           },
           {
