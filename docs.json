@@ -23,7 +23,9 @@
           {
             "group": "Cortex MOPs",
             "public": true,
-            "pages": [],
+            "pages": [
+              "mops"
+            ],
             "icon": "book"
           },
           {
@@ -31,7 +33,6 @@
             "pages": [
               "safety",
               "introduction",
-              "mops",
               "safety",
               "quick-reference",
               "mops"
