@@ -1,0 +1,76 @@
+---
+title: "Quick Start Guide"
+---
+
+## **1. Connect the DC Power Source**
+
+![](https://manula.r.sizr.io/large/user/23498/img/quick-start-1.png)
+
+- The monitor is powered from a DC power source.
+- The GROUND (Earth) connection for both the AC and DC circuits is made through the DC connector.
+- A blinking green status indicator confirms normal operation.
+
+## **2. Access the Web Console**
+
+![](https://manula.r.sizr.io/large/user/23498/img/quick-start-2.png)
+
+- Connect Ethernet Port 1 or Port 2 to a PC or network. Both ports share a common IP address.
+- Open any web browser and enter the monitor’s IP address.<br />The default IP address is `192.168.7.3`.
+- The PC or polling device must be on the same subnet as the monitor<br />(for example, `192.168.7.xxx`).
+- To retrieve the current IP settings, insert a USB drive (32 GB or smaller) into the USB port and wait 5 seconds.<br />The monitor writes the `IP_settings.json` file to the drive.
+
+## **3. Connect the AC Reference Voltage**
+
+![](https://manula.r.sizr.io/large/user/23498/img/csm-1-00-csm-2-00_v1.png)
+
+**!**AC wiring carries lethal voltages. Installation must be performed by a qualified person.
+
+- Connect the AC reference voltage. These inputs are for voltage sensing only and draw no operating power.
+- Fuse the reference voltage conductors in accordance with applicable electrical codes, using a fuse rated from 0.25 A up to the maximum conductor rating.
+
+## **4. Connect Current Transformer Interface Devices**
+
+![](https://manula.r.sizr.io/large/user/23498/img/quick-start-4.png)
+
+- Connect CT interface devices, including CT strips, CT cards and Multi-Cards, to Flex Ports 1–4.
+- Multiple cards or strips can be daisy-chained on a single Flex Port, up to a maximum of 48 current channels per port.
+- To daisy-chain, connect the Flex Port to the IN port of the first device, then connect that device’s OUT port to the IN port of the next device.
+- A blinking green indicator on each device confirms a correct connection.
+- The Flex Port each device is connected to determines its register assignments. As best practice, start with Flex Port 1 and proceed in order through Ports 2, 3 and 4.
+- Follow the orientation and wiring diagrams in the Configuration section of the web console for your specific panelboard type.
+
+## **5. Connect the Current Transformers**
+
+![](https://manula.r.sizr.io/large/user/23498/img/quick-start-5.png)
+
+- Use CTs with a 0.333 V output, connected through the removable 3.5 mm headers.
+- CT orientation and wiring polarity are corrected automatically.
+- CT scaling must be set either by uploading a configuration file or in the web console.
+- Each terminal maps to a specific register, determined by the Flex Port in use.
+- The monitor calculates neutral current, so a neutral CT is not required.
+
+## **6. Connect Interface Modules to the Auxiliary Port**
+
+<img
+  src="https://manula.r.sizr.io/large/user/23498/img/quick-start-6.png"
+  style={{ width:"84%" }}
+/>
+
+- Connect DI/DO + Serial, DI and Thermal cards to the AUX port.
+- See [AUX Port Modules](/aux-modules/overview) for daisy chaining information. Follow the IN/OUT port sequence shown in the image above.
+- A blinking indicator on each device confirms that communication is working.
+- The order of the devices in the chain determines their register assignments.
+
+## **7. Configure Panelboard Applications**
+
+### **Step 1 – Open Meter Configuration**
+
+<img
+  src="https://manula.r.sizr.io/large/user/23498/img/quick-start-7-1-1.png"
+  style={{ width:"29%" }}
+/>
+
+![](https://manula.r.sizr.io/large/user/23498/img/quickstart-7-1.png)
+
+1. Open the web console as described in Step 2.
+2. From the side menu, select Configuration > Meter Config > Step 1.
