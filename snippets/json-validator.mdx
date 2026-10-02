@@ -1,0 +1,52 @@
+---
+title: "JSON format validator"
+description: "Paste and validate your JSON file live in the browser."
+---
+
+export const JsonPlayground = () => {
+  const [input, setInput] = useState('');
+  const [status, setStatus] = useState({ type: 'idle', message: '' });
+
+  const handleValidate = (value) => {
+    setInput(value);
+    if (!value.trim()) {
+      setStatus({ type: 'idle', message: '' });
+      return;
+    }
+    try {
+      const parsed = JSON.parse(value);
+      setStatus({ 
+        type: 'success', 
+        message: `✅ Valid JSON! (Parsed ${Object.keys(parsed).length} top-level keys)` 
+      });
+    } catch (err) {
+      setStatus({ type: 'error', message: `❌ ${err.message}` });
+    }
+  };
+
+  return (
+    <div className="p-4 border rounded-xl bg-gray-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
+      <textarea
+        className="w-full h-64 p-3 font-mono text-sm border rounded-lg bg-white dark:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-primary"
+        placeholder='{\n  "name": "Cortex",\n  "active": true\n}'
+        value={input}
+        onChange={(e) => handleValidate(e.target.value)}
+      />
+      {status.message && (
+        <div className={`mt-3 p-3 rounded-lg text-sm font-medium ${
+          status.type === 'success' 
+            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400' 
+            : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400'
+        }`}>
+          {status.message}
+        </div>
+      )}
+    </div>
+  )
+}
+
+### Interactive JSON format validator
+
+Test your JSON formatting or schema structural validity below:
+
+<JsonPlayground />

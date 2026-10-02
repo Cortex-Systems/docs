@@ -1,19 +1,14 @@
 ---
 title: "Cortex PQM Configuration System: Complete Overview"
 sidebarTitle: "Overview"
-description: "Overview of the Cortex PQM configuration system: JSON-based config files, how to edit and upload them, and what settings are available."
+description: "Overview of the Cortex CSM system"
 ---
 
-The Cortex PQM stores all of its operational settings in JSON configuration files on the device itself. Adjusting these files is how you tailor the device to your installation — from naming circuits and setting CT ratios to defining network parameters and measurement options.
+The Cortex CSM stores all of its parameters and settings in a JSON configuration file on the device itself.
 
 ## How configuration works
 
-Every time the Cortex PQM starts up, it reads the active configuration file and applies those settings. You can modify the configuration in two ways:
-
-- **Upload a new config file** — prepare a JSON file on your computer, then push it to the device via the web interface or REST API.
-- **Edit in-place via the web interface** — use the built-in editor at the device's IP address to change values directly without downloading a file.
-
-Most settings take effect immediately after you apply a new configuration. A small number of low-level settings (such as sampling rate changes) require a device reboot to take effect; the web interface will prompt you when a reboot is needed.
+- **Upload a new config file** - prepare a JSON file on your computer, then push it to the device via the web interface or USB thumb drive
 
 ## What you can configure
 
@@ -23,25 +18,48 @@ The configuration file controls every major aspect of device behavior:
   Always download and save a copy of your current configuration file before making changes. This gives you a known-good backup to restore if something goes wrong.
 </Tip>
 
-| Category | Settings |
-| --- | --- |
-| **Network** | IP address, subnet mask, gateway, DNS, DHCP on/off, hostname |
-| **Device info** | Human-readable device name, physical location, timezone |
-| **Circuits** | Circuit names and labels, CT ratios, phase assignment, enable/disable |
-| **Measurement** | Wiring configuration type, line frequency, sampling rate |
+<table>
+  <colgroup>
+    <col width="129" />
+    <col width="561" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Settings</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>**Network**</td>
+      <td>IP address, subnet mask, gateway, DNS, DHCP on/off</td>
+    </tr>
+    <tr>
+      <td>**Device info**</td>
+      <td>Device name, mac address</td>
+    </tr>
+    <tr>
+      <td>**Circuits**</td>
+      <td>Circuit names and labels, CT size, breaker size, flex meter assignments</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Next steps
 
 <CardGroup cols={2}>
   <Card title="Using Configuration Files" icon="file-code" href="/configuration/using-files">
-    Learn how config files are structured and how the device applies them.
+    Learn how config files are structured and how the device applies them
   </Card>
+
   <Card title="Uploading Configuration Files" icon="upload" href="/configuration/uploading-files">
-    Push a new config file to the device via the web interface or REST API.
+    Push a new config file to the device via the web interface or USB thumb drive
   </Card>
+
   <Card title="Editing Configuration Files" icon="pen-to-square" href="/configuration/editing-files">
     Edit settings online using the built-in editor, or download and edit offline.
   </Card>
+
   <Card title="File Definitions" icon="book" href="/configuration/file-definitions">
     Complete reference for every parameter in the configuration file.
   </Card>
