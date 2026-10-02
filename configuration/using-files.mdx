@@ -3,6 +3,8 @@ title: "Using Configuration Files on the Cortex CSM"
 sidebarTitle: "Using Files"
 ---
 
+import JsonValidator from '/snippets/json-validator.mdx';
+
 Configuration files are plain JSON text files stored directly on the Cortex CSM. Every operational setting from network parameters to circuit labels lives inside this single file, making it easy to back up, version control, and replicate across multiple devices.
 
 ## File format and loading
@@ -15,8 +17,10 @@ Configuration files must be **valid JSON**. The most common mistakes that produc
 - Missing or mismatched curly braces `{}` or square brackets `[]`
 
 <Tip>
-  Before uploading a config file, paste its contents into a free online JSON validator (such as [jsonlint.com](https://jsonlint.com)) to catch syntax errors instantly.
+  Before uploading a config file, paste its contents into the JSON format validator
 </Tip>
+
+<JsonValidator />
 
 ## File structure
 
@@ -30,6 +34,8 @@ The configuration is organized into top-level objects, each grouping related set
     "subnet": "255.255.255.0",
     "gateway": "192.168.1.1",
     "dns": "8.8.8.8"
+ }
+}
 ```
 
 <Tip>

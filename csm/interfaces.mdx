@@ -8,39 +8,106 @@ This page describes each physical interface on the CSM-1-00 and CSM-2-00.
 
 ## Interface Summary
 
-| Interface | Type | Function | Notes |
-| --- | --- | --- | --- |
-| DC connector | Terminal connector | Energizes the monitor | Ground (earth) for both AC and DC is connected through the DC connector |
-| Volt Input 1 | Terminal connector | AC reference voltage sensing, L1/L2/L3 | Sensing only, no power draw |
-| Volt Input 2 | Terminal connector | Second AC reference voltage input | CSM-2-00 only |
-| Flex Ports 1–4 | RJ45 | CT modules, CT strips, Multi-Cards | Up to 48 current channels per port |
-| AUX port | RJ45 | Digital Input, Digital I/O + Serial, and Thermal modules | Up to 8 modules, 500 mA total |
-| Ethernet Ports 1 and 2 | RJ45 | Network: web console, REST API, Modbus TCP | Common IP address; default 192.168.7.3 |
-| USB port | USB | Configuration files, firmware, IP settings readout | 32 GB or less, FAT32 |
-| Reset button | Push button | Apply USB updates; restore factory defaults | Hold >10 s = factory reset |
-| Status LED | Multi-color LED | Operating and update status | See below |
+<table>
+  <colgroup>
+    <col width="142" />
+    <col width="102" />
+    <col width="239" />
+    <col width="278" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Interface</th>
+      <th>Type</th>
+      <th>Function</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DC connector</td>
+      <td>Terminal connector</td>
+      <td>Provides DC power<br />Range: 12 to 24VDC</td>
+      <td>Ground (earth) for both AC and DC is connected through a dedicated terminal on the DC connector</td>
+    </tr>
+    <tr>
+      <td>Volt Input 1</td>
+      <td>Terminal connector</td>
+      <td>AC reference voltage sensing, L1/L2/L3/N</td>
+      <td>Sensing only, no power draw</td>
+    </tr>
+    <tr>
+      <td>Volt Input 2</td>
+      <td>Terminal connector</td>
+      <td>Second AC reference voltage input L1/L2/L3/N</td>
+      <td>CSM-2-00 only</td>
+    </tr>
+    <tr>
+      <td>Flex Ports <br />1 to 4</td>
+      <td>RJ45</td>
+      <td>CT modules, CT strips, Multi-Cards</td>
+      <td>Up to 48 current channels per port</td>
+    </tr>
+    <tr>
+      <td>AUX port</td>
+      <td>RJ45</td>
+      <td>Digital Input, Digital I/O + Serial, and Thermal modules</td>
+      <td>Up to 8 modules, 500 mA total</td>
+    </tr>
+    <tr>
+      <td>Ethernet Port 1</td>
+      <td>RJ45</td>
+      <td>Network port for HMI, but can also provide same network access at port 2</td>
+      <td>Common IP address; default 192.168.7.3</td>
+    </tr>
+    <tr>
+      <td>Ethernet Port 2</td>
+      <td>RJ45</td>
+      <td>Network: web console, REST API, Modbus TCP</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>USB Port</td>
+      <td>USB 2.0</td>
+      <td>Configuration files, firmware, IP settings readout</td>
+      <td>32 GB or less, FAT32</td>
+    </tr>
+    <tr>
+      <td>Reset button</td>
+      <td>Push button</td>
+      <td>Multi function button used to apply updates, config files, reset defaults</td>
+      <td>Hold >10 s = Restore IP to default</td>
+    </tr>
+    <tr>
+      <td>Status LED</td>
+      <td>Multi-color LED</td>
+      <td>Operating and update status</td>
+      <td>See below</td>
+    </tr>
+  </tbody>
+</table>
 
 ## AC Reference Voltage Inputs
 
-The AC reference voltage inputs are for sensing only and draw no power. Fuse according to code, 0.25 A up to the maximum conductor rating. Each input measures L1, L2, and L3, providing line-to-neutral and line-to-line voltage, THD, phase angle, and frequency. Volt Input 2 is available on the CSM-2-00 only; on the CSM-2-00, each circuit can be assigned to a phase of either input.
+The AC reference voltage inputs are for sensing only and draw no power. Fuse according to code, 0.25 A up to the maximum conductor rating. Each input measures L1, L2, L3, and N providing line-to-neutral and line-to-line voltage, THD, phase angle, and frequency. Volt Input 2 is available on the CSM-2-00 only; on the CSM-2-00, each circuit can be assigned to a phase of either input.
 
-<Warning>
+<Danger>
   AC wiring has lethal voltages. Installation must be completed by a qualified person.
-</Warning>
+</Danger>
 
-## Flex Ports and AUX Port
+## Expansion Ports
 
-<Info>
-  Flex Ports and the AUX port use RJ45 jacks similar to the Ethernet ports. Connect Flex Port modules (CT modules, CT strips, Multi-Cards) only to Flex Ports, AUX modules only to the AUX port, and the network only to Ethernet Port 1 or 2.
-</Info>
+<Note>
+  Flex Ports and the AUX port use RJ45 jacks similar to the ethernet ports. Connect Flex Port modules (CT modules, CT strips, Multi-Cards, Busway Cards) only to Flex Ports, AUX modules only to the AUX port, and the network only to ethernet port 1 or 2.
+</Note>
 
-### Flex Ports
+### [Flex Ports](/flex-modules/overview)
 
-Each Flex Port supports a daisy chain of CT modules or CT strips for up to 48 current channels. Connect the Flex Port to the **IN** port of the first device and **OUT** to **IN** for each following device. The Flex Port used determines register assignment; start with Flex Port 1.
+Each Flex Port supports a daisy chain of CT modules or CT strips for up to 48 current channels. Connect from a Flex Port to the **IN** port of the first device and **OUT** to **IN** for each following device. The Flex Port and daisy chain position determines register assignment; start with Flex Port 1.
 
-### AUX Port
+### [AUX Port](/aux-modules/overview)
 
-The AUX port supports up to 8 daisy-chained modules (firmware 2.9.1 or later; 4 on earlier firmware), with a combined current draw of no more than 500 mA. The order of modules in the chain determines their register assignments.
+The AUX port supports up to 8 daisy-chained modules (firmware 2.9.1 or later; 4 on earlier firmware), with a combined current draw of no more than 500 mA. The order of modules in the chain determines their register assignments. 
 
 ## Ethernet Ports
 
@@ -49,7 +116,7 @@ Two RJ45 Ethernet ports share a common IP address. Connect either port to a PC o
 ## USB Port
 
 - Insert a USB drive (32 GB or less, FAT32) while the monitor is powered and wait about 5 seconds: the monitor writes its IP settings file to the drive.
-- Configuration files and firmware files are loaded from the root directory of the drive using the reset button sequence. See [Uploading Configuration Files](/configuration/uploading-files) and [Update via USB](/firmware/update-via-usb).
+- Configuration files and firmware files are loaded from the root directory of the drive using the reset button sequence. See [Uploading Configuration Files](/mops) and [Update via USB](/firmware/update-via-usb).
 
 ## Reset Button
 

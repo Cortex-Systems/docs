@@ -21,7 +21,7 @@
         "tab": "User Manual",
         "groups": [
           {
-            "group": "Cortex MOPs",
+            "group": "Cortex CSM",
             "public": true,
             "pages": [
               "mops"
@@ -41,7 +41,6 @@
             "group": "CSM Device Setup",
             "pages": [
               "csm/technical-overview",
-              "csm/overview",
               "csm/mounting",
               "csm/connecting",
               "csm/interfaces",
@@ -61,10 +60,7 @@
           {
             "group": "Firmware Updates",
             "pages": [
-              "firmware/overview",
-              "firmware/update-via-usb",
-              "firmware/update-via-network",
-              "firmware/changelog"
+              "firmware/overview"
             ]
           },
           {
