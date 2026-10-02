@@ -1,10 +1,8 @@
 ---
 title: "Upload Configuration Files to the Cortex PQM Device"
 sidebarTitle: "Uploading Files"
-description: "Upload a JSON configuration file to the Cortex CSM using the built-in web interface or the REST API — step-by-step instructions for both methods."
+description: "Upload a configuration file to the Cortex CSM using the built-in web interface."
 ---
-
-You can push a new configuration file to the Cortex CSM using either the built-in web interface or the REST API. Both methods validate the file before applying it. If the device detects a JSON error, it rejects the upload and keeps the existing configuration intact.
 
 ## Method 1: Web interface
 
@@ -15,42 +13,22 @@ The web interface is the easiest option for configuration changes
     Open a browser and navigate to the device's IP address (for example, `http://192.168.7.3`). The Cortex CSM web interface loads.
   </Step>
   <Step title="Go to the Configuration page">
-    In the navigation menu, select **Settings → Configuration**.
+    In the navigation menu, select **Settings → System**
   </Step>
   <Step title="Start the upload">
-    Click **Upload Config File**. A file picker dialog opens.
+    Click **Choose File**. A file picker dialog opens.
   </Step>
   <Step title="Select your config file">
     Browse to your prepared JSON configuration file and select it.
   </Step>
   <Step title="Apply the configuration">
-    Click **Apply**. The device validates the file and applies the new settings. A confirmation message appears when the process completes successfully.
+    Click **Upload Files**. The device validates the file and applies the new settings.
   </Step>
   <Step title="Confirm the device is healthy">
-    Verify that the Status LED on the device returns to a steady green, indicating normal operation under the new configuration.
+    Verify that the Status LED on the device returns to a blinking green, indicating normal operation.
   </Step>
 </Steps>
 
 <Note>
   If the device IP address changes as a result of uploading new network settings, your browser will lose connection. Reconnect by navigating to the new IP address.
 </Note>
-
-## Method 2: REST API
-
-The REST API is the preferred method for automated deployments, scripted provisioning, or managing multiple devices programmatically.
-
-Send a `POST` request to `/api/config` with the JSON file as the request body:
-
-```bash
-curl -X POST http://192.168.7.3/api/config \
-  -H "Content-Type: application/json" \
-  -d @config.json
-```
-
-Replace `192.168.7.3` with your device's actual IP address and `config.json` with the path to your local configuration file.
-
-A successful upload returns HTTP `200` with a JSON response body confirming the applied settings. An invalid file returns HTTP `400` along with a description of the validation error.
-
-<Tip>
-  When deploying the same configuration to multiple Cortex PQM units, use a script that iterates over device IPs and calls the REST API endpoint for each one, this is far faster than uploading through each device's web interface individually.
-</Tip>

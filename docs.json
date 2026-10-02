@@ -55,7 +55,6 @@
               "configuration/overview",
               "configuration/using-files",
               "configuration/uploading-files",
-              "configuration/editing-files",
               "configuration/file-definitions"
             ]
           },
@@ -72,10 +71,10 @@
             "group": "FLEX Port Modules",
             "pages": [
               "flex-modules/overview",
-              "flex-modules/multi-circuit-card",
               "flex-modules/ct-card",
-              "flex-modules/solid-core-ct-strips",
+              "flex-modules/multi-circuit-card",
               "flex-modules/busway-card",
+              "flex-modules/solid-core-ct-strips",
               "flex-modules/dimensions"
             ]
           },

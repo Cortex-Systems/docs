@@ -1,14 +1,11 @@
 ---
-title: "Using Configuration Files on the Cortex PQM Device"
+title: "Using Configuration Files on the Cortex CSM"
 sidebarTitle: "Using Files"
-description: "How configuration files work on the Cortex PQM: file format, JSON structure, top-level objects, and how settings are applied to the device after upload."
 ---
 
-Configuration files are plain JSON text files stored directly on the Cortex PQM. Every operational setting — from network parameters to circuit labels — lives inside this single file, making it easy to back up, version-control, and replicate across multiple devices.
+Configuration files are plain JSON text files stored directly on the Cortex PQM. Every operational setting from network parameters to circuit labels lives inside this single file, making it easy to back up, version control, and replicate across multiple devices.
 
 ## File format and loading
-
-The device reads the active configuration file each time it starts up and applies every setting it finds. If a parameter is absent from the file, the device uses its built-in default for that setting.
 
 Configuration files must be **valid JSON**. The most common mistakes that produce invalid JSON are:
 
@@ -18,14 +15,14 @@ Configuration files must be **valid JSON**. The most common mistakes that produc
 - Missing or mismatched curly braces `{}` or square brackets `[]`
 
 <Tip>
-  Before uploading any config file, paste its contents into a free online JSON validator (such as [jsonlint.com](https://jsonlint.com)) to catch syntax errors instantly.
+  Before uploading a config file, paste its contents into a free online JSON validator (such as [jsonlint.com](https://jsonlint.com)) to catch syntax errors instantly.
 </Tip>
 
 ## File structure
 
-The configuration is organized into top-level objects, each grouping related settings. The example below shows a typical configuration covering network, device identity, and two circuits:
+The configuration is organized into top-level objects, each grouping related settings. The example below shows a typical configuration covering network and device identity.
 
-```json config.json
+```json Cortexsettings ip.json
 {
   "network": {
     "dhcp": true,
@@ -33,33 +30,8 @@ The configuration is organized into top-level objects, each grouping related set
     "subnet": "255.255.255.0",
     "gateway": "192.168.1.1",
     "dns": "8.8.8.8"
-  },
-  "device": {
-    "name": "Main Panel PQM",
-    "location": "Building A - Electrical Room"
-  },
-  "circuits": [
-    { "id": 1, "name": "HVAC Unit 1", "ct_ratio": 200 },
-    { "id": 2, "name": "Lighting Panel L1", "ct_ratio": 100 }
-  ]
-}
 ```
 
-The top-level objects you will encounter in a full configuration file are:
-
-| Object | Purpose |
-|---|---|
-| `network` | IP addressing, DHCP, DNS, and hostname |
-| `device` | Human-readable name, location, and timezone |
-| `circuits` | Per-circuit labels, CT ratios, and phase assignments |
-| `measurement` | Wiring type, line frequency, and sampling rate |
-
-<Note>
-  You do not need to include every object in your config file. The device merges the uploaded file with its defaults, so you can upload a partial file that changes only the settings you care about.
-</Note>
-
-## How settings are applied
-
-When you upload a new configuration file (or save edits via the web interface), the device validates the JSON structure, then applies each setting. Most changes — including circuit names, CT ratios, and device identity fields — take effect immediately without a reboot. Network settings and measurement parameters may require a reboot; the web interface will indicate when one is needed.
-
-For a complete list of every supported parameter, their data types, and default values, see the [Configuration File Definitions](/configuration/file-definitions) reference.
+<Tip>
+  You do not need to include every object in your config file. You can upload a partial file that changes only the settings you care about.
+</Tip>

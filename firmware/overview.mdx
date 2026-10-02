@@ -1,10 +1,8 @@
 ---
-title: "Cortex PQM Firmware Updates: USB and Network Methods"
+title: "Cortex CSM Firmware Updates: USB and Network Methods"
 sidebarTitle: "Overview"
-description: "Learn how to check your Cortex PQM firmware version and choose between USB flash drive and network-based over-the-air update methods."
+description: "Learn how to check your Cortex PQM firmware version and choose between USB flash drive and network based update methods."
 ---
-
-Keeping your Cortex PQM (CSM-1-00 / CSM-2-00) firmware up to date ensures you benefit from the latest bug fixes, new features, and improvements. Each firmware release may include enhancements to power quality calculations, Modbus/REST API behavior, and peripheral support.
 
 ## Checking Your Current Firmware Version
 
@@ -13,8 +11,8 @@ Before deciding whether an update is needed, confirm the version currently runni
 **Via the web interface:**
 
 1. Navigate to your device's IP address in a browser.
-2. Go to **Settings → About**.
-3. The firmware version is displayed under **Device Information**.
+2. Go to **Support → Information**
+3. The firmware version is displayed under **Firmware Version**
 
 ## Update Methods
 
@@ -23,7 +21,7 @@ Two methods are available for updating firmware on the Cortex PQM:
 <table>
   <colgroup>
     <col width="157" />
-    <col width="325" />
+    <col width="268" />
     <col width="100" />
     <col width="271" />
   </colgroup>
@@ -39,38 +37,30 @@ Two methods are available for updating firmware on the Cortex PQM:
     <tr>
       <td>USB Flash Drive</td>
       <td>USB flash drive, FAT32 formatted</td>
-      <td>~2 min</td>
+      <td>~3 min</td>
       <td>No network access, field updates</td>
     </tr>
     <tr>
-      <td>Network (OTA)</td>
-      <td>Ethernet connected, firmware file URL or local file</td>
+      <td>Network</td>
+      <td>Ethernet connected and firmware file</td>
       <td>~3 min</td>
       <td>Remote updates, multiple devices</td>
     </tr>
   </tbody>
 </table>
 
-**Use the USB method** when the device is deployed in a location without network access, or when you are performing an on-site field update and a laptop is unavailable for a network-based workflow.
-
-**Use the network (OTA) method** when the device is already connected to Ethernet. This method requires no physical access to the device and is well-suited for updating multiple units remotely or automating updates via the REST API.
-
 <Warning>
-  Do not power off the device during a firmware update. Interrupting the update process may corrupt the firmware and require a recovery procedure. Wait for the Status LED to return to a steady green before disconnecting power.
+  Do not power off the device during a firmware update. Interrupting the update process may corrupt the firmware and require a recovery procedure.
 </Warning>
 
 ## Choose Your Update Method
 
 <CardGroup cols={2}>
   <Card title="Update via USB" icon="usb-drive" href="/firmware/update-via-usb">
-    Update firmware using a FAT32-formatted USB flash drive no network connection required.
+    Update firmware using a 32GB or smaller FAT32 formatted USB flash drive.
   </Card>
 
   <Card title="Update via Network (OTA)" icon="network-wired" href="/firmware/update-via-network">
-    Push firmware over ethernet using the web interface or REST API — no physical access needed.
+    Update firmware using the web interface 
   </Card>
 </CardGroup>
-
-<Tip>
-  Review the [Changelog](/firmware/changelog)to understand what changed before updating.
-</Tip>
