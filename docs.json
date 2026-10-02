@@ -23,9 +23,7 @@
           {
             "group": "Cortex MOPs",
             "public": true,
-            "pages": [
-              "mops"
-            ],
+            "pages": [],
             "icon": "book"
           },
           {
@@ -33,9 +31,9 @@
             "pages": [
               "safety",
               "introduction",
+              "mops",
               "safety",
               "quick-reference",
-              "quick-start-guide",
               "mops"
             ]
           },
@@ -74,9 +72,9 @@
             "group": "FLEX Port Modules",
             "pages": [
               "flex-modules/overview",
+              "flex-modules/multi-circuit-card",
               "flex-modules/ct-card",
               "flex-modules/solid-core-ct-strips",
-              "flex-modules/multi-circuit-card",
               "flex-modules/busway-card",
               "flex-modules/dimensions"
             ]

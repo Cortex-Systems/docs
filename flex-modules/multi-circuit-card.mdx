@@ -1,25 +1,107 @@
 ---
-title: "Multi-Circuit Card CS12-42-5-SA1 Installation Guide"
-sidebarTitle: "Multi-Circuit Card"
-description: "The Cortex Multi-Card (MULTI_CARD_12CT): Flex Port connection, digital input, digital output, and RTD readings, and how to read its data."
+title: "Multi-Circuit Card: CS12-42-5-SA1"
+sidebarTitle: "Multi-Circuit Card: CS12-42-5-SA1"
+description: "Product Guide"
 ---
 
-The Multi-Card is an expansion card that combines current transformer inputs with digital inputs, digital outputs, and RTD temperature inputs. The monitor identifies it as device type **23 (**`MULTI_CARD_12CT`**)**.
+Part Number: CS12-42-5-SA1 | Multi-Circuit Card
 
-## Connecting the Multi-Card
+### **Product Information**
 
-- Connect the Multi-Card to a **Flex Port (1–4)** using a standard Ethernet cable. Connect the Flex Port to the card's **IN** port; additional devices can be daisy-chained from **OUT** to **IN**.
-- A blinking green light on the card indicates a correct connection.
-- The Flex Port used determines register assignment.
-- Current transformers must be 0.333 V output CTs. CT orientation and wiring polarity are corrected automatically, and CT size must be set in the web console or configuration file.
+<Columns cols={2}>
+  <Column>
+    <img
+      src="https://manula.r.sizr.io/large/user/23498/img/multicard_v2.png"
+    />
+  </Column>
+  <Column>
+    The CORTEX MULTI-CARD delivers all essential monitoring points in a single card for comprehensive monitoring of critical electrical systems. Interfacing to the Cortex Module, the MULTI-CARD can be used together with any other Cortex devices simplifying a wide range of monitoring points into a single system.
+  </Column>
+</Columns>
 
-## Readings
+<Card title="**Features**">
+  - 12 × 0.333V universal Current Transformer inputs
+  - 4 x Digital Inputs
+  - 2 x Digital Outputs
+  - 5 x RTD Thermal Inputs – 2 wire PT1000 type
+  - 1 or 2 RCM Inputs; use in place of RTD Inputs\*
+  - Ultra precise 0.2% native power accuracy
+  - High-resolution current sampling per channel
+  - User friendly graphical configuration and display
+  - Expand up to eight cards
+  - Compatible with any other Cortex interface modules
+  - Daisy chain to second CT module to avoid excess wiring
+  - Compact size with user friendly plug in headers
+  - \*RCM coming soon
+</Card>
 
-Each Multi-Card reports:
+<table>
+  <colgroup>
+    <col width="127" />
+    <col width="139" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Input / Output</th>
+      <th>Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Current</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>Thermal Sensor</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>Digital Input</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>Digital Output</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>RCM\*</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
 
-- A digital input bitmask (`diValue`)
-- A digital output bitmask (`doValue`)
-- Up to 5 RTD temperature readings (°C). A value of `999.99` means the RTD sensor is not connected or is out of range.
+![](https://manula.r.sizr.io/large/user/23498/img/multicard-diagram-1_v1.png)
+
+## **Connectivity**
+
+### **Current Sensor Connections**
+
+The Multi-Card connects to one of the four Flex Ports using Ethernet cable and may be series with other CT interface cards.
+
+- Connects to the Cortex CSM-1-00 or CSM-2-00 using CAT6A ethernet cables up to 100’ (33m)
+- Daisy chain any combination of CT interface devices for a total of up to 48 CT channels per Flex Port
+- Use with standard 0.333V current transformers which are automatically corrected for reversed polarity or orientation simplifying installation and preventing costly mistakes
+
+![](https://manula.r.sizr.io/large/user/23498/img/p2-1.png)
+
+_Diagram: 4 Flex Ports (x192 CTs total), x48 CTs per Flex Port, 0.33V CT wiring. Auto CT Correction: polarity correction and orientation correction._
+
+### **Digital I/O Connections**
+
+Each card will accommodate 4 digital inputs and 2 digital outputs.
+
+![](https://manula.r.sizr.io/large/user/23498/img/p2-2.png)
+
+_Diagram: Flex Ports 1–4 connected via CAT 6A (100’ max), daisy-chained to other Flex Port CT devices. Digital Input X4; Digital Output X2 rated 100mA @ 30 VDC._
+
+### **Thermal Probe Connectivity**
+
+- Connect up to five two-wire application specific probes per card
+- Available custom harness kits simplify installation
+
+- TPS-TB-010 Tape Mount Thermal Probe Installation
+- TPS-RL-010 Ring Lug Thermal Probe Installation
+- TPS-CM-010 Ambient Temperature Probe
 
 ### REST API
 
@@ -55,3 +137,182 @@ Flex Port digital input, digital output, and RTD registers:
 | 4 | 37000–37047 | 37048–37095 | 37096–37191 |
 
 Digital input and output values: 0 = open, 1 = closed. See the [Modbus Register Map](/modbus/register-map).
+
+## **Technical Specifications**
+
+| Regulatory (system level) |
+| :-- |
+| Agency approvals | cUL 61010 Listed / IEC/EN61010-1, CE |
+| Conducted and radiated emissions | FCC part 15 Class A, EN55011/EN61000-6-4 Class A |
+| Conducted and radiated immunity | EN61000-6-2 and EN61326-1 |
+| UKCA | Compliant |
+
+<table>
+  <colgroup>
+    <col width="259" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Environmental</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Temperature</td>
+      <td>Operating: -0 °C (32 °F) to +60 °C (140 °F)</td>
+    </tr>
+    <tr>
+      <td>Non-Operating:</td>
+      <td>-25 °C (-13 °F) to +80 °C (176 °F)</td>
+    </tr>
+    <tr>
+      <td>Relative humidity</td>
+      <td>5 to 95% at 25 °C (77 °F), non-condensing</td>
+    </tr>
+    <tr>
+      <td>Operating elevation</td>
+      <td>2000m with no thermal derating</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <colgroup>
+    <col width="253" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Measurement: Current</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Current channels supported</td>
+      <td>12 per CT card with up to 192 current channel supported per meter</td>
+    </tr>
+    <tr>
+      <td>Current transformer type</td>
+      <td>0.333V out</td>
+    </tr>
+    <tr>
+      <td>Minimum detectable current</td>
+      <td>0.05% full scale</td>
+    </tr>
+    <tr>
+      <td>Accuracy</td>
+      <td>0.2 class native</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <colgroup>
+    <col width="189" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Measurement: Thermal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Input</td>
+      <td>RTD PT1000 thermocouple rated >250 micro Amps</td>
+    </tr>
+    <tr>
+      <td>Inputs per card</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>Accuracy</td>
+      <td>+/-1.0 °C + RTD tolerance</td>
+    </tr>
+    <tr>
+      <td>Range</td>
+      <td>see thermocouple guide</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <colgroup>
+    <col width="201" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Digital Input / Outputs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Digital Input Type</td>
+      <td>Dry contact, normally open</td>
+    </tr>
+    <tr>
+      <td>Digital Input Channels</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>Digital Output Rating</td>
+      <td>30V @ 100mA resistive</td>
+    </tr>
+    <tr>
+      <td>Digital Output Channels</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <colgroup>
+    <col width="100" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>RCM Input (pending release)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CT type</td>
+      <td>current output</td>
+    </tr>
+    <tr>
+      <td>Channels</td>
+      <td>2 (utilizes thermal input)</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <colgroup>
+    <col width="256" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Installation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Interface ports</td>
+      <td>RJ45 × 2 (CAT 6A recommended)</td>
+    </tr>
+    <tr>
+      <td>Mounting</td>
+      <td>35 mm DIN rail</td>
+    </tr>
+    <tr>
+      <td>Supply power</td>
+      <td>Integrated into communication cable</td>
+    </tr>
+    <tr>
+      <td>Voltage Inputs</td>
+      <td>No line voltage input required to CT card</td>
+    </tr>
+    <tr>
+      <td>Current transformer connection</td>
+      <td>3.5mm screw terminal header (16–24 AWG wire)</td>
+    </tr>
+  </tbody>
+</table>

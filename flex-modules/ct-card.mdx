@@ -1,105 +1,234 @@
 ---
-title: "CT Card Module (FLEX) Installation, Wiring, and Setup"
+title: "CT Card Module (FLEX)"
 sidebarTitle: "CT Card Module"
-description: "CS24-33-CTC 24 CT interface module for the Cortex PQM: features, Flex Port connection, auto CT correction, dual voltage assignment, and specifications."
+description: "Product Guide"
 ---
 
-**CS24-33-CTC — 24 Circuit Current Sensor, High Resolution Data**
+Part Number: CS24-33-CTC | 24 CT INTERFACE MODULE
 
-The Cortex CS24-33-CTC supports 24 x 0.33 V current transformers per module, with a total of eight modules or 192 circuits per monitor. The CS24-33-CTC can support dual voltage references when used with the dual input Cortex CSM-2-00, allowing a single module to support primary and secondary measurements on PDUs or other dual voltage equipment.
+### **Product Information**
 
-Configuration uses a graphical layout tool. Circuit information is displayed according to the PDU or gear layout, using customizable screens with friendly name assignments per circuit.
+<Columns cols={2}>
+  <Column>
+    <img
+      src="https://manula.r.sizr.io/large/user/23498/img/cortex-data-sheet-ct-card-image-2.jpg"
+    />
+  </Column>
+  <Column>
+    #### **24 Circuit Current Sensor High Resolution Data**
 
-## Features
+    The Cortex CS24-33-CTC supports 24 × 0.33V current transformers per module, with a total of eight modules or 192 circuits per monitor. Unlike other multi-circuit devices, the CS24-33-CTC can support dual voltage references when used with the dual input Cortex CSM-2-00, allowing a single module to support primary and secondary measurements on PDUs or other dual voltage equipment.
+  </Column>
+</Columns>
 
-- 0.2% native accuracy
-- High-resolution current sampling per channel
-- Graphical configuration and display
-- Universal 0.33 V current transformer input
-- 24 circuits per CT module, with up to eight modules per monitor
-- Individual voltage assignment per channel (when using the dual input CSM-2-00)
-- Daisy chain to a second CT module to avoid excess wiring
-- Circuit aggregation to report breaker or panel level data
-- Compact size with plug-in headers
-- Mix any variety of CT types
+### **Easy to Install / Easy to Use**
 
-## Connectivity
+Configuration is easy using a graphical layout tool. Circuit information is displayed exactly according to the PDU or gear layout, using customizable screens with friendly name assignments per circuit.
 
-- Connects to the Cortex CSM-1-00 or CSM-2-00 using standard Ethernet cables up to 100 ft (33 m).
-- Up to two modules may be daisy-chained to each of the four Flex Ports: 24 CTs per card, 48 CTs per Flex Port, 192 circuits per monitor.
-- Connect the Flex Port to the module's **IN** port; connect **OUT** to the **IN** port of the second module.
-- Each CT connects to a 2-pin 3.5 mm screw terminal header (16–24 AWG wire).
+<Card title="**Features**">
+  - Ultra precise 0.2% native accuracy
+  - High-resolution current sampling per channel
+  - User friendly graphical configuration and display
+  - Universal 0.33 V current transformer input
+  - 24 circuits per CT module, with up to eight modules per monitor
+  - Individual voltage assignment per channel (when using dual input monitor)
+  - Daisy chain to a second CT module to avoid excess wiring
+  - Intelligent circuit creation allows accurate aggregation of circuits to report breaker or panel level data
+  - Compact size with user friendly plug-in headers
+  - Mix any variety of CT types
+</Card>
 
-<Warning>
-  Connect CT modules to a Flex Port only. Do not connect them to the AUX port.
-</Warning>
+## **Connectivity**
 
-## Auto CT Correction
+- Connects to the Cortex CSM-1-00 or CSM-2-00 using standard Ethernet cables up to 100 ft (33 m)
+- Current transformers are automatically corrected for reversed polarity or orientation, simplifying installation and preventing costly mistakes
+- Up to two modules may be daisy chained to each of the four Flex Ports using standard Ethernet cable
 
-- **Polarity correction** — reversed CT wiring polarity is corrected automatically.
-- **Orientation correction** — CTs installed facing the wrong direction are corrected automatically.
+![](https://manula.r.sizr.io/large/user/23498/img/dual-voltage-2.png)
 
-## Setting CT Size
+#### **Auto CT Correction**
 
-CT size must be set for each channel, either in the web console or by configuration file upload. Over the REST API, CT size is written per circuit with the `ctSize` key:
+- **Polarity correction** – reversed CT wiring polarity is corrected automatically
+- **Orientation correction** – CTs installed facing the wrong direction are corrected automatically
 
-```json
-POST /configSettings
-{ "ctSize": { "circuit_1": 200, "circuit_7": 400 } }
-```
+### **Dual Voltage Assignment per Circuit**
 
-## Dual Voltage Assignment per Circuit
+When used with the CSM-2-00 dual input monitor, each circuit can be assigned to either the primary or secondary voltage input, allowing a single monitor and CT module to be used for both PDU input and output. Dual input RPPs can also use this feature with CT strips.
 
-When used with the CSM-2-00 dual input monitor, each circuit can be assigned to either the primary or secondary voltage input (Voltage Input 1 or Voltage Input 2), allowing a single monitor and CT module to be used for both PDU input and output. Dual input RPPs can also use this feature with CT strips.
+![](https://manula.r.sizr.io/large/user/23498/img/connect.png)
 
-## Grouping Channels
+#### **Assign Channels to Specific Voltage Sources**
 
-- **Flex Meter** — circuits can be assigned to a Flex Meter (up to 3 circuits, one per phase) and present data as a breaker.
-- **Aggregate Meter** — sum large groups of circuits to create an Aggregate Meter.
+- **Dynamic voltage assignment** – assign any circuit to either voltage input (Voltage Input 1 or Voltage Input 2), e.g. PDU Input and PDU Output
 
-## Technical Specifications
+#### **Group Channels to Represent Total Circuit Data**
 
-### Regulatory
+- **Flex Meter** – circuits can be assigned to a “Flex Meter” and present data as a breaker
+- **Aggregate Meter** – sum large groups of circuits to create an Aggregate Meter in place of current transformers
 
-| Item | Specification |
-| --- | --- |
-| Agency approvals | cUL 61010 Listed / IEC/EN 61010-1, CE |
-| Installation category | CAT III, pollution degree 2 |
-| Conducted and radiated emissions | FCC Part 15 Class A, EN 55011 / EN 61000-6-4 Class A |
-| Conducted and radiated immunity | EN 61000-6-2 and EN 61326-1 |
-| RoHS | Compliant |
-| UKCA | Compliant |
+## **Technical Specifications**
 
-### Environmental
+#### **Regulatory**
 
-| Item | Specification |
-| --- | --- |
-| Temperature | Operating: −10 °C (14 °F) to +60 °C (140 °F)<br />Non-operating: −25 °C (−13 °F) to +60 °C (140 °F) |
-| Relative humidity | 5 to 95% at 25 °C (77 °F), non-condensing |
-| Operating elevation | 2000 m with no thermal derating |
-| Pollution degree | 2 |
+<table>
+  <colgroup>
+    <col width="276" />
+    <col width="501" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Specification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Agency approvals</td>
+      <td>cUL 61010 Listed / IEC/EN 61010-1, CE</td>
+    </tr>
+    <tr>
+      <td>Installation category</td>
+      <td>CAT III, pollution degree 2</td>
+    </tr>
+    <tr>
+      <td>Conducted and radiated emissions</td>
+      <td>FCC Part 15 Class A, EN 55011 / EN 61000-6-4 Class A</td>
+    </tr>
+    <tr>
+      <td>Conducted and radiated immunity</td>
+      <td>EN 61000-6-2 and EN 61326-1</td>
+    </tr>
+    <tr>
+      <td>RoHS</td>
+      <td>Compliant</td>
+    </tr>
+    <tr>
+      <td>UKCA</td>
+      <td>Compliant</td>
+    </tr>
+  </tbody>
+</table>
 
-### Measurement
+#### **Environmental**
 
-| Item | Specification |
-| --- | --- |
-| Current channels supported | 24 per CT card (eight CT cards per monitor) |
-| Current transformer type | 0.333 V output |
-| Minimum measured current | 0.05% full scale |
-| Accuracy | 0.2 class native |
+<table>
+  <colgroup>
+    <col width="192" />
+    <col width="588" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Specification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Temperature</td>
+      <td>Operating: -10 °C (14 °F) to +60 °C (140 °F)<br />Non-operating: -25 °C (-13 °F) to +60 °C (140 °F)</td>
+    </tr>
+    <tr>
+      <td>Relative humidity</td>
+      <td>5 to 95% at 25 °C (77 °F), non-condensing</td>
+    </tr>
+    <tr>
+      <td>Operating elevation</td>
+      <td>2000 m with no thermal derating</td>
+    </tr>
+    <tr>
+      <td>Pollution degree</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
 
-### Installation
+#### **Measurement**
 
-| Item | Specification |
-| --- | --- |
-| Interface ports | RJ45 x 2 (CAT 6A recommended) |
-| Mounting | 35 mm DIN rail |
-| Supply power | Integrated into communication cable |
-| Voltage inputs | No line voltage input required to CT card |
-| Current transformer connection | 3.5 mm screw terminal header (16–24 AWG wire) |
+<table>
+  <colgroup>
+    <col width="231" />
+    <col width="552" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Specification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Current channels supported</td>
+      <td>24 per CT card (total of eight CT cards per monitor supported)</td>
+    </tr>
+    <tr>
+      <td>Current transformer type</td>
+      <td>0.333 V output</td>
+    </tr>
+    <tr>
+      <td>Minimum measured current</td>
+      <td>0.05% full scale</td>
+    </tr>
+    <tr>
+      <td>Accuracy</td>
+      <td>0.2 class native</td>
+    </tr>
+  </tbody>
+</table>
 
-### Mechanical
+#### **Installation**
 
-| Item | Specification |
-| --- | --- |
-| External dimensions | 3.42 in D x 1.84 in H x 2.82 in W |
+<table>
+  <colgroup>
+    <col width="250" />
+    <col width="528" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Specification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Interface ports</td>
+      <td>RJ45 × 2 (CAT 6A recommended)</td>
+    </tr>
+    <tr>
+      <td>Mounting</td>
+      <td>35 mm DIN rail</td>
+    </tr>
+    <tr>
+      <td>Supply power</td>
+      <td>Integrated into communication cable</td>
+    </tr>
+    <tr>
+      <td>Voltage inputs</td>
+      <td>No line voltage input required to CT card</td>
+    </tr>
+    <tr>
+      <td>Current transformer connection</td>
+      <td>3.5 mm screw terminal header (16-24 AWG wire)</td>
+    </tr>
+  </tbody>
+</table>
+
+#### **Mechanical**
+
+<table>
+  <colgroup>
+    <col width="248" />
+    <col width="530" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Specification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>External dimensions</td>
+      <td>3.42 in D x 1.84 in H x 2.82 in W</td>
+    </tr>
+  </tbody>
+</table>

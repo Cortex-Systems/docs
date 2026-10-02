@@ -6,34 +6,95 @@ description: "Overview of Cortex CSM Flex Port Expansion modules"
 
 Flex Port modules connect current transformers (CTs) to your Cortex CSM monitor.
 
+<img
+  src="/images/image-46.png"
+  alt="Image"
+  title="Image"
+  style={{ width:"57%" }}
+/>
+
 The CSM-1-00 and CSM-2-00 have **four Flex Ports**, and each port supports a daisy chain of CT strips or CT modules for up to **48 current channels**, giving up to **192 monitored circuits** per monitor.
 
 ## Available Flex Port Modules
 
 ### **CT Card**
 
-| Module | Part Number | CT Inputs |
-| :-- | :-- | :-- |
-| CT Card (FLEX) | CS24-33-CTC | 24 |
+<table>
+  <colgroup>
+    <col width="272" />
+    <col width="198" />
+    <col width="293" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Module</th>
+      <th>Part Number</th>
+      <th>CT Inputs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CT Card (FLEX)</td>
+      <td>CS24-33-CTC</td>
+      <td>24</td>
+    </tr>
+  </tbody>
+</table>
 
 ### **CT Strip**
 
-| Module | Part Number | CT Build In | External CT Inputs | CT Total |
-| :-- | :-- | :-- | :-- | :-- |
-| 21 CT Strip, 3 External (FLEX) | CS075-21 | 21 | 3 | 24 |
-| Solid Core CT Strip (FLEX) | CS108-12 | 12 | – | 12 |
-| Retrofit Panel Board Strip (FLEX) | CS24-33-RFC | 24 | – | 24 |
+<table>
+  <colgroup>
+    <col width="270" />
+    <col width="134" />
+    <col width="100" />
+    <col width="147" />
+    <col width="108" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Module</th>
+      <th>Part Number</th>
+      <th>CT Build In</th>
+      <th>External CT Inputs</th>
+      <th>Total CT Inputs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>21 CT Strip, 3 External (FLEX)</td>
+      <td>CS075-21</td>
+      <td>21</td>
+      <td>3</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <td>Solid Core CT Strip (FLEX)</td>
+      <td>CS108-12</td>
+      <td>12</td>
+      <td>–</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>Retrofit Panel Board Strip (FLEX)</td>
+      <td>CS24-33-RFC</td>
+      <td>24</td>
+      <td>–</td>
+      <td>24</td>
+    </tr>
+  </tbody>
+</table>
 
 ### **Multi-Card**
 
 <table>
   <colgroup>
+    <col width="148" />
     <col width="139" />
-    <col width="154" />
     <col width="100" />
-    <col width="109" />
-    <col width="107" />
-    <col width="120" />
+    <col width="118" />
+    <col width="127" />
+    <col width="127" />
   </colgroup>
   <thead>
     <tr>
@@ -59,9 +120,13 @@ The CSM-1-00 and CSM-2-00 have **four Flex Ports**, and each port supports a dai
 
 ## Connection Guide
 
-Flex Port modules connect to the monitor's **Flex Ports (1–4)** using a standard ethernet cable. Do **not** connect them to the AUX port.
+Flex Port modules connect to the monitor's **Flex Ports (1–4)** using a standard ethernet cable. 
 
-1. Connect the CSM monitor's Flex Port to the **IN** port of the first module.
+<Warning>
+  Do **not** connect them to the AUX port
+</Warning>
+
+1. Connect the **IN** port of the module to a port on the monitor
 2. Connect the module's **OUT** port to the **IN** port of the next module on the same port.
 3. When a module is connected correctly, the green LED on the module blinks to show that it is communicating.
 
@@ -71,10 +136,14 @@ The Flex Port a module is connected to determines its register assignment. Best 
 
 ## Daisy Chaining
 
-Multiple modules can be daisy-chained from a single Flex Port, provided the total number of current channels on the port does not exceed 48. Examples of valid chains on one Flex Port:
+Multiple modules can be daisy-chained from a single Flex Port, provided the total number of current channels on the port does not exceed 48.
 
-- Two 24 CT Modules = 48 channels
-- Two 21 CT Strips = 42 channels
+<Note>
+  Examples of valid chains on one Flex Port:
+
+  - Two 24 CT Modules = 48 channels
+  - Two 21 CT Strips = 48 channels
+</Note>
 
 ## Connecting Current Transformers
 
@@ -86,11 +155,11 @@ Multiple modules can be daisy-chained from a single Flex Port, provided the tota
 
 ## Configuring a Flex Port
 
-Each Flex Port is configured separately in the web console under **Configuration > Meter Config**, or in the configuration file (`panel_1` to `panel_4`). Follow the orientation and wiring diagram shown in the web console that matches your panelboard type.
+Each Flex Port is configured separately in the web console under Configuration > Meter Config, or in the configuration file. Follow the orientation and wiring diagram shown in the web console that matches your panelboard type.
 
 <table>
   <colgroup>
-    <col width="213" />
+    <col width="259" />
     <col width="507" />
   </colgroup>
   <thead>
@@ -130,47 +199,6 @@ Each Flex Port is configured separately in the web console under **Configuration
     </tr>
   </tbody>
 </table>
-
-## Port Status
-
-The status of each Flex Port can be read from the meter
-
-<table>
-  <colgroup>
-    <col width="70" />
-    <col width="202" />
-  </colgroup>
-  <thead>
-    <tr>
-      <th>Value</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>0</td>
-      <td>OK</td>
-    </tr>
-    <tr>
-      <td>1</td>
-      <td>Discovery</td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>Invalid Config</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>Disabled</td>
-    </tr>
-    <tr>
-      <td>4</td>
-      <td>Unsupported Device</td>
-    </tr>
-  </tbody>
-</table>
-
-The monitor also reports the number of devices connected, the total number of channels, and the type, firmware version, and serial number of each device on the port. See the [Modbus Register Map](/modbus/register-map) for register addresses.
 
 ## Module Pages
 
