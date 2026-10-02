@@ -11,7 +11,7 @@
     "dark": "/images/logo.png"
   },
   "colors": {
-    "primary": "#0c5859",
+    "primary": "#EB9820",
     "light": "#6c6c6c",
     "dark": "#3c3d3d"
   },
@@ -120,7 +120,7 @@
     ]
   },
   "icons": {
-    "library": "lucide"
+    "library": "fontawesome"
   },
   "background": {
     "decoration": "gradient"
