@@ -5,37 +5,72 @@ description: "Paste and validate your JSON file live in the browser."
 
 export const JsonPlayground = () => {
   const [input, setInput] = useState('');
-  const [status, setStatus] = useState({ type: 'idle', message: '' });
+  const [status, setStatus] = useState({ type: 'idle', message: '', line: null });
+  const [scrollTop, setScrollTop] = useState(0);
+
+  const lineCount = input ? input.split('\n').length : 1;
+
+  const getErrorLine = (msg, text) => {
+    const lineMatch = msg.match(/line (\d+)/i);
+    if (lineMatch) return Number(lineMatch[1]);
+    const posMatch = msg.match(/position (\d+)/i);
+    if (posMatch) return text.slice(0, Number(posMatch[1])).split('\n').length;
+    return null;
+  };
 
   const handleValidate = (value) => {
     setInput(value);
     if (!value.trim()) {
-      setStatus({ type: 'idle', message: '' });
+      setStatus({ type: 'idle', message: '', line: null });
       return;
     }
     try {
       const parsed = JSON.parse(value);
-      setStatus({ 
-        type: 'success', 
-        message: `✅ Valid JSON! (Parsed ${Object.keys(parsed).length} top-level keys)` 
+      const keys = parsed && typeof parsed === 'object' ? Object.keys(parsed).length : 0;
+      setStatus({
+        type: 'success',
+        message: `✅ Valid JSON! (Parsed ${keys} top-level keys)`,
+        line: null
       });
     } catch (err) {
-      setStatus({ type: 'error', message: `❌ ${err.message}` });
+      const line = getErrorLine(err.message, value);
+      setStatus({
+        type: 'error',
+        message: `❌ ${line ? `Line ${line}: ` : ''}${err.message}`,
+        line
+      });
     }
   };
 
   return (
     <div className="p-4 border rounded-xl bg-gray-50 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800">
-      <textarea
-        className="w-full h-64 p-3 font-mono text-sm border rounded-lg bg-white dark:bg-zinc-950 focus:outline-none focus:ring-2 focus:ring-primary"
-        placeholder='{\n  "name": "Cortex",\n  "active": true\n}'
-        value={input}
-        onChange={(e) => handleValidate(e.target.value)}
-      />
+      <div className="flex h-64 border rounded-lg overflow-hidden bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 focus-within:ring-2 focus-within:ring-primary">
+        <div className="select-none overflow-hidden py-3 px-3 text-right font-mono text-sm leading-6 text-zinc-400 bg-zinc-100 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800">
+          <div style={{ transform: `translateY(-${scrollTop}px)` }}>
+            {Array.from({ length: lineCount }, (_, i) => (
+              <div
+                key={i}
+                className={status.line === i + 1 ? 'text-rose-500 font-semibold' : ''}
+              >
+                {i + 1}
+              </div>
+            ))}
+          </div>
+        </div>
+        <textarea
+          className="flex-1 h-full py-3 px-3 font-mono text-sm leading-6 bg-transparent resize-none overflow-auto whitespace-pre focus:outline-none"
+          wrap="off"
+          spellCheck={false}
+          placeholder='{\n  "name": "Cortex",\n  "active": true\n}'
+          value={input}
+          onChange={(e) => handleValidate(e.target.value)}
+          onScroll={(e) => setScrollTop(e.target.scrollTop)}
+        />
+      </div>
       {status.message && (
         <div className={`mt-3 p-3 rounded-lg text-sm font-medium ${
-          status.type === 'success' 
-            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400' 
+          status.type === 'success'
+            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400'
             : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400'
         }`}>
           {status.message}
