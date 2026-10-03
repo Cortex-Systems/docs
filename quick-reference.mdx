@@ -1,5 +1,5 @@
 ---
-title: "Cortex PQM Quick Reference: Specs, LEDs, and Interfaces"
+title: "Cortex CSM Quick Reference: Specs, LEDs, and Interfaces"
 sidebarTitle: "Quick Reference"
 description: "At-a-glance capabilities, status LED indications, port descriptions, and default settings for the CSM-1-00 and CSM-2-00."
 mode: "default"
@@ -35,23 +35,66 @@ This page provides a condensed reference for the Cortex PQM CSM-1-00 and CSM-2-0
 | Subnet mask | 255.255.255.0 |
 | Gateway | 192.168.7.1 |
 | DHCP | Disabled |
-| Modbus TCP port | 502 (up to 15 concurrent clients) |
+| Modbus TCP port | Port 502 (up to 15 concurrent clients) |
 
 The PC or polling device must be on the same subnet as the monitor (for example, 192.168.7.xxx).
 
 ## Status LED
 
-| Indication | Meaning |
-| --- | --- |
-| **Green blink (1 Hz)** | Normal operation / update complete |
-| **Solid green** | Reset button held 5–10 seconds; reset sequence accepted, release the button |
-| **Rapid orange and red blink** | Configuration file detected on USB drive; press reset to apply |
-| **Green and blue blink** | Firmware file detected on USB drive; press reset to program |
-| **Blue blink** | Firmware programming in progress (about 3 minutes). Do not remove power or the USB drive |
-| **Solid orange** | Factory defaults restored (reset button held longer than 10 seconds) |
+<table>
+  <colgroup>
+    <col width="231" />
+    <col width="50" />
+    <col width="344" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Indication</th>
+      <th></th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>**Green blink (1 Hz)**</td>
+      <td><img src="/images/green_blink_1hz.gif" alt="Green Blink 1hz" title="Green Blink 1hz" /></td>
+      <td>Normal operation / update complete</td>
+    </tr>
+    <tr>
+      <td>**Solid green**</td>
+      <td><img src="/images/image-50.png" alt="Image" title="Image" /></td>
+      <td>Reset button held 5–10 seconds; reset sequence accepted, release the button</td>
+    </tr>
+    <tr>
+      <td>**Rapid orange and red blink**</td>
+      <td><img src="/images/orange_blink_5hz.gif" alt="Orange Blink 5hz" title="Orange Blink 5hz" /></td>
+      <td>Configuration file detected on USB drive; press reset to apply</td>
+    </tr>
+    <tr>
+      <td>**Green and blue blink**</td>
+      <td><img src="/images/green_blue_blink_2hz.gif" alt="Green Blue Blink 2hz" title="Green Blue Blink 2hz" /></td>
+      <td>Firmware file detected on USB drive; press reset to program</td>
+    </tr>
+    <tr>
+      <td>**Blue blink**</td>
+      <td><img src="/images/blue_blink_5hz.gif" alt="Blue Blink 5hz" title="Blue Blink 5hz" /></td>
+      <td>Firmware programming in progress (about 3 minutes). Do not remove power or the USB drive</td>
+    </tr>
+    <tr>
+      <td>**Solid orange**</td>
+      <td><img src="/images/orange_dot.gif" alt="Orange Dot" title="Orange Dot" /></td>
+      <td>IP address restored to default (reset button held longer than 10 seconds)</td>
+    </tr>
+    <tr>
+      <td>**Solid red**</td>
+      <td><img src="/images/red_dot.gif" alt="Red Dot" title="Red Dot" /></td>
+      <td>Factory defaults restored (reset button held longer than 15 seconds)</td>
+    </tr>
+  </tbody>
+</table>
 
 <Warning>
-  Holding the reset button for more than 10 seconds restores **all** settings, including the IP address, to factory default.
+  Holding the reset button for more than 15 seconds restores **all** settings, including the IP address, to factory default.
 </Warning>
 
 ## Ports
