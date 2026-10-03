@@ -57,7 +57,9 @@ import DefaultIp from '/snippets/default-ip.mdx';
 
     Example: `Cortexsettings PDU-4B.json`
 
-    **!**Download and store a copy of the configuration before making changes or performing a factory reset. A factory reset erases all settings.
+    <Note>
+      Download and store a copy of the configuration before making changes or performing a factory reset. A factory reset erases all settings.
+    </Note>
   </Accordion>
 
   <Accordion title="**Editing Configuration Files**" icon="code">
@@ -133,7 +135,7 @@ import DefaultIp from '/snippets/default-ip.mdx';
          src="/images/USB-PORT-2-1.png"
          alt="USB PORT 2"
          title="USB PORT 2"
-         style={{ width:"31%" }}
+         style={{ width:"59%" }}
        />
     2. Press and holding the reset button for 6 seconds until the status light turns solid green, then release.
     3. Wait while the monitor reads the drive.
@@ -189,9 +191,24 @@ import DefaultIp from '/snippets/default-ip.mdx';
     2. Unzip the firmware file and place it in the root directory of the drive, not inside a folder.
     3. Remove any configuration files from the root directory unless you intend to apply them. Confirm behavior when both file types are present.
 
-    | Update Type | File Name |
-    | :-- | :-- |
-    | Firmware | `CortexFW_x.xx.bin` Confirm naming format. |
+    <table>
+      <colgroup>
+        <col width="252" />
+        <col width="286" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Update Type</th>
+          <th>File Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Firmware</td>
+          <td>`CortexFW_x.xx.bin`</td>
+        </tr>
+      </tbody>
+    </table>
 
     #### **Applying the Firmware**
 
@@ -249,7 +266,7 @@ import DefaultIp from '/snippets/default-ip.mdx';
         </tr>
         <tr>
           <td>Solid orange</td>
-          <td>Factory default restored</td>
+          <td>IP restored to default</td>
         </tr>
       </tbody>
     </table>
